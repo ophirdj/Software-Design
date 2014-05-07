@@ -41,6 +41,8 @@ public class LifeTimeBuilderTest {
   /**
    * C'tor.
    */
+  // mocking of generic type can't be checked
+  @SuppressWarnings("unchecked")
   public LifeTimeBuilderTest() {
     storageHandler = mock(StorageHandler.class);
     rootFinder = mock(TransitiveRootFinder.class);
