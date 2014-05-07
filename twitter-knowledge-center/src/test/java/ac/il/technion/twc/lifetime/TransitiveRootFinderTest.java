@@ -15,32 +15,52 @@ import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
 
+/**
+ * Test for the TransitiveRootFinder class
+ * 
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class TransitiveRootFinderTest {
 
+  /**
+   * 
+   */
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
   private final TransitiveRootFinder underTest;
 
+  /**
+   * C'tor
+   */
   public TransitiveRootFinderTest() {
     underTest = new TransitiveRootFinder();
   }
 
-  @Test
-  public void initTestEnvironmentShouldSucceed() {
-
-  }
-
+  /**
+   * 
+   */
   @Test
   public void addingBaseTweetShouldNotThrowException() {
     underTest.addTweet(new BaseTweet(new Date(1L), new ID("baseId")));
   }
 
+  /**
+   * 
+   */
   @Test
   public void addingRetweetShouldNotThrowException() {
     underTest.addTweet(new Retweet(new Date(1L), new ID("retweetId"), new ID(
         "baseId")));
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public
       void
@@ -53,6 +73,9 @@ public class TransitiveRootFinderTest {
     underTest.findRoot(retweet);
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public
       void
@@ -67,6 +90,9 @@ public class TransitiveRootFinderTest {
     assertSame(baseTweet, underTest.findRoot(retweet));
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public
       void
@@ -81,6 +107,9 @@ public class TransitiveRootFinderTest {
     assertSame(baseTweet, underTest.findRoot(retweet));
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public void
       findRootOnRetweetWithUnrelatedBaseTweetShouldThrowNoRootFoundException()
@@ -94,6 +123,9 @@ public class TransitiveRootFinderTest {
     underTest.findRoot(retweet);
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public void findRootOnRetweetOfRetweetShouldReturnTheBaseTweet()
       throws Exception {
@@ -110,6 +142,9 @@ public class TransitiveRootFinderTest {
     assertSame(baseTweet, underTest.findRoot(secondRetweet));
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public void
       findRootOnRetweetOfRetweetAddAsCollectionShouldReturnTheBaseTweet()
@@ -128,6 +163,9 @@ public class TransitiveRootFinderTest {
     assertSame(baseTweet, underTest.findRoot(secondRetweet));
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public
       void
@@ -145,6 +183,9 @@ public class TransitiveRootFinderTest {
     underTest.findRoot(secondRetweet);
   }
 
+  /**
+   * @throws Exception
+   */
   @Test
   public void
       findRootOnRetweetWhenOriginalAddedAsCollectionShouldReturnTheBaseTweets()
