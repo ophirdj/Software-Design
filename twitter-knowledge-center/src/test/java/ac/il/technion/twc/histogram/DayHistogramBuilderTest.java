@@ -10,7 +10,7 @@ import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
-import ac.il.technion.twc.God;
+import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
@@ -31,17 +31,16 @@ public class DayHistogramBuilderTest {
   private final StorageHandler<DayHistogram> storageHandler;
   private final DayHistogram emptyHistogram;
 
-  /**
-   * C'tor.
-   */
-  // mocking of generic class can't be checked
-  @SuppressWarnings("unchecked")
-  public DayHistogramBuilderTest() {
-    storageHandler = mock(StorageHandler.class);
-    emptyHistogram =
-        God.injector.getInstance(Key.get(DayHistogram.class,
-            Names.named("default")));
-  }
+
+	/**
+	 * C'tor
+	 */
+	public DayHistogramBuilderTest() {
+		storageHandler = mock(StorageHandler.class);
+		emptyHistogram = TwitterKnowledgeCenter.injector.getInstance(Key.get(
+				DayHistogram.class, Names.named("default")));
+	}
+
 
   private void initBuilder(final DayHistogram storedHistogram) {
     when(storageHandler.load(emptyHistogram)).thenReturn(storedHistogram);
@@ -71,21 +70,22 @@ public class DayHistogramBuilderTest {
     assertEquals(emptyHistogram, underTest.getResult());
   }
 
-  /**
-   * Test method for
-   * {@link DayHistogramBuilder#DayHistogramBuilder(StorageHandler, DayHistogram)}
-   */
-  @Test
-  public final void constructorShouldUseHistogramReturnedByStorageHandler() {
-    final DayHistogram storedHistogram =
-        God.injector.getInstance(Key.get(DayHistogram.class,
-            Names.named("default")));
-    storedHistogram.basetweets.put(DayOfWeek.SUNDAY, 1);
-    storedHistogram.retweets.put(DayOfWeek.MONDAY, 23);
-    initBuilder(storedHistogram);
-    verify(storageHandler).load(emptyHistogram);
-    assertEquals(storedHistogram, underTest.getResult());
-  }
+
+	/**
+	 * Test method for
+	 * {@link DayHistogramBuilder#DayHistogramBuilder(StorageHandler, DayHistogram)}
+	 */
+	@Test
+	public final void constructorShouldUseHistogramReturnedByStorageHandler() {
+		final DayHistogram storedHistogram = TwitterKnowledgeCenter.injector
+				.getInstance(Key.get(DayHistogram.class, Names.named("default")));
+		storedHistogram.basetweets.put(DayOfWeek.SUNDAY, 1);
+		storedHistogram.retweets.put(DayOfWeek.MONDAY, 23);
+		initBuilder(storedHistogram);
+		verify(storageHandler).load(emptyHistogram);
+		assertEquals(storedHistogram, underTest.getResult());
+	}
+
 
   /**
    * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
