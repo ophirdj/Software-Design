@@ -8,6 +8,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -21,53 +24,132 @@ import ac.il.technion.twc.storage.StorageHandler;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
+/**
+ * Tests for {@link LifeTimeBuilder}.
+ * 
+ * @author Ophir De Jager
+ * 
+ */
 public class LifeTimeBuilderTest {
 
 	private LifeTimeBuilder underTest;
 	private final StorageHandler<LifeTimeData> storageHandler;
 	private final TransitiveRootFinder rootFinder;
-	private final LifeTimeData emptyMap;
+	private final LifeTimeData emptyLifeTime;
 
+	/**
+	 * C'tor.
+	 */
 	public LifeTimeBuilderTest() {
 		storageHandler = mock(StorageHandler.class);
 		rootFinder = mock(TransitiveRootFinder.class);
-		emptyMap = God.injector.getInstance(Key.get(LifeTimeData.class,
+		emptyLifeTime = God.injector.getInstance(Key.get(LifeTimeData.class,
 				Names.named("default")));
 	}
 
-	private void initBuilder(final LifeTimeData storedMap) {
-		when(storageHandler.load(emptyMap)).thenReturn(storedMap);
-		underTest = new LifeTimeBuilder(storageHandler, rootFinder, emptyMap);
+	/**
+	 * 
+	 * @param numBase
+	 *            Number of base tweets.
+	 * @param numRetweetsForEach
+	 *            Number of retweets each tweet has (if it has any retweets).
+	 * @param numLevels
+	 *            How many times a tweet can be recursively retweeted (i.e.
+	 *            retweet of retweet).
+	 * @return A {@link LifeTimeData} that has <code>numBase</code> base tweets.
+	 *         Each tweet (base or retweet) has <code>numRetweetsForEach</code>
+	 *         retweets, and each retweet has again
+	 *         <code>numRetweetsForEach</code> retweets of its own, and so
+	 *         forth. There are <code>numLevels</code> levels of retweets (i.e.
+	 *         retweet of retweet) for each base tweet.
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
+	private LifeTimeData getLifeTimeData(final int numBase,
+			final int numRetweetsForEach, final int numLevels)
+			throws NoRootFoundException {
+		final Set<BaseTweet> baseTweets = new HashSet<>();
+		final Set<Retweet> retweets = new HashSet<>();
+
+		for (int baseTweetNum = 0; baseTweetNum < numBase; ++baseTweetNum) {
+			final ID baseId = new ID("base " + baseTweetNum);
+			final long baseDate = 123456789L + baseTweetNum;
+			final BaseTweet baseTweet = new BaseTweet(new Date(baseDate),
+					baseId);
+			baseTweets.add(baseTweet);
+			when(rootFinder.findRoot(baseTweet)).thenReturn(baseTweet);
+			for (int level = 0; level < numLevels; ++level)
+				for (int retweetNum = 0; retweetNum < numRetweetsForEach; ++retweetNum) {
+					final ID originId = level > 0 ? new ID("retweet level "
+							+ level) : baseId;
+					final Retweet retweet = new Retweet(new Date(baseDate + 24
+							* 60 * 60 * 1000 * level + 10 * 1000 * retweetNum),
+							new ID("retweet of base " + baseTweetNum
+									+ ", level " + level), originId);
+					retweets.add(retweet);
+					when(rootFinder.findRoot(retweet)).thenReturn(baseTweet);
+				}
+		}
+
+		return new LifeTimeData(new HashMap<ID, Long>(), baseTweets, retweets);
 	}
 
+	private void initBuilder(final LifeTimeData storedLifeTime) {
+		when(storageHandler.load(emptyLifeTime)).thenReturn(storedLifeTime);
+		underTest = new LifeTimeBuilder(storageHandler, rootFinder,
+				emptyLifeTime);
+	}
+
+	/**
+	 * Test method for
+	 * {@link LifeTimeBuilder#LifeTimeBuilder(StorageHandler, TransitiveRootFinder, LifeTimeData)}
+	 */
 	@Test
 	public final void constructorShouldCallStorageHandlerToLoadMap() {
-		initBuilder(emptyMap);
-		verify(storageHandler).load(emptyMap);
+		initBuilder(emptyLifeTime);
+		verify(storageHandler).load(emptyLifeTime);
 		assertNotNull(underTest);
 	}
 
+	/**
+	 * Test method for
+	 * {@link LifeTimeBuilder#LifeTimeBuilder(StorageHandler, TransitiveRootFinder, LifeTimeData)}
+	 */
 	@Test
-	public final void constructorShouldUseEmptyMapReturnedByStorageHandler() {
-		initBuilder(emptyMap);
-		verify(storageHandler).load(emptyMap);
-		assertEquals(emptyMap, underTest.getResult());
+	public final void constructorShouldUseEmptyLifeTimeReturnedByStorageHandler() {
+		initBuilder(emptyLifeTime);
+		verify(storageHandler).load(emptyLifeTime);
+		assertEquals(emptyLifeTime, underTest.getResult());
 	}
 
+	/**
+	 * Test method for
+	 * {@link LifeTimeBuilder#LifeTimeBuilder(StorageHandler, TransitiveRootFinder, LifeTimeData)}
+	 * 
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
 	@Test
-	public final void constructorShouldUseHistogramReturnedByStorageHandler() {
-		final LifeTimeData storedMap = God.injector.getInstance(Key.get(
-				LifeTimeData.class, Names.named("default")));
-		// TODO: modify stored map
-		initBuilder(storedMap);
-		verify(storageHandler).load(emptyMap);
-		assertEquals(storedMap, underTest.getResult());
-	}
-
-	@Test
-	public final void retweetSouldExtendLifTimeOfBaseTweet()
+	public final void constructorShouldUseLifeTimeReturnedByStorageHandler()
 			throws NoRootFoundException {
-		initBuilder(emptyMap);
+		final LifeTimeData storedLifeTime = getLifeTimeData(10, 3, 2);
+		initBuilder(storedLifeTime);
+		verify(storageHandler).load(emptyLifeTime);
+		assertEquals(storedLifeTime, underTest.getResult());
+	}
+
+	/**
+	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
+	 * {@link LifeTimeBuilder#visit(Retweet)},
+	 * {@link LifeTimeBuilder#getResult()}
+	 * 
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
+	@Test
+	public final void retweetShouldExtendLifeTimeOfBaseTweet()
+			throws NoRootFoundException {
+		initBuilder(emptyLifeTime);
 		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
 				3, 00).getTime(), new ID("base"));
 		final Retweet re = new Retweet(
@@ -80,10 +162,18 @@ public class LifeTimeBuilderTest {
 				underTest.getResult().get(base.id()));
 	}
 
+	/**
+	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
+	 * {@link LifeTimeBuilder#visit(Retweet)},
+	 * {@link LifeTimeBuilder#getResult()}
+	 * 
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
 	@Test
 	public final void notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours()
 			throws NoRootFoundException {
-		initBuilder(emptyMap);
+		initBuilder(getLifeTimeData(3, 3, 3));
 		final ID reId = new ID("retweet");
 		final BaseTweet base = new BaseTweet(
 				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
@@ -102,9 +192,17 @@ public class LifeTimeBuilderTest {
 				.get(base.id()));
 	}
 
+	/**
+	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
+	 * {@link LifeTimeBuilder#visit(Retweet)},
+	 * {@link LifeTimeBuilder#getResult()}
+	 * 
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
 	@Test
 	public final void lifeTimeShouldBeAccurate() throws NoRootFoundException {
-		initBuilder(emptyMap);
+		initBuilder(emptyLifeTime);
 		final long baseTime = 123456789;
 		final long interval = 111111111;
 		final BaseTweet base = new BaseTweet(new Date(baseTime), new ID("base"));
@@ -117,10 +215,18 @@ public class LifeTimeBuilderTest {
 				underTest.getResult().get(base.id()));
 	}
 
+	/**
+	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
+	 * {@link LifeTimeBuilder#visit(Retweet)},
+	 * {@link LifeTimeBuilder#getResult()}
+	 * 
+	 * @throws NoRootFoundException
+	 *             Never.
+	 */
 	@Test
 	public final void lifeTimeShouldBeDeterminedByTheChronologicallyLatestRetweet()
 			throws NoRootFoundException {
-		initBuilder(emptyMap);
+		initBuilder(emptyLifeTime);
 		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
 				10, 00).getTime(), new ID("base"));
 		final Retweet re1 = new Retweet(new GregorianCalendar(2014, 4, 1, 10,
