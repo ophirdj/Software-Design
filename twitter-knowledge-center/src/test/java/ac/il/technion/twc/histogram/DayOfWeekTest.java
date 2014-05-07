@@ -1,10 +1,12 @@
-package ac.il.technion.twc.histgram;
+package ac.il.technion.twc.histogram;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.GregorianCalendar;
 
 import org.junit.Test;
+
+import ac.il.technion.twc.histogram.DayOfWeek;
 
 public class DayOfWeekTest {
 

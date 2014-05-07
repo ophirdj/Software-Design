@@ -3,31 +3,37 @@ package ac.il.technion.twc.lifetime;
 import java.util.HashMap;
 import java.util.Map;
 
+import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
 import ac.il.technion.twc.message.tweet.Tweet;
 
 public class TransitiveRootFinder {
 
-  Map<Retweet, Tweet> relation = new HashMap<>();
+  Map<ID, ID> relation = new HashMap<>();
+  Map<ID, BaseTweet> baseTweets = new HashMap<>();
 
-  void addElement(final Retweet current, final Tweet original) {
-    relation.put(current, original);
+  void addTweet(final Retweet retweet) {
+    relation.put(retweet.getId(), retweet.originId);
   }
 
-  public BaseTweet findRoot(final Retweet current) throws NoRootFoundException {
-    final Tweet tweet = findRootAux(current);
-    if (tweet.getClass() != BaseTweet.class)
+  void addTweet(final BaseTweet tweet) {
+    baseTweets.put(tweet.getId(), tweet);
+  }
+
+  public BaseTweet findRoot(final Tweet tweet) throws NoRootFoundException {
+    final ID rootId = findRootAux(tweet.getId());
+    if (!baseTweets.containsKey(rootId))
       throw new NoRootFoundException();
-    return (BaseTweet) tweet;
+    return baseTweets.get(rootId);
   }
 
-  private Tweet findRootAux(final Tweet current) {
-    if (!relation.containsKey(current))
-      return current;
-    final Tweet baseTweet = findRootAux(relation.get(current));
-    relation.put((Retweet) current, baseTweet);
-    return baseTweet;
+  private ID findRootAux(final ID currentId) {
+    if (!relation.containsKey(currentId))
+      return currentId;
+    final ID rootId = findRootAux(relation.get(currentId));
+    relation.put(currentId, rootId);
+    return rootId;
   }
 
   public static class NoRootFoundException extends Exception {

@@ -2,10 +2,10 @@ package ac.il.technion.twc.modules;
 
 import java.util.EnumMap;
 
-import ac.il.technion.twc.histgram.DayHistogram;
-import ac.il.technion.twc.histgram.DayHistogramBuilder;
-import ac.il.technion.twc.histgram.DayHistogramCache;
-import ac.il.technion.twc.histgram.DayOfWeek;
+import ac.il.technion.twc.histogram.DayHistogram;
+import ac.il.technion.twc.histogram.DayHistogramBuilder;
+import ac.il.technion.twc.histogram.DayHistogramCache;
+import ac.il.technion.twc.histogram.DayOfWeek;
 import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.inject.AbstractModule;
