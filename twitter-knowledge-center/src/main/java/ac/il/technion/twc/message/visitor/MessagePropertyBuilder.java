@@ -37,6 +37,9 @@ public abstract class MessagePropertyBuilder<T> implements MessageVisitor<Void> 
 
   /**
    * save the result to a file
+   * 
+   * @throws IOException
+   *           If storing failed for any reason
    */
   public final void saveResult() throws IOException {
     storageHandler.store(getResult());
