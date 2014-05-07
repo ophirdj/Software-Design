@@ -97,7 +97,7 @@ public class TwitterKnowledgeCenter {
    * @throws Exception
    *           If it is not possible to complete the operation
    */
-  public String[] getDailyHistogram() {
+  public String[] getDailyHistogram() throws Exception {
     return dayHistogram.getDailyHistogram();
   }
 
