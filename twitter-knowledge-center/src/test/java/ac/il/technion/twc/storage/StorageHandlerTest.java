@@ -21,13 +21,11 @@ import ac.il.technion.twc.God;
 import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayOfWeek;
 import ac.il.technion.twc.lifetime.LifeTimeData;
-import ac.il.technion.twc.lifetime.LifeTimeDataSerializer;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
 
@@ -41,8 +39,8 @@ public class StorageHandlerTest {
 
 	public StorageHandlerTest() {
 		fileHandlingMock = mock(FileHandler.class);
-		gson = new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
-				new LifeTimeDataSerializer()).create();
+		gson = God.injector.getInstance(Key.get(Gson.class,
+				Names.named("property serializer")));
 		underTestHistogram = new StorageHandler<>(gson, testPath,
 				fileHandlingMock);
 		underTestLifeTime = new StorageHandler<>(gson, testPath,

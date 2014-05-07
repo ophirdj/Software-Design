@@ -9,8 +9,12 @@ import java.util.List;
 
 import ac.il.technion.twc.histogram.DayHistogramBuilder;
 import ac.il.technion.twc.lifetime.LifeTimeBuilder;
+import ac.il.technion.twc.lifetime.LifeTimeData;
+import ac.il.technion.twc.lifetime.LifeTimeDataSerializer;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
@@ -57,6 +61,13 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	@Named("storage directory")
 	Path storageDirectory() {
 		return Paths.get("cache");
+	}
+
+	@Provides
+	@Named("property serializer")
+	Gson propertySerializer() {
+		return new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
+				new LifeTimeDataSerializer()).create();
 	}
 
 }
