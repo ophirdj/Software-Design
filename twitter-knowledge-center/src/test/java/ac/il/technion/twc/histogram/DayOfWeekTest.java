@@ -1,10 +1,16 @@
 package ac.il.technion.twc.histogram;
 
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
 import java.util.GregorianCalendar;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Tests for {@link DayOfWeek}
@@ -12,69 +18,39 @@ import org.junit.Test;
  * @author Ophir De Jager
  * 
  */
+@RunWith(JUnitParamsRunner.class)
 public class DayOfWeekTest {
 
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeSunday() {
-		assertEquals(DayOfWeek.SUNDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 4).getTime()));
+	@SuppressWarnings("unused")
+	// used by JunitParams
+	private Object[] getDates() {
+		return $(
+				$(DayOfWeek.SUNDAY, new GregorianCalendar(2014, 4, 4).getTime()),
+				$(DayOfWeek.MONDAY, new GregorianCalendar(2014, 4, 5).getTime()),
+				$(DayOfWeek.TUESDAY,
+						new GregorianCalendar(2014, 4, 6).getTime()),
+				$(DayOfWeek.WEDNESDAY,
+						new GregorianCalendar(2014, 4, 7).getTime()),
+				$(DayOfWeek.THURSDAY,
+						new GregorianCalendar(2014, 4, 1).getTime()),
+				$(DayOfWeek.FRIDAY, new GregorianCalendar(2014, 4, 2).getTime()),
+				$(DayOfWeek.SATURDAY,
+						new GregorianCalendar(2014, 4, 3).getTime()));
 	}
 
 	/**
 	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
+	 * 
+	 * @param day
+	 *            Day of week of given date
+	 * @param date
+	 *            A date.
 	 */
+	@Parameters(method = "getDates")
 	@Test
-	public final void fromDateSouldBeMonday() {
-		assertEquals(DayOfWeek.MONDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 5).getTime()));
-	}
-
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeTuesday() {
-		assertEquals(DayOfWeek.TUESDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 6).getTime()));
-	}
-
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeWednesday() {
-		assertEquals(DayOfWeek.WEDNESDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 7).getTime()));
-	}
-
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeThursday() {
-		assertEquals(DayOfWeek.THURSDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 1).getTime()));
-	}
-
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeFriday() {
-		assertEquals(DayOfWeek.FRIDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 2).getTime()));
-	}
-
-	/**
-	 * Test method for {@link DayOfWeek#fromDate(java.util.Date)}
-	 */
-	@Test
-	public final void fromDateSouldBeSaturday() {
-		assertEquals(DayOfWeek.SATURDAY,
-				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 3).getTime()));
+	public void fromDateShouldReturnCorrectDay(final DayOfWeek day,
+			final Date date) {
+		assertEquals(day, DayOfWeek.fromDate(date));
 	}
 
 }
