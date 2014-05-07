@@ -12,22 +12,31 @@ import com.google.inject.name.Named;
 @Singleton
 public class LifeTimeBuilder extends MessagePropertyBuilder<LifeTimeMap> {
 
+	private final LifeTimeMap map;
+	private final TransitiveRootFinder baseTweetFinder;
+
 	@Inject
-	public LifeTimeBuilder(StorageHandler<LifeTimeMap> storageHandler,
+	public LifeTimeBuilder(final StorageHandler<LifeTimeMap> storageHandler,
+			final TransitiveRootFinder rootFinder,
 			@Named("default") final LifeTimeMap defaultMap) {
 		super(storageHandler);
+		map = storageHandler.load(defaultMap);
+		baseTweetFinder = rootFinder;
 	}
 
-	public Void visit(BaseTweet t) {
-		// TODO Auto-generated method stub
+	@Override
+	public Void visit(final BaseTweet t) {
+		baseTweetFinder.addTweet(t);
 		return null;
 	}
 
-	public Void visit(Retweet t) {
-		// TODO Auto-generated method stub
+	@Override
+	public Void visit(final Retweet t) {
+		baseTweetFinder.addTweet(t);
 		return null;
 	}
 
+	@Override
 	protected LifeTimeMap getResult() {
 		// TODO Auto-generated method stub
 		return null;

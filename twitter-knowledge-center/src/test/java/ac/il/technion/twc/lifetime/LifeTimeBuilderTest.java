@@ -9,9 +9,11 @@ import static org.mockito.Mockito.when;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ac.il.technion.twc.God;
+import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
@@ -24,17 +26,19 @@ public class LifeTimeBuilderTest {
 
 	private LifeTimeBuilder underTest;
 	private final StorageHandler<LifeTimeMap> storageHandler;
+	private final TransitiveRootFinder rootFinder;
 	private final LifeTimeMap emptyMap;
 
 	public LifeTimeBuilderTest() {
 		storageHandler = mock(StorageHandler.class);
+		rootFinder = mock(TransitiveRootFinder.class);
 		emptyMap = God.injector.getInstance(Key.get(LifeTimeMap.class,
 				Names.named("default")));
 	}
 
 	private void initBuilder(final LifeTimeMap storedMap) {
 		when(storageHandler.load(emptyMap)).thenReturn(storedMap);
-		underTest = new LifeTimeBuilder(storageHandler, emptyMap);
+		underTest = new LifeTimeBuilder(storageHandler, rootFinder, emptyMap);
 	}
 
 	@Test
@@ -62,60 +66,83 @@ public class LifeTimeBuilderTest {
 	}
 
 	@Test
-	// return value not defined by course requirements
-	public final void visitBaseTweetLifeTimeShouldBe0() {
+	public final void retweetSouldExtendLifTimeOfBaseTweet()
+			throws NoRootFoundException {
 		initBuilder(emptyMap);
-		final ID id = new ID("trolololol");
-		underTest.visit(new BaseTweet(new GregorianCalendar(2014, 4, 1, 0, 0)
-				.getTime(), id));
-		assertEquals(Long.valueOf(0), underTest.getResult().get(id));
-	}
-
-	@Test
-	public final void retweetSouldExtendLifTimeOfBaseTweet() {
-		initBuilder(emptyMap);
-		final ID baseId = new ID("base");
-		final ID reId = new ID("retweet");
-		underTest.visit(new BaseTweet(new GregorianCalendar(2014, 4, 1, 3, 00)
-				.getTime(), baseId));
-		underTest.visit(new Retweet(new GregorianCalendar(2014, 4, 1, 4, 30)
-				.getTime(), reId, baseId));
+		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
+				3, 00).getTime(), new ID("base"));
+		final Retweet re = new Retweet(
+				new GregorianCalendar(2014, 4, 1, 4, 30).getTime(), new ID(
+						"retweet"), base.getId());
+		when(rootFinder.findRoot(re)).thenReturn(base);
+		underTest.visit(base);
+		underTest.visit(re);
 		assertEquals(Long.valueOf(90 * 60 * 1000),
-				underTest.getResult().get(baseId));
+				underTest.getResult().get(base.getId()));
 	}
 
 	@Test
-	public final void notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours() {
+	public final void notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours()
+			throws NoRootFoundException {
 		initBuilder(emptyMap);
-		final ID baseId = new ID("base");
 		final ID reId = new ID("retweet");
-		underTest.visit(new BaseTweet(new GregorianCalendar(2014, 4, 1)
-				.getTime(), baseId));
-		underTest.visit(new Retweet(
-				new GregorianCalendar(2014, 4, 2).getTime(), reId, baseId));
-		underTest.visit(new Retweet(
+		final BaseTweet base = new BaseTweet(
+				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
+		final Retweet re = new Retweet(
+				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.getId());
+		when(rootFinder.findRoot(re)).thenReturn(base);
+		final Retweet noRelated = new Retweet(
 				new GregorianCalendar(2014, 5, 2).getTime(), new ID(
-						"unrelated retweet"), new ID("not base")));
+						"unrelated retweet"), new ID("not base"));
+		when(rootFinder.findRoot(noRelated)).thenThrow(
+				new NoRootFoundException());
+		underTest.visit(base);
+		underTest.visit(re);
+		underTest.visit(noRelated);
 		assertEquals(Long.valueOf(24 * 60 * 60 * 1000), underTest.getResult()
-				.get(baseId));
+				.get(base.getId()));
 	}
 
 	@Test
-	public final void retweetOfRetweetShouldExtendLifeTimeOfBaseTweet() {
+	public final void lifeTimeShouldBeAccurate() throws NoRootFoundException {
 		initBuilder(emptyMap);
-		final ID baseId = new ID("base");
-		final ID reId = new ID("retweet");
-		underTest.visit(new BaseTweet(new GregorianCalendar(2014, 4, 1)
-				.getTime(), baseId));
-		underTest.visit(new Retweet(
-				new GregorianCalendar(2014, 4, 2).getTime(), reId, baseId));
-		underTest.visit(new Retweet(
-				new GregorianCalendar(2014, 4, 3).getTime(), new ID(
-						"another retweet"), reId));
-		assertEquals(Long.valueOf(48 * 60 * 60 * 1000), underTest.getResult()
-				.get(baseId));
+		final long baseTime = 123456789;
+		final long interval = 111111111;
+		final BaseTweet base = new BaseTweet(new Date(123456), new ID("base"));
+		final Retweet re = new Retweet(new Date(baseTime + interval), new ID(
+				"retweet 1"), base.getId());
+		when(rootFinder.findRoot(re)).thenReturn(base);
+		underTest.visit(base);
+		underTest.visit(re);
+		assertEquals(Long.valueOf(interval),
+				underTest.getResult().get(base.getId()));
 	}
 
+	// these tests are actually transitivity tests
+
+	@Ignore
+	@Test
+	public final void retweetOfRetweetShouldExtendLifeTimeOfBaseTweet()
+			throws NoRootFoundException {
+		initBuilder(emptyMap);
+		final BaseTweet base = new BaseTweet(
+				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
+		final Retweet re1 = new Retweet(
+				new GregorianCalendar(2014, 4, 2).getTime(), new ID("retweet"),
+				base.getId());
+		final Retweet re2 = new Retweet(
+				new GregorianCalendar(2014, 4, 3).getTime(), new ID(
+						"another retweet"), re1.getId());
+		when(rootFinder.findRoot(re1)).thenReturn(base);
+		when(rootFinder.findRoot(re2)).thenReturn(base);
+		underTest.visit(base);
+		underTest.visit(re1);
+		underTest.visit(re2);
+		assertEquals(Long.valueOf(48 * 60 * 60 * 1000), underTest.getResult()
+				.get(base.getId()));
+	}
+
+	@Ignore
 	@Test
 	public final void retweetOfRetweetShouldExtendLifeTimeOfBaseTweetNoMatterOrderOfRetweets() {
 		initBuilder(emptyMap);
@@ -132,6 +159,7 @@ public class LifeTimeBuilderTest {
 				.get(baseId));
 	}
 
+	@Ignore
 	@Test
 	public final void retweetOfRetweetShouldExtendLifeTimeOfBaseTweetEvenIfRetweetsAreVisitingBeforeBaseTweet() {
 		initBuilder(emptyMap);
@@ -148,6 +176,7 @@ public class LifeTimeBuilderTest {
 				.get(baseId));
 	}
 
+	@Ignore
 	@Test
 	public final void baseTweetShouldNotExtendLifeTimeOfAnotherBaseTweet() {
 		initBuilder(emptyMap);
@@ -164,6 +193,7 @@ public class LifeTimeBuilderTest {
 				.get(base1Id));
 	}
 
+	@Ignore
 	@Test
 	public final void lifeTimeShouldBeDeterminedByTheChronologicallyLatestRetweet() {
 		initBuilder(emptyMap);
@@ -178,18 +208,6 @@ public class LifeTimeBuilderTest {
 				.getTime(), new ID("retweet 3"), baseId));
 		assertEquals(Long.valueOf(4 * 60 * 60 * 1000),
 				underTest.getResult().map.get(baseId));
-	}
-
-	@Test
-	public final void lifeTimeShouldBeAccurate() {
-		initBuilder(emptyMap);
-		final ID baseId = new ID("base");
-		final long baseTime = 123456789;
-		final long interval = 111111111;
-		underTest.visit(new BaseTweet(new Date(123456), baseId));
-		underTest.visit(new Retweet(new Date(baseTime + interval), new ID(
-				"retweet 1"), baseId));
-		assertEquals(Long.valueOf(interval), underTest.getResult().get(baseId));
 	}
 
 }
