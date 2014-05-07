@@ -26,7 +26,6 @@ import ac.il.technion.twc.message.tweet.Tweet;
  * @author Ophir De Jager
  * 
  */
-
 @RunWith(JUnitParamsRunner.class)
 public class TweetBuilderTest {
 
