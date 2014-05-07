@@ -6,23 +6,54 @@ import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.inject.Inject;
 
+/**
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ * @param <T>
+ * 
+ *          Handler for property index building and retrieving
+ */
 public abstract class MessagePropertyBuilder<T> implements MessageVisitor<Void> {
 
-	private final StorageHandler<T> storageHandler;
+  private final StorageHandler<T> storageHandler;
 
-	@Inject
-	public MessagePropertyBuilder(final StorageHandler<T> storageHandler) {
-		this.storageHandler = storageHandler;
-	}
+  /**
+   * @param storageHandler
+   *          handler for storing and loading data
+   */
+  @Inject
+  public MessagePropertyBuilder(final StorageHandler<T> storageHandler) {
+    this.storageHandler = storageHandler;
+  }
 
-	protected abstract T getResult();
+  /**
+   * @return The data to be stored
+   */
+  protected abstract T getResult();
 
-	public final void saveResult() throws IOException {
-		storageHandler.store(getResult());
-	}
+  /**
+   * save the result to a file
+   * 
+   * @throws IOException
+   *           If storing failed for any reason
+   */
+  public final void saveResult() throws IOException {
+    storageHandler.store(getResult());
+  }
 
-	public final T loadResult(final T defaultReturnValue) {
-		return storageHandler.load(defaultReturnValue);
-	}
+  /**
+   * Load the final stored result
+   * 
+   * @param defaultReturnValue
+   *          value to return if reading fail
+   * @return The stored data or defaultReturnValue if reading failed
+   */
+  public final T loadResult(final T defaultReturnValue) {
+    return storageHandler.load(defaultReturnValue);
+  }
 
 }

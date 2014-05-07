@@ -48,7 +48,7 @@ public class DayOfWeekTest {
 
 	@Test
 	public final void fromDateSouldBeSaturday() {
-		assertEquals(DayOfWeek.SATUREDAY,
+		assertEquals(DayOfWeek.SATURDAY,
 				DayOfWeek.fromDate(new GregorianCalendar(2014, 4, 3).getTime()));
 	}
 
