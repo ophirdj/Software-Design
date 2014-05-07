@@ -95,12 +95,16 @@ public class TransitiveRootFinderTest {
   @Test
   public void findRootOnRetweetOfRetweetShouldReturnTheBaseTweet()
       throws Exception {
-    final BaseTweet basetweet = new BaseTweet(new Date(1L), new ID("otherId"));
-    final Retweet retweet =
-        new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId"));
-    underTest.addTweet(basetweet);
-    underTest.addTweet(retweet);
-    thrown.expect(NoRootFoundException.class);
-    underTest.findRoot(retweet);
+    final String baseId = "baseId";
+    final BaseTweet baseTweet = new BaseTweet(new Date(1L), new ID(baseId));
+    final String firstRetweetId = "retweetId1";
+    final Retweet firstRetweet =
+        new Retweet(new Date(1L), new ID(firstRetweetId), new ID(baseId));
+    final Retweet secondRetweet =
+        new Retweet(new Date(1L), new ID("retweetId2"), new ID(firstRetweetId));
+    underTest.addTweet(baseTweet);
+    underTest.addTweet(firstRetweet);
+    underTest.addTweet(secondRetweet);
+    assertSame(baseTweet, underTest.findRoot(secondRetweet));
   }
 }
