@@ -12,18 +12,35 @@ import ac.il.technion.twc.message.tweet.Tweet;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
+/**
+ * Parses tweets.
+ * 
+ * @author Ophir De Jager
+ * 
+ */
 public class TweetBuilder {
 
 	private final DateFormat dateFormatter;
 
+	/**
+	 * @param dateFormatter
+	 *            Parses dates.
+	 */
 	@Inject
 	public TweetBuilder(
 			@Named("twitter date formatter") final DateFormat dateFormatter) {
 		this.dateFormatter = dateFormatter;
 	}
 
-	public Tweet parse(final String s) throws ParseException {
-		final String[] f = (s + ", $").split(", ");
+	/**
+	 * @param tweetStr
+	 *            String representing a tweet.
+	 * @return A tweet corresponding to <code>tweetStr</code>.
+	 * @throws ParseException
+	 *             If bad tweet string.
+	 */
+	public Tweet parse(final String tweetStr) throws ParseException {
+		final String[] f = (tweetStr + ", $").split(", ");
 		final String[] fields = Arrays.copyOf(f, f.length - 1);
 		try {
 			if (isBaseTweet(fields))
@@ -31,10 +48,10 @@ public class TweetBuilder {
 			if (isRetweet(fields))
 				return parseRetweet(fields);
 		} catch (final ParseException e) {
-			throw new ParseException("Bad tweet format: " + s,
+			throw new ParseException("Bad tweet format: " + tweetStr,
 					e.getErrorOffset());
 		}
-		throw new ParseException("Bad tweet format: " + s, 0);
+		throw new ParseException("Bad tweet format: " + tweetStr, 0);
 	}
 
 	private boolean isRetweet(final String[] fields) {
