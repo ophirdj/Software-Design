@@ -91,6 +91,11 @@ public class StorageHandlerTest {
     assertEquals(returnVal, underTestHistogram.load(mockHistogramDefault));
   }
 
+  /**
+   * Test method for: {@link StorageHandler#store(Object)}.
+   * 
+   * @throws IOException
+   */
   @Test
   public void histogramStoreShouldCallFileHandlerStoreWithCorrectJsonString()
       throws IOException {
@@ -144,6 +149,12 @@ public class StorageHandlerTest {
     assertEquals(returnVal, underTestLifeTime.load(mockLifeTime));
   }
 
+  /**
+   * Test method for: {@link StorageHandler#store(Object)}.
+   * 
+   * @throws IOException
+   */
+  @Test
   public void lifeTimeStoreShouldCallFileHandlerStoreWithCorrectJsonString()
       throws IOException {
     final LifeTimeData returnVal = nonEmptyLifeTimeData();

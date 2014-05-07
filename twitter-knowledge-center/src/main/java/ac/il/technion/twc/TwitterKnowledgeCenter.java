@@ -32,6 +32,9 @@ import com.google.inject.name.Names;
  */
 public class TwitterKnowledgeCenter {
 
+  /**
+   * injector for the entire project
+   */
   public static final Injector injector = Guice.createInjector(
       new MessagePropertyBuildersModule(), new DayHistogramModule(),
       new LifeTimeModule());
@@ -91,8 +94,6 @@ public class TwitterKnowledgeCenter {
    *          The tweet's identifier
    * @return A string, counting the number of milliseconds between the tweet's
    *         publication and its last retweet
-   * @throws Exception
-   *           If it is not possible to complete the operation
    */
   public String getLifetimeOfTweets(final String tweetId) {
     try {
