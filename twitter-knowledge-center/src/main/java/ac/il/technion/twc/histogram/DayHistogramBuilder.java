@@ -6,7 +6,6 @@ import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 /**
@@ -20,7 +19,6 @@ import com.google.inject.name.Named;
  * 
  *        handling histogram property index building, storing and loading
  */
-@Singleton
 public class DayHistogramBuilder extends MessagePropertyBuilder<DayHistogram> {
 
   private final DayHistogram histogram;

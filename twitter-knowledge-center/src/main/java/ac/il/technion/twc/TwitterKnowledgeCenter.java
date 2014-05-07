@@ -28,7 +28,7 @@ import com.google.inject.name.Names;
 public class TwitterKnowledgeCenter {
 
 	private final TweetBuilder tweetBuilder;
-	private final List<MessagePropertyBuilder<?>> propertyBuilders;
+	private List<MessagePropertyBuilder<?>> propertyBuilders;
 	private DayHistogramCache dayHistogram;
 	private LifeTimeCache lifeTime;
 
@@ -115,6 +115,9 @@ public class TwitterKnowledgeCenter {
 			FileUtils.cleanDirectory(God.injector.getInstance(
 					Key.get(Path.class, Names.named("storage directory")))
 					.toFile());
+			propertyBuilders = God.injector.getInstance(Key
+					.get(new TypeLiteral<List<MessagePropertyBuilder<?>>>() {
+					}));
 		} catch (final IOException e) {
 			// can't find/clean the folder
 		}
