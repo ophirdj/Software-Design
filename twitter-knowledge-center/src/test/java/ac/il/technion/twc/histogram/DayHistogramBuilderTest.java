@@ -66,7 +66,7 @@ public class DayHistogramBuilderTest {
 	public final void visitBaseTweetShouldIncreaseNumberOfTweetsBy1() {
 		initBuilder(emptyHistogram);
 		BaseTweet tweet = new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet);
 		assertEquals(numTweetsBefore + 1, underTest.getResult().tweets(day));
@@ -76,7 +76,7 @@ public class DayHistogramBuilderTest {
 	public final void visitBaseTweetShouldNotChangeNumberOfRetweets() {
 		initBuilder(emptyHistogram);
 		BaseTweet tweet = new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		int numRetweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet);
 		assertEquals(numRetweetsBefore, underTest.getResult().retweets(day));
@@ -86,7 +86,7 @@ public class DayHistogramBuilderTest {
 	public final void visitRetweetShouldIncreaseNumberOfTweetsBy1() {
 		initBuilder(emptyHistogram);
 		Retweet tweet = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"), new ID("lolololol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet);
 		assertEquals(numTweetsBefore + 1, underTest.getResult().tweets(day));
@@ -96,7 +96,7 @@ public class DayHistogramBuilderTest {
 	public final void visitRetweetShouldIncreaseNumberOfRetweetsBy1() {
 		initBuilder(emptyHistogram);
 		Retweet tweet = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"), new ID("lolololol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet);
 		assertEquals(numTweetsBefore + 1, underTest.getResult().retweets(day));
@@ -107,7 +107,7 @@ public class DayHistogramBuilderTest {
 		initBuilder(emptyHistogram);
 		BaseTweet tweet1 = new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"));
 		BaseTweet tweet2 = new BaseTweet(new GregorianCalendar(2014, 4, 8).getTime(), new ID("lolololol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet1.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet1.date());
 		int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
@@ -119,7 +119,7 @@ public class DayHistogramBuilderTest {
 		initBuilder(emptyHistogram);
 		Retweet tweet1 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"), new ID("lolololol"));
 		Retweet tweet2 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("lolololol"), new ID("lol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet1.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet1.date());
 		int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
@@ -131,7 +131,7 @@ public class DayHistogramBuilderTest {
 		initBuilder(emptyHistogram);
 		Retweet tweet1 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"), new ID("lolololol"));
 		Retweet tweet2 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("lolololol"), new ID("lol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet1.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet1.date());
 		int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
@@ -143,7 +143,7 @@ public class DayHistogramBuilderTest {
 		initBuilder(emptyHistogram);
 		BaseTweet tweet1 = new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"));
 		Retweet tweet2 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("lolololol"), new ID("lol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet1.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet1.date());
 		int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
@@ -155,7 +155,7 @@ public class DayHistogramBuilderTest {
 		initBuilder(emptyHistogram);
 		BaseTweet tweet1 = new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("trolololol"));
 		Retweet tweet2 = new Retweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID("lolololol"), new ID("lol"));
-		DayOfWeek day = DayOfWeek.fromDate(tweet1.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(tweet1.date());
 		int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);

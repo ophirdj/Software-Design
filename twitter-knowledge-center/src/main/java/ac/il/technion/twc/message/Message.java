@@ -7,6 +7,6 @@ public interface Message {
 	
 	<T> T accept(MessageVisitor<T> visitor);
 	
-	ID getId();
+	ID id();
 
 }

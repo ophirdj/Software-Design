@@ -17,11 +17,11 @@ public abstract class Tweet implements Message {
 	}
 	
 	@Override
-	public ID getId() {
+	public ID id() {
 		return id;
 	}
 	
-	public Date getDate() {
+	public Date date() {
 		return date;
 	}
 

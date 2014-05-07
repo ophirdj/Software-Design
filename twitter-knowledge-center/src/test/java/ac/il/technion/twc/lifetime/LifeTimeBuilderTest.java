@@ -25,18 +25,18 @@ import com.google.inject.name.Names;
 public class LifeTimeBuilderTest {
 
 	private LifeTimeBuilder underTest;
-	private final StorageHandler<LifeTimeMap> storageHandler;
+	private final StorageHandler<LifeTimeData> storageHandler;
 	private final TransitiveRootFinder rootFinder;
-	private final LifeTimeMap emptyMap;
+	private final LifeTimeData emptyMap;
 
 	public LifeTimeBuilderTest() {
 		storageHandler = mock(StorageHandler.class);
 		rootFinder = mock(TransitiveRootFinder.class);
-		emptyMap = God.injector.getInstance(Key.get(LifeTimeMap.class,
+		emptyMap = God.injector.getInstance(Key.get(LifeTimeData.class,
 				Names.named("default")));
 	}
 
-	private void initBuilder(final LifeTimeMap storedMap) {
+	private void initBuilder(final LifeTimeData storedMap) {
 		when(storageHandler.load(emptyMap)).thenReturn(storedMap);
 		underTest = new LifeTimeBuilder(storageHandler, rootFinder, emptyMap);
 	}
@@ -57,8 +57,8 @@ public class LifeTimeBuilderTest {
 
 	@Test
 	public final void constructorShouldUseHistogramReturnedByStorageHandler() {
-		final LifeTimeMap storedMap = God.injector.getInstance(Key.get(
-				LifeTimeMap.class, Names.named("default")));
+		final LifeTimeData storedMap = God.injector.getInstance(Key.get(
+				LifeTimeData.class, Names.named("default")));
 		// TODO: modify stored map
 		initBuilder(storedMap);
 		verify(storageHandler).load(emptyMap);
@@ -73,12 +73,12 @@ public class LifeTimeBuilderTest {
 				3, 00).getTime(), new ID("base"));
 		final Retweet re = new Retweet(
 				new GregorianCalendar(2014, 4, 1, 4, 30).getTime(), new ID(
-						"retweet"), base.getId());
+						"retweet"), base.id());
 		when(rootFinder.findRoot(re)).thenReturn(base);
 		underTest.visit(base);
 		underTest.visit(re);
 		assertEquals(Long.valueOf(90 * 60 * 1000),
-				underTest.getResult().get(base.getId()));
+				underTest.getResult().get(base.id()));
 	}
 
 	@Test
@@ -89,7 +89,7 @@ public class LifeTimeBuilderTest {
 		final BaseTweet base = new BaseTweet(
 				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
 		final Retweet re = new Retweet(
-				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.getId());
+				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.id());
 		when(rootFinder.findRoot(re)).thenReturn(base);
 		final Retweet noRelated = new Retweet(
 				new GregorianCalendar(2014, 5, 2).getTime(), new ID(
@@ -100,7 +100,7 @@ public class LifeTimeBuilderTest {
 		underTest.visit(re);
 		underTest.visit(noRelated);
 		assertEquals(Long.valueOf(24 * 60 * 60 * 1000), underTest.getResult()
-				.get(base.getId()));
+				.get(base.id()));
 	}
 
 	@Test
@@ -110,12 +110,12 @@ public class LifeTimeBuilderTest {
 		final long interval = 111111111;
 		final BaseTweet base = new BaseTweet(new Date(123456), new ID("base"));
 		final Retweet re = new Retweet(new Date(baseTime + interval), new ID(
-				"retweet 1"), base.getId());
+				"retweet 1"), base.id());
 		when(rootFinder.findRoot(re)).thenReturn(base);
 		underTest.visit(base);
 		underTest.visit(re);
 		assertEquals(Long.valueOf(interval),
-				underTest.getResult().get(base.getId()));
+				underTest.getResult().get(base.id()));
 	}
 
 	// these tests are actually transitivity tests
@@ -129,17 +129,17 @@ public class LifeTimeBuilderTest {
 				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
 		final Retweet re1 = new Retweet(
 				new GregorianCalendar(2014, 4, 2).getTime(), new ID("retweet"),
-				base.getId());
+				base.id());
 		final Retweet re2 = new Retweet(
 				new GregorianCalendar(2014, 4, 3).getTime(), new ID(
-						"another retweet"), re1.getId());
+						"another retweet"), re1.id());
 		when(rootFinder.findRoot(re1)).thenReturn(base);
 		when(rootFinder.findRoot(re2)).thenReturn(base);
 		underTest.visit(base);
 		underTest.visit(re1);
 		underTest.visit(re2);
 		assertEquals(Long.valueOf(48 * 60 * 60 * 1000), underTest.getResult()
-				.get(base.getId()));
+				.get(base.id()));
 	}
 
 	@Ignore

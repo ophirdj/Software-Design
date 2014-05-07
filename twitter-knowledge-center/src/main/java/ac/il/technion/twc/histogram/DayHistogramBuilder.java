@@ -23,13 +23,13 @@ public class DayHistogramBuilder extends MessagePropertyBuilder<DayHistogram> {
 	}
 
 	public Void visit(BaseTweet t) {
-		DayOfWeek day = DayOfWeek.fromDate(t.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(t.date());
 		histogram.basetweets.put(day, histogram.basetweets.get(day) + 1);
 		return null;
 	}
 
 	public Void visit(Retweet t) {
-		DayOfWeek day = DayOfWeek.fromDate(t.getDate());
+		DayOfWeek day = DayOfWeek.fromDate(t.date());
 		histogram.retweets.put(day, histogram.retweets.get(day) + 1);
 		return null;
 	}

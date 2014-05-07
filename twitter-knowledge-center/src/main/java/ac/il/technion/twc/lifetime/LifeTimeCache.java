@@ -4,9 +4,9 @@ import ac.il.technion.twc.message.ID;
 
 public class LifeTimeCache {
 	
-	private LifeTimeMap map;
+	private LifeTimeData map;
 
-	public LifeTimeCache(LifeTimeMap map) {
+	public LifeTimeCache(LifeTimeData map) {
 		this.map = map;
 	}
 	

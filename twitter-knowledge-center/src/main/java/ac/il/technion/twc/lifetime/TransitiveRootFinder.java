@@ -15,11 +15,11 @@ public class TransitiveRootFinder {
   Map<ID, BaseTweet> baseTweets = new HashMap<>();
 
   public void addTweet(final Retweet retweet) {
-    relation.put(retweet.getId(), retweet.originId);
+    relation.put(retweet.id(), retweet.originId);
   }
 
   public void addTweet(final BaseTweet tweet) {
-    baseTweets.put(tweet.getId(), tweet);
+    baseTweets.put(tweet.id(), tweet);
   }
 
   public void addBaseTweets(final Collection<BaseTweet> tweet) {
@@ -33,7 +33,7 @@ public class TransitiveRootFinder {
   }
 
   public BaseTweet findRoot(final Tweet tweet) throws NoRootFoundException {
-    final ID rootId = findRootAux(tweet.getId());
+    final ID rootId = findRootAux(tweet.id());
     if (!baseTweets.containsKey(rootId))
       throw new NoRootFoundException();
     return baseTweets.get(rootId);
