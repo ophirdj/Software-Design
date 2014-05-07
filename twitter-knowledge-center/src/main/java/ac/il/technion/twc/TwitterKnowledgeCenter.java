@@ -13,7 +13,12 @@ import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.Tweet;
 import ac.il.technion.twc.message.tweet.builder.TweetBuilder;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
+import ac.il.technion.twc.modules.DayHistogramModule;
+import ac.il.technion.twc.modules.LifeTimeModule;
+import ac.il.technion.twc.modules.MessagePropertyBuildersModule;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
@@ -27,6 +32,10 @@ import com.google.inject.name.Names;
  */
 public class TwitterKnowledgeCenter {
 
+	public static final Injector injector = Guice.createInjector(
+			new MessagePropertyBuildersModule(), new DayHistogramModule(),
+			new LifeTimeModule());
+
 	private final TweetBuilder tweetBuilder;
 	private List<MessagePropertyBuilder<?>> propertyBuilders;
 	private DayHistogramCache dayHistogram;
@@ -36,8 +45,8 @@ public class TwitterKnowledgeCenter {
 	 * C'tor.
 	 */
 	public TwitterKnowledgeCenter() {
-		tweetBuilder = God.injector.getInstance(TweetBuilder.class);
-		propertyBuilders = God.injector.getInstance(Key
+		tweetBuilder = injector.getInstance(TweetBuilder.class);
+		propertyBuilders = injector.getInstance(Key
 				.get(new TypeLiteral<List<MessagePropertyBuilder<?>>>() {
 				}));
 	}
@@ -70,8 +79,8 @@ public class TwitterKnowledgeCenter {
 	 *             If for any reason, loading the index failed
 	 */
 	public void setupIndex() throws Exception {
-		dayHistogram = God.injector.getInstance(DayHistogramCache.class);
-		lifeTime = God.injector.getInstance(LifeTimeCache.class);
+		dayHistogram = injector.getInstance(DayHistogramCache.class);
+		lifeTime = injector.getInstance(LifeTimeCache.class);
 	}
 
 	/**
@@ -112,10 +121,10 @@ public class TwitterKnowledgeCenter {
 	 */
 	public void cleanPersistentData() {
 		try {
-			FileUtils.cleanDirectory(God.injector.getInstance(
+			FileUtils.cleanDirectory(injector.getInstance(
 					Key.get(Path.class, Names.named("storage directory")))
 					.toFile());
-			propertyBuilders = God.injector.getInstance(Key
+			propertyBuilders = injector.getInstance(Key
 					.get(new TypeLiteral<List<MessagePropertyBuilder<?>>>() {
 					}));
 		} catch (final IOException e) {

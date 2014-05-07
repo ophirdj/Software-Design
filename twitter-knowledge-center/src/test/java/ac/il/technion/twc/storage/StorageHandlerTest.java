@@ -17,7 +17,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import ac.il.technion.twc.God;
+import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayOfWeek;
 import ac.il.technion.twc.lifetime.LifeTimeData;
@@ -39,7 +39,7 @@ public class StorageHandlerTest {
 
 	public StorageHandlerTest() {
 		fileHandlingMock = mock(FileHandler.class);
-		gson = God.injector.getInstance(Key.get(Gson.class,
+		gson = TwitterKnowledgeCenter.injector.getInstance(Key.get(Gson.class,
 				Names.named("serializer")));
 		underTestHistogram = new StorageHandler<>(gson, testPath,
 				fileHandlingMock);
@@ -59,8 +59,8 @@ public class StorageHandlerTest {
 	@Test
 	public void histogramLoadWithPreviousStoreShouldReturnPreviousStore()
 			throws IOException {
-		final DayHistogram mockHistogramDefault = God.injector.getInstance(Key
-				.get(DayHistogram.class, Names.named("default")));
+		final DayHistogram mockHistogramDefault = TwitterKnowledgeCenter.injector
+				.getInstance(Key.get(DayHistogram.class, Names.named("default")));
 		final Map<DayOfWeek, Integer> tweets = new EnumMap<>(DayOfWeek.class);
 		final Map<DayOfWeek, Integer> retweets = new EnumMap<>(DayOfWeek.class);
 		for (final DayOfWeek day : DayOfWeek.values()) {
@@ -86,8 +86,8 @@ public class StorageHandlerTest {
 	@Test
 	public void lifeTimeLoadWithPreviousStoreShouldReturnPreviousStore()
 			throws IOException {
-		final LifeTimeData mockLifeTime = God.injector.getInstance(Key.get(
-				LifeTimeData.class, Names.named("default")));
+		final LifeTimeData mockLifeTime = TwitterKnowledgeCenter.injector
+				.getInstance(Key.get(LifeTimeData.class, Names.named("default")));
 		final Set<BaseTweet> baseTweets = new HashSet<>();
 		final Set<Retweet> retweets = new HashSet<>();
 		final Map<ID, Long> map = new HashMap<>();

@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import ac.il.technion.twc.God;
+import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.lifetime.LifeTimeData.UndefinedTimeException;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.message.ID;
@@ -44,8 +44,8 @@ public class LifeTimeBuilderTest {
 	public LifeTimeBuilderTest() {
 		storageHandler = mock(StorageHandler.class);
 		rootFinder = mock(TransitiveRootFinder.class);
-		emptyLifeTime = God.injector.getInstance(Key.get(LifeTimeData.class,
-				Names.named("default")));
+		emptyLifeTime = TwitterKnowledgeCenter.injector.getInstance(Key.get(
+				LifeTimeData.class, Names.named("default")));
 	}
 
 	/**

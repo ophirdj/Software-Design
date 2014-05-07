@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import ac.il.technion.twc.God;
+import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
@@ -36,7 +36,7 @@ public class TweetBuilderTest {
 	public final @Rule
 	ExpectedException thrown = ExpectedException.none();
 
-	private final TweetBuilder underTest = God.injector
+	private final TweetBuilder underTest = TwitterKnowledgeCenter.injector
 			.getInstance(TweetBuilder.class);
 
 	@SuppressWarnings("unused")
