@@ -42,15 +42,14 @@ public class TwitterKnowledgeCenter {
 	 * @throws Exception
 	 *             If for any reason, handling the data failed
 	 */
-	public void importData(String[] lines) throws Exception {
-		for (String line : lines) {
+	public void importData(final String[] lines) throws Exception {
+		for (final String line : lines) {
 			final Tweet t = tweetBuilder.parse(line);
-			for (MessagePropertyBuilder<?> builder : propertyBuilders)
+			for (final MessagePropertyBuilder<?> builder : propertyBuilders)
 				t.accept(builder);
 		}
-		for (MessagePropertyBuilder<?> builder : propertyBuilders) {
+		for (final MessagePropertyBuilder<?> builder : propertyBuilders)
 			builder.saveResult();
-		}
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class TwitterKnowledgeCenter {
 	 * @throws Exception
 	 *             If it is not possible to complete the operation
 	 */
-	public String getLifetimeOfTweets(String tweetId) throws Exception {
+	public String getLifetimeOfTweets(final String tweetId) throws Exception {
 		return lifeTime.getLifetimeOfTweets(new ID(tweetId));
 	}
 
@@ -92,6 +91,14 @@ public class TwitterKnowledgeCenter {
 	 */
 	public String[] getDailyHistogram() {
 		return dayHistogram.getDailyHistogram();
+	}
+
+	/**
+	 * Cleans up all persistent data from the system; this method will be called
+	 * before every test, to ensure that all tests are independent.
+	 */
+	public void cleanPersistentData() {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 }
