@@ -47,6 +47,14 @@ public class LifeTimeData {
 	 */
 	final Map<ID, Long> map;
 
+	// for Gson
+	@SuppressWarnings("unused")
+	private LifeTimeData() {
+		map = null;
+		baseTweets = null;
+		retweets = null;
+	}
+
 	/**
 	 * @param map
 	 *            mapping between tweet id and the time until its final retweet
@@ -75,6 +83,44 @@ public class LifeTimeData {
 		if (!map.containsKey(id))
 			throw new UndefinedTimeException();
 		return map.get(id);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ (baseTweets == null ? 0 : baseTweets.hashCode());
+		result = prime * result + (map == null ? 0 : map.hashCode());
+		result = prime * result + (retweets == null ? 0 : retweets.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		final LifeTimeData other = (LifeTimeData) obj;
+		if (baseTweets == null) {
+			if (other.baseTweets != null)
+				return false;
+		} else if (!baseTweets.equals(other.baseTweets))
+			return false;
+		if (map == null) {
+			if (other.map != null)
+				return false;
+		} else if (!map.equals(other.map))
+			return false;
+		if (retweets == null) {
+			if (other.retweets != null)
+				return false;
+		} else if (!retweets.equals(other.retweets))
+			return false;
+		return true;
 	}
 
 }

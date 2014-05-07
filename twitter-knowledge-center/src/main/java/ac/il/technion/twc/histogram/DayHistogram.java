@@ -26,7 +26,8 @@ public class DayHistogram {
 	/**
 	 * for gson
 	 */
-	public DayHistogram() {
+	@SuppressWarnings("unused")
+	private DayHistogram() {
 		basetweets = null;
 		retweets = null;
 	}

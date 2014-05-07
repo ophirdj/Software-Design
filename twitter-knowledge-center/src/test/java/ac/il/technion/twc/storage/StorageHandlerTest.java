@@ -98,8 +98,10 @@ public class StorageHandlerTest {
     map.put(baseTweet.id(), 100L);
 
     final LifeTimeData returnVal = new LifeTimeData(map, baseTweets, retweets);
+    String json = gson.toJson(returnVal, LifeTimeData.class);
     when(fileHandlingMock.load(testPath)).thenReturn(
-        gson.toJson(returnVal, LifeTimeData.class));
-    assertEquals(returnVal, underTestLifeTime.load(mockLifeTime));
+        json);
+    LifeTimeData load = underTestLifeTime.load(mockLifeTime);
+    assertEquals(returnVal, load);
   }
 }
