@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
+import ac.il.technion.twc.lifetime.LifeTimeData.UndefinedTimeException;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.Tweet;
 import ac.il.technion.twc.message.tweet.builder.TweetBuilder;
@@ -83,8 +84,12 @@ public class TwitterKnowledgeCenter {
 	 * @throws Exception
 	 *             If it is not possible to complete the operation
 	 */
-	public String getLifetimeOfTweets(final String tweetId) throws Exception {
-		return lifeTime.getLifetimeOfTweets(new ID(tweetId));
+	public String getLifetimeOfTweets(final String tweetId) {
+		try {
+			return lifeTime.getLifetimeOfTweets(new ID(tweetId));
+		} catch (final UndefinedTimeException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
