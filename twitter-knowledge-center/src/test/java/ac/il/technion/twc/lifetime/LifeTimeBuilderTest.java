@@ -15,6 +15,7 @@ import java.util.Set;
 import org.junit.Test;
 
 import ac.il.technion.twc.God;
+import ac.il.technion.twc.lifetime.LifeTimeData.UndefinedTimeException;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
@@ -145,10 +146,12 @@ public class LifeTimeBuilderTest {
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
+	 * @throws UndefinedTimeException
+	 *             Shouldn't happen.
 	 */
 	@Test
 	public final void retweetShouldExtendLifeTimeOfBaseTweet()
-			throws NoRootFoundException {
+			throws NoRootFoundException, UndefinedTimeException {
 		initBuilder(emptyLifeTime);
 		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
 				3, 00).getTime(), new ID("base"));
@@ -169,10 +172,12 @@ public class LifeTimeBuilderTest {
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
+	 * @throws UndefinedTimeException
+	 *             Shouldn't happen.
 	 */
 	@Test
 	public final void notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours()
-			throws NoRootFoundException {
+			throws NoRootFoundException, UndefinedTimeException {
 		initBuilder(getLifeTimeData(3, 3, 3));
 		final ID reId = new ID("retweet");
 		final BaseTweet base = new BaseTweet(
@@ -199,9 +204,12 @@ public class LifeTimeBuilderTest {
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
+	 * @throws UndefinedTimeException
+	 *             Shouldn't happen.
 	 */
 	@Test
-	public final void lifeTimeShouldBeAccurate() throws NoRootFoundException {
+	public final void lifeTimeShouldBeAccurate() throws NoRootFoundException,
+			UndefinedTimeException {
 		initBuilder(emptyLifeTime);
 		final long baseTime = 123456789;
 		final long interval = 111111111;

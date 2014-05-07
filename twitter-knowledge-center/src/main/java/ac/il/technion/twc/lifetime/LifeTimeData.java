@@ -20,6 +20,9 @@ import ac.il.technion.twc.message.tweet.Retweet;
  */
 public class LifeTimeData {
 
+	public static final class UndefinedTimeException extends Exception {
+	}
+
 	/**
 	 * Collection of the base tweets in the system
 	 */
@@ -56,8 +59,12 @@ public class LifeTimeData {
 	 *            an id of a tweet
 	 * @return The time between the tweet with the given id and its final
 	 *         retweet
+	 * @throws UndefinedTimeException
+	 *             If life time of tweet is undefined.
 	 */
-	public Long get(final ID id) {
+	public Long get(final ID id) throws UndefinedTimeException {
+		if (!map.containsKey(id))
+			throw new UndefinedTimeException();
 		return map.get(id);
 	}
 
