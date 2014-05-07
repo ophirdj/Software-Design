@@ -1,5 +1,6 @@
 package ac.il.technion.twc.modules;
 
+import java.nio.file.Path;
 import java.util.EnumMap;
 
 import ac.il.technion.twc.histogram.DayHistogram;
@@ -33,12 +34,16 @@ public class DayHistogramModule extends AbstractModule {
 	}
 
 	/**
+	 * @param storageDir
+	 *            Root storage directory for properties.
 	 * @return storage handler for day histogram
 	 */
 	@Singleton
 	@Provides
-	StorageHandler<DayHistogram> dayHistogramStorage() {
-		return new StorageHandler<>(new Gson(), null);
+	StorageHandler<DayHistogram> dayHistogramStorage(
+			@Named("storage directory") final Path storageDir) {
+		return new StorageHandler<>(new Gson(),
+				storageDir.resolve("day_histogram"));
 	}
 
 	/**

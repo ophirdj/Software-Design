@@ -11,11 +11,25 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
+/**
+ * Loads and stores objects to persistent storage.
+ * 
+ * @author Ophir De Jager
+ * 
+ * @param <T>
+ *            Type of objects that are loaded / stored.
+ */
 public class StorageHandler<T> {
 
 	private final Gson serializer;
 	private final Path storePath;
 
+	/**
+	 * C'tor
+	 * 
+	 * @param gson
+	 * @param storageLocation
+	 */
 	@Inject
 	public StorageHandler(final Gson gson, final Path storageLocation) {
 		serializer = gson;
@@ -31,7 +45,7 @@ public class StorageHandler<T> {
 	 */
 	public void store(final T toStore) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(storePath,
-				Charset.defaultCharset(), null)) {
+				Charset.defaultCharset())) {
 			writer.write(serializer.toJson(toStore, new TypeToken<T>() {
 			}.getType()));
 		}

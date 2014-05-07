@@ -51,9 +51,9 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	}
 
 	@Provides
-	@Named("root storage directory")
+	@Named("storage directory")
 	Path storageDirectory() {
-		return Paths.get("../");
+		return Paths.get("cache");
 	}
 
 }

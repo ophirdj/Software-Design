@@ -1,5 +1,6 @@
 package ac.il.technion.twc.modules;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -34,11 +35,14 @@ public class LifeTimeModule extends AbstractModule {
 	}
 
 	/**
+	 * @param storageDir
+	 *            Root storage directory for properties.
 	 * @return A handler for life time property storage
 	 */
 	@Provides
-	StorageHandler<LifeTimeData> lifeTimeStorage() {
-		return new StorageHandler<>(new Gson(), null);
+	StorageHandler<LifeTimeData> lifeTimeStorage(
+			@Named("storage directory") final Path storageDir) {
+		return new StorageHandler<>(new Gson(), storageDir.resolve("life_time"));
 	}
 
 	/**
