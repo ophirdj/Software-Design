@@ -16,7 +16,7 @@ import org.junit.rules.Timeout;
  * @author Ophir De Jager
  * 
  */
-public class SystemTimeConstraintsTest {
+public class TimeConstraintsTest {
 
 	@Rule
 	public Timeout globalTimeout = new Timeout(2000); // FIXME change to ns
