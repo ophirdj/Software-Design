@@ -9,6 +9,9 @@ import com.google.inject.Injector;
 
 public class God {
 
+	/**
+	 * Guice injector for application.
+	 */
 	public static final Injector injector = Guice.createInjector(
 			new MessagePropertyBuildersModule(), new DayHistogramModule(),
 			new LifeTimeModule());

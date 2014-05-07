@@ -20,7 +20,16 @@ import ac.il.technion.twc.message.tweet.Retweet;
  */
 public class LifeTimeData {
 
+	/**
+	 * Thrown when trying to calculate life time of a tweet that has no
+	 * well-defined life time (either because it isn't a base tweet, it doesn't
+	 * exist, or ot has no retweets).
+	 * 
+	 * @author Ophir De Jager
+	 * 
+	 */
 	public static final class UndefinedTimeException extends Exception {
+		private static final long serialVersionUID = -4180968758763049887L;
 	}
 
 	/**

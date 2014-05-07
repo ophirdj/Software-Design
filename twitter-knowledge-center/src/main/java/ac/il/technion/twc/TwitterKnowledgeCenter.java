@@ -31,6 +31,9 @@ public class TwitterKnowledgeCenter {
 	private DayHistogramCache dayHistogram;
 	private LifeTimeCache lifeTime;
 
+	/**
+	 * C'tor.
+	 */
 	public TwitterKnowledgeCenter() {
 		tweetBuilder = God.injector.getInstance(TweetBuilder.class);
 		propertyBuilders = God.injector.getInstance(Key
