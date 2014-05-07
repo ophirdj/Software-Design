@@ -1,5 +1,6 @@
 package ac.il.technion.twc.lifetime;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,12 +14,22 @@ public class TransitiveRootFinder {
   Map<ID, ID> relation = new HashMap<>();
   Map<ID, BaseTweet> baseTweets = new HashMap<>();
 
-  void addTweet(final Retweet retweet) {
+  public void addTweet(final Retweet retweet) {
     relation.put(retweet.getId(), retweet.originId);
   }
 
-  void addTweet(final BaseTweet tweet) {
+  public void addTweet(final BaseTweet tweet) {
     baseTweets.put(tweet.getId(), tweet);
+  }
+
+  public void addBaseTweets(final Collection<BaseTweet> tweet) {
+    for (final BaseTweet baseTweet : tweet)
+      addTweet(baseTweet);
+  }
+
+  public void addRetweets(final Collection<Retweet> tweet) {
+    for (final Retweet retweet : tweet)
+      addTweet(retweet);
   }
 
   public BaseTweet findRoot(final Tweet tweet) throws NoRootFoundException {
