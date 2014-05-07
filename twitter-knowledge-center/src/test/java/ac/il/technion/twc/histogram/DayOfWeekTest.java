@@ -35,7 +35,16 @@ public class DayOfWeekTest {
 						new GregorianCalendar(2014, 4, 1).getTime()),
 				$(DayOfWeek.FRIDAY, new GregorianCalendar(2014, 4, 2).getTime()),
 				$(DayOfWeek.SATURDAY,
-						new GregorianCalendar(2014, 4, 3).getTime()));
+						new GregorianCalendar(2014, 4, 3).getTime()),
+				$(DayOfWeek.THURSDAY,
+						new GregorianCalendar(2014, 4, 8).getTime()),
+				$(DayOfWeek.FRIDAY, new GregorianCalendar(2014, 4, 9).getTime()),
+				$(DayOfWeek.SATURDAY,
+						new GregorianCalendar(2014, 4, 10).getTime()),
+				$(DayOfWeek.SUNDAY,
+						new GregorianCalendar(2014, 4, 11).getTime()),
+				$(DayOfWeek.SUNDAY,
+						new GregorianCalendar(2014, 4, 4, 20, 30).getTime()));
 	}
 
 	/**
