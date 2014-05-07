@@ -23,6 +23,12 @@ public class DayHistogram {
    */
   final Map<DayOfWeek, Integer> retweets;
 
+  // for gson
+  public DayHistogram() {
+    basetweets = null;
+    retweets = null;
+  }
+
   /**
    * Build the days histogram from those to map
    * 
@@ -55,6 +61,37 @@ public class DayHistogram {
    */
   public int retweets(final DayOfWeek day) {
     return retweets.get(day);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (basetweets == null ? 0 : basetweets.hashCode());
+    result = prime * result + (retweets == null ? 0 : retweets.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final DayHistogram other = (DayHistogram) obj;
+    if (basetweets == null) {
+      if (other.basetweets != null)
+        return false;
+    } else if (!basetweets.equals(other.basetweets))
+      return false;
+    if (retweets == null) {
+      if (other.retweets != null)
+        return false;
+    } else if (!retweets.equals(other.retweets))
+      return false;
+    return true;
   }
 
 }
