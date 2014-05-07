@@ -13,23 +13,37 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
+/**
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ * 
+ *        Guice module for global property building info
+ */
 public class MessagePropertyBuildersModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-		bind(DateFormat.class).annotatedWith(
-				Names.named("twitter date formatter")).toInstance(
-				new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
-	}
+  @Override
+  protected void configure() {
+    bind(DateFormat.class).annotatedWith(Names.named("twitter date formatter"))
+        .toInstance(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
+  }
 
-	@Provides
-	List<MessagePropertyBuilder<?>> getPropertyBuilders(
-			DayHistogramBuilder dayHistogramBuilder,
-			LifeTimeBuilder lifeTimeBuilder) {
-		List<MessagePropertyBuilder<?>> $ = new ArrayList<>();
-		$.add(dayHistogramBuilder);
-		$.add(lifeTimeBuilder);
-		return $;
-	}
+  /**
+   * @param dayHistogramBuilder
+   * @param lifeTimeBuilder
+   * @return All the builders for properties to be calculated
+   */
+  @Provides
+  List<MessagePropertyBuilder<?>> getPropertyBuilders(
+      final DayHistogramBuilder dayHistogramBuilder,
+      final LifeTimeBuilder lifeTimeBuilder) {
+    final List<MessagePropertyBuilder<?>> $ = new ArrayList<>();
+    $.add(dayHistogramBuilder);
+    $.add(lifeTimeBuilder);
+    return $;
+  }
 
 }
