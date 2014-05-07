@@ -24,7 +24,8 @@ public class DayHistogram {
   final Map<DayOfWeek, Integer> retweets;
 
   // for gson
-  public DayHistogram() {
+  @SuppressWarnings("unused")
+  private DayHistogram() {
     basetweets = null;
     retweets = null;
   }
