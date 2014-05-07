@@ -11,13 +11,12 @@ import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
 import ac.il.technion.twc.storage.StorageHandler;
 
+import com.google.gson.Gson;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
 public class LifeTimeModule extends AbstractModule {
-
-	private final StorageHandler<LifeTimeData> lifeTimeStorageHandler = new StorageHandler<>();
 
 	@Override
 	protected void configure() {
@@ -26,7 +25,7 @@ public class LifeTimeModule extends AbstractModule {
 
 	@Provides
 	StorageHandler<LifeTimeData> lifeTimeStorage() {
-		return lifeTimeStorageHandler;
+		return new StorageHandler<>(new Gson(), null);
 	}
 
 	@Provides
