@@ -5,7 +5,6 @@ import java.nio.file.Path;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 
 /**
@@ -46,8 +45,7 @@ public class StorageHandler<T> {
    */
   public void store(final T toStore) throws IOException {
     fileHandling.store(storePath,
-        serializer.toJson(toStore, new TypeToken<T>() {
-        }.getType()));
+        serializer.toJson(toStore, toStore.getClass()));
   }
 
   /**
@@ -59,12 +57,10 @@ public class StorageHandler<T> {
    */
   public T load(final T defaultReturnValue) {
     try {
-      return serializer.fromJson(fileHandling.load(storePath),
-          new TypeToken<T>() {
-          }.getType());
+      return (T) serializer.fromJson(fileHandling.load(storePath),
+          defaultReturnValue.getClass());
     } catch (JsonSyntaxException | IOException e) {
       return defaultReturnValue;
     }
   }
-
 }
