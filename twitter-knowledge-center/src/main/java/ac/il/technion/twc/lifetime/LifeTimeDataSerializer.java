@@ -25,7 +25,7 @@ public class LifeTimeDataSerializer implements JsonSerializer<LifeTimeData>,
 	@Override
 	public LifeTimeData deserialize(final JsonElement json, final Type type,
 			final JsonDeserializationContext context) throws JsonParseException {
-		// System.out.println("deserialize called");
+		System.out.println("deserialize called");
 		final JsonObject jsonObject = json.getAsJsonObject();
 		final Set<BaseTweet> baseTweets = context.deserialize(
 				jsonObject.get("baseTweets"), new TypeToken<Set<BaseTweet>>() {
@@ -52,7 +52,7 @@ public class LifeTimeDataSerializer implements JsonSerializer<LifeTimeData>,
 	@Override
 	public JsonElement serialize(final LifeTimeData lifeTime, final Type type,
 			final JsonSerializationContext context) {
-		// System.out.println("serialize called");
+		System.out.println("serialize called");
 		final JsonObject $ = new JsonObject();
 		$.add("baseTweets", context.serialize(lifeTime.baseTweets));
 		$.add("retweets", context.serialize(lifeTime.retweets));

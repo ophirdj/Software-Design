@@ -64,8 +64,8 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	}
 
 	@Provides
-	@Named("property serializer")
-	Gson propertySerializer() {
+	@Named("serializer")
+	Gson lifeTimeDataGson() {
 		return new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
 				new LifeTimeDataSerializer()).create();
 	}

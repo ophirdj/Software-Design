@@ -29,52 +29,55 @@ import com.google.inject.name.Named;
  */
 public class DayHistogramModule extends AbstractModule {
 
-  @Override
-  protected void configure() {
-    // nothing to do here...
-  }
+	@Override
+	protected void configure() {
+		// nothing to do here...
+	}
 
-  /**
-   * @param storageDir
-   *          Root storage directory for properties.
-   * @return storage handler for day histogram
-   */
-  @Singleton
-  @Provides
-  StorageHandler<DayHistogram> dayHistogramStorage(
-      @Named("storage directory") final Path storageDir) {
-    return new StorageHandler<>(new Gson(),
-        storageDir.resolve("day_histogram"), new FileHandler());
-  }
+	/**
+	 * @param storageDir
+	 *            Root storage directory for properties.
+	 * @return storage handler for day histogram
+	 */
+	@Singleton
+	@Provides
+	StorageHandler<DayHistogram> dayHistogramStorage(
+			@Named("storage directory") final Path storageDir,
+			@Named("serializer") final Gson gson) {
+		return new StorageHandler<>(gson, storageDir.resolve("day_histogram"),
+				new FileHandler());
+	}
 
-  /**
-   * @param dayHistogramBuilder
-   *          create, store and load histograms
-   * @param emptyDayHistogram
-   *          default histogram (first time usage)
-   * @return Handler for histogram data requests
-   */
-  @Provides
-  DayHistogramCache dayHistogramCache(
-      final DayHistogramBuilder dayHistogramBuilder,
-      @Named("default") final DayHistogram emptyDayHistogram) {
-    return new DayHistogramCache(
-        dayHistogramBuilder.loadResult(emptyDayHistogram));
-  }
+	/**
+	 * @param dayHistogramBuilder
+	 *            create, store and load histograms
+	 * @param emptyDayHistogram
+	 *            default histogram (first time usage)
+	 * @return Handler for histogram data requests
+	 */
+	@Provides
+	DayHistogramCache dayHistogramCache(
+			final DayHistogramBuilder dayHistogramBuilder,
+			@Named("default") final DayHistogram emptyDayHistogram) {
+		return new DayHistogramCache(
+				dayHistogramBuilder.loadResult(emptyDayHistogram));
+	}
 
-  /**
-   * @return empty histogram (always 0 tweets)
-   */
-  @Provides
-  @Named("default")
-  DayHistogram defaultDayHistogram() {
-    final EnumMap<DayOfWeek, Integer> tweets = new EnumMap<>(DayOfWeek.class);
-    final EnumMap<DayOfWeek, Integer> retweets = new EnumMap<>(DayOfWeek.class);
-    for (final DayOfWeek day : DayOfWeek.values()) {
-      tweets.put(day, 0);
-      retweets.put(day, 0);
-    }
-    return new DayHistogram(tweets, retweets);
-  }
+	/**
+	 * @return empty histogram (always 0 tweets)
+	 */
+	@Provides
+	@Named("default")
+	DayHistogram defaultDayHistogram() {
+		final EnumMap<DayOfWeek, Integer> tweets = new EnumMap<>(
+				DayOfWeek.class);
+		final EnumMap<DayOfWeek, Integer> retweets = new EnumMap<>(
+				DayOfWeek.class);
+		for (final DayOfWeek day : DayOfWeek.values()) {
+			tweets.put(day, 0);
+			retweets.put(day, 0);
+		}
+		return new DayHistogram(tweets, retweets);
+	}
 
 }

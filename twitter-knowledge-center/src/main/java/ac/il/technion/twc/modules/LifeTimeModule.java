@@ -30,42 +30,43 @@ import com.google.inject.name.Named;
  */
 public class LifeTimeModule extends AbstractModule {
 
-  @Override
-  protected void configure() {
-    // nothing to do here...
-  }
+	@Override
+	protected void configure() {
+		// nothing to do here...
+	}
 
-  /**
-   * @param storageDir
-   *          Root storage directory for properties.
-   * @return A handler for life time property storage
-   */
-  @Provides
-  StorageHandler<LifeTimeData> lifeTimeStorage(
-      @Named("storage directory") final Path storageDir) {
-    return new StorageHandler<>(new Gson(), storageDir.resolve("life_time"),
-        new FileHandler());
-  }
+	/**
+	 * @param storageDir
+	 *            Root storage directory for properties.
+	 * @return A handler for life time property storage
+	 */
+	@Provides
+	StorageHandler<LifeTimeData> lifeTimeStorage(
+			@Named("storage directory") final Path storageDir,
+			@Named("serializer") final Gson gson) {
+		return new StorageHandler<>(gson, storageDir.resolve("life_time"),
+				new FileHandler());
+	}
 
-  /**
-   * @param lifeTimeBuilder
-   * @param defaultLifeTimeMap
-   * @return displayer for life time property
-   */
-  @Provides
-  LifeTimeCache lifeTimeCache(final LifeTimeBuilder lifeTimeBuilder,
-      @Named("default") final LifeTimeData defaultLifeTimeMap) {
-    return new LifeTimeCache(lifeTimeBuilder.loadResult(defaultLifeTimeMap));
-  }
+	/**
+	 * @param lifeTimeBuilder
+	 * @param defaultLifeTimeMap
+	 * @return displayer for life time property
+	 */
+	@Provides
+	LifeTimeCache lifeTimeCache(final LifeTimeBuilder lifeTimeBuilder,
+			@Named("default") final LifeTimeData defaultLifeTimeMap) {
+		return new LifeTimeCache(lifeTimeBuilder.loadResult(defaultLifeTimeMap));
+	}
 
-  /**
-   * @return an empty data for life time property (first usage)
-   */
-  @Provides
-  @Named("default")
-  LifeTimeData defaultLifeTimeMap() {
-    return new LifeTimeData(new HashMap<ID, Long>(), new HashSet<BaseTweet>(),
-        new HashSet<Retweet>());
-  }
+	/**
+	 * @return an empty data for life time property (first usage)
+	 */
+	@Provides
+	@Named("default")
+	LifeTimeData defaultLifeTimeMap() {
+		return new LifeTimeData(new HashMap<ID, Long>(),
+				new HashSet<BaseTweet>(), new HashSet<Retweet>());
+	}
 
 }

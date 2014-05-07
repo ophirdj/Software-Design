@@ -40,7 +40,7 @@ public class StorageHandlerTest {
 	public StorageHandlerTest() {
 		fileHandlingMock = mock(FileHandler.class);
 		gson = God.injector.getInstance(Key.get(Gson.class,
-				Names.named("property serializer")));
+				Names.named("serializer")));
 		underTestHistogram = new StorageHandler<>(gson, testPath,
 				fileHandlingMock);
 		underTestLifeTime = new StorageHandler<>(gson, testPath,

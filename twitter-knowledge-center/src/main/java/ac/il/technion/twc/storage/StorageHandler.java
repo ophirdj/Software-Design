@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * Loads and stores objects to persistent storage.
@@ -30,8 +29,8 @@ public class StorageHandler<T> {
 	 * @param fileHandling
 	 */
 	@Inject
-	public StorageHandler(@Named("property serializer") final Gson gson,
-			final Path storageLocation, final FileHandler fileHandling) {
+	public StorageHandler(final Gson gson, final Path storageLocation,
+			final FileHandler fileHandling) {
 		serializer = gson;
 		storePath = storageLocation;
 		this.fileHandling = fileHandling;
