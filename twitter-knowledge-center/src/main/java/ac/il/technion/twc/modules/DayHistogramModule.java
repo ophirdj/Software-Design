@@ -14,6 +14,17 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
+/**
+ * 
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ * 
+ *        Guice module for day histogram
+ */
 public class DayHistogramModule extends AbstractModule {
 
 	@Override
@@ -21,12 +32,22 @@ public class DayHistogramModule extends AbstractModule {
 		// nothing to do here...
 	}
 
+	/**
+	 * @return storage handler for day histogram
+	 */
 	@Singleton
 	@Provides
 	StorageHandler<DayHistogram> dayHistogramStorage() {
 		return new StorageHandler<>(new Gson(), null);
 	}
 
+	/**
+	 * @param dayHistogramBuilder
+	 *            create, store and load histograms
+	 * @param emptyDayHistogram
+	 *            default histogram (first time usage)
+	 * @return Handler for histogram data requests
+	 */
 	@Provides
 	DayHistogramCache dayHistogramCache(
 			final DayHistogramBuilder dayHistogramBuilder,
@@ -35,6 +56,9 @@ public class DayHistogramModule extends AbstractModule {
 				dayHistogramBuilder.loadResult(emptyDayHistogram));
 	}
 
+	/**
+	 * @return empty histogram (always 0 tweets)
+	 */
 	@Provides
 	@Named("default")
 	DayHistogram defaultDayHistogram() {

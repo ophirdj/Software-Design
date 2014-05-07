@@ -16,6 +16,16 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 
+/**
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ * 
+ *        Guice module for life time property
+ */
 public class LifeTimeModule extends AbstractModule {
 
 	@Override
@@ -23,17 +33,28 @@ public class LifeTimeModule extends AbstractModule {
 		// nothing to do here...
 	}
 
+	/**
+	 * @return A handler for life time property storage
+	 */
 	@Provides
 	StorageHandler<LifeTimeData> lifeTimeStorage() {
 		return new StorageHandler<>(new Gson(), null);
 	}
 
+	/**
+	 * @param lifeTimeBuilder
+	 * @param defaultLifeTimeMap
+	 * @return displayer for life time property
+	 */
 	@Provides
 	LifeTimeCache lifeTimeCache(final LifeTimeBuilder lifeTimeBuilder,
 			@Named("default") final LifeTimeData defaultLifeTimeMap) {
 		return new LifeTimeCache(lifeTimeBuilder.loadResult(defaultLifeTimeMap));
 	}
 
+	/**
+	 * @return an empty data for life time property (first usage)
+	 */
 	@Provides
 	@Named("default")
 	LifeTimeData defaultLifeTimeMap() {

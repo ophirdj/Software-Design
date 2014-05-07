@@ -16,6 +16,16 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
+/**
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ * 
+ *        Guice module for global property building info
+ */
 public class MessagePropertyBuildersModule extends AbstractModule {
 
 	@Override
@@ -25,6 +35,11 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 				new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
 	}
 
+	/**
+	 * @param dayHistogramBuilder
+	 * @param lifeTimeBuilder
+	 * @return All the builders for properties to be calculated
+	 */
 	@Provides
 	List<MessagePropertyBuilder<?>> getPropertyBuilders(
 			final DayHistogramBuilder dayHistogramBuilder,
