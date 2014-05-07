@@ -19,13 +19,23 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Serializer for LifeTimeData object
+ * 
+ * @author Ziv Ronen
+ * @date 07.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class LifeTimeDataSerializer implements JsonSerializer<LifeTimeData>,
     JsonDeserializer<LifeTimeData> {
 
   @Override
   public LifeTimeData deserialize(final JsonElement json, final Type type,
       final JsonDeserializationContext context) throws JsonParseException {
-    System.out.println("deserialize called");
+    // System.out.println("deserialize called");
     final JsonObject jsonObject = json.getAsJsonObject();
     final Set<BaseTweet> baseTweets =
         context.deserialize(jsonObject.get("baseTweets"),
@@ -48,7 +58,7 @@ public class LifeTimeDataSerializer implements JsonSerializer<LifeTimeData>,
   @Override
   public JsonElement serialize(final LifeTimeData lifeTime, final Type type,
       final JsonSerializationContext context) {
-    System.out.println("serialize called");
+    // System.out.println("serialize called");
     final JsonObject $ = new JsonObject();
     $.add("baseTweets", context.serialize(lifeTime.baseTweets));
     $.add("retweets", context.serialize(lifeTime.retweets));
@@ -56,7 +66,6 @@ public class LifeTimeDataSerializer implements JsonSerializer<LifeTimeData>,
     for (final Entry<ID, Long> e : lifeTime.map.entrySet())
       m.put(e.getKey().id, e.getValue());
     $.add("map", context.serialize(m));
-    // System.out.println($);
     return $;
   }
 

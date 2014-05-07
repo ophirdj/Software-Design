@@ -32,42 +32,44 @@ import com.google.inject.name.Names;
  */
 public class MessagePropertyBuildersModule extends AbstractModule {
 
-	@Override
-	protected void configure() {
-		bind(DateFormat.class).annotatedWith(
-				Names.named("twitter date formatter")).toInstance(
-				new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
-	}
+  @Override
+  protected void configure() {
+    bind(DateFormat.class).annotatedWith(Names.named("twitter date formatter"))
+        .toInstance(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
+  }
 
-	/**
-	 * @param dayHistogramBuilder
-	 * @param lifeTimeBuilder
-	 * @return All the builders for properties to be calculated
-	 */
-	@Provides
-	List<MessagePropertyBuilder<?>> getPropertyBuilders(
-			final DayHistogramBuilder dayHistogramBuilder,
-			final LifeTimeBuilder lifeTimeBuilder) {
-		final List<MessagePropertyBuilder<?>> $ = new ArrayList<>();
-		$.add(dayHistogramBuilder);
-		$.add(lifeTimeBuilder);
-		return $;
-	}
+  /**
+   * @param dayHistogramBuilder
+   * @param lifeTimeBuilder
+   * @return All the builders for properties to be calculated
+   */
+  @Provides
+  List<MessagePropertyBuilder<?>> getPropertyBuilders(
+      final DayHistogramBuilder dayHistogramBuilder,
+      final LifeTimeBuilder lifeTimeBuilder) {
+    final List<MessagePropertyBuilder<?>> $ = new ArrayList<>();
+    $.add(dayHistogramBuilder);
+    $.add(lifeTimeBuilder);
+    return $;
+  }
 
-	/**
-	 * @return Path for default storage directory of message properties.
-	 */
-	@Provides
-	@Named("storage directory")
-	Path storageDirectory() {
-		return Paths.get("cache");
-	}
+  /**
+   * @return Path for default storage directory of message properties.
+   */
+  @Provides
+  @Named("storage directory")
+  Path storageDirectory() {
+    return Paths.get("cache");
+  }
 
-	@Provides
-	@Named("serializer")
-	Gson lifeTimeDataGson() {
-		return new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
-				new LifeTimeDataSerializer()).create();
-	}
+  /**
+   * @return A serializer for all the properties
+   */
+  @Provides
+  @Named("serializer")
+  Gson lifeTimeDataGson() {
+    return new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
+        new LifeTimeDataSerializer()).create();
+  }
 
 }

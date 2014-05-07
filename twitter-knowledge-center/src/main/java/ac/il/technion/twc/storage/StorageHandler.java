@@ -13,54 +13,56 @@ import com.google.inject.Inject;
  * @author Ophir De Jager
  * 
  * @param <T>
- *            Type of objects that are loaded / stored.
+ *          Type of objects that are loaded / stored.
  */
 public class StorageHandler<T> {
 
-	private final Gson serializer;
-	private final Path storePath;
-	private final FileHandler fileHandling;
+  private final Gson serializer;
+  private final Path storePath;
+  private final FileHandler fileHandling;
 
-	/**
-	 * C'tor
-	 * 
-	 * @param gson
-	 * @param storageLocation
-	 * @param fileHandling
-	 */
-	@Inject
-	public StorageHandler(final Gson gson, final Path storageLocation,
-			final FileHandler fileHandling) {
-		serializer = gson;
-		storePath = storageLocation;
-		this.fileHandling = fileHandling;
-	}
+  /**
+   * C'tor
+   * 
+   * @param gson
+   * @param storageLocation
+   * @param fileHandling
+   */
+  @Inject
+  public StorageHandler(final Gson gson, final Path storageLocation,
+      final FileHandler fileHandling) {
+    serializer = gson;
+    storePath = storageLocation;
+    this.fileHandling = fileHandling;
+  }
 
-	/**
-	 * Store data to data file (overwriting it if exists).
-	 * 
-	 * @param toStore
-	 *            Data to be stored.
-	 * @throws IOException
-	 */
-	public void store(final T toStore) throws IOException {
-		fileHandling.store(storePath,
-				serializer.toJson(toStore, toStore.getClass()));
-	}
+  /**
+   * Store data to data file (overwriting it if exists).
+   * 
+   * @param toStore
+   *          Data to be stored.
+   * @throws IOException
+   */
+  public void store(final T toStore) throws IOException {
+    fileHandling.store(storePath,
+        serializer.toJson(toStore, toStore.getClass()));
+  }
 
-	/**
-	 * Load stored data from data file.
-	 * 
-	 * @param defaultReturnValue
-	 *            Value to be returned if no data was stored.
-	 * @return Stored data.
-	 */
-	public T load(final T defaultReturnValue) {
-		try {
-			return (T) serializer.fromJson(fileHandling.load(storePath),
-					defaultReturnValue.getClass());
-		} catch (JsonSyntaxException | IOException e) {
-			return defaultReturnValue;
-		}
-	}
+  /**
+   * Load stored data from data file. T Must be used regular class, no
+   * inheritance possible
+   * 
+   * @param defaultReturnValue
+   *          Value to be returned if no data was stored.
+   * @return Stored data.
+   */
+  @SuppressWarnings("unchecked")
+  public T load(final T defaultReturnValue) {
+    try {
+      return (T) serializer.fromJson(fileHandling.load(storePath),
+          defaultReturnValue.getClass());
+    } catch (JsonSyntaxException | IOException e) {
+      return defaultReturnValue;
+    }
+  }
 }
