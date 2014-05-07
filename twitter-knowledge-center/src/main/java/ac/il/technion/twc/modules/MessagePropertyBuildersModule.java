@@ -50,6 +50,9 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 		return $;
 	}
 
+	/**
+	 * @return Path for default storage directory of message properties.
+	 */
 	@Provides
 	@Named("storage directory")
 	Path storageDirectory() {

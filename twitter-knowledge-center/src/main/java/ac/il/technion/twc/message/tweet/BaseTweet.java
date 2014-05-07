@@ -5,15 +5,25 @@ import java.util.Date;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.visitor.MessageVisitor;
 
+/**
+ * Tweet that is not a retwwet.
+ * 
+ * @author Ophir De Jager
+ * 
+ */
 public class BaseTweet extends Tweet {
-	
-	public BaseTweet(Date date, ID id) {
+
+	/**
+	 * @param date
+	 * @param id
+	 */
+	public BaseTweet(final Date date, final ID id) {
 		super(date, id);
 	}
 
-	public <T> T accept(MessageVisitor<T> visitor) {
+	@Override
+	public <T> T accept(final MessageVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
-
 
 }

@@ -5,16 +5,32 @@ import java.util.Date;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.visitor.MessageVisitor;
 
+/**
+ * @author Ophir De Jager
+ * 
+ */
 public class Retweet extends Tweet {
-	
+
+	/**
+	 * ID of original tweet that is being retweeted.
+	 */
 	public final ID originId;
 
-	public Retweet(Date date, ID id, ID originId) {
+	/**
+	 * @param date
+	 *            Time when tweet was published.
+	 * @param id
+	 *            Unique ID for this tweet.
+	 * @param originId
+	 *            ID of original tweet that is being retweeted.
+	 */
+	public Retweet(final Date date, final ID id, final ID originId) {
 		super(date, id);
 		this.originId = originId;
 	}
 
-	public <T> T accept(MessageVisitor<T> visitor) {
+	@Override
+	public <T> T accept(final MessageVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
 
@@ -22,33 +38,25 @@ public class Retweet extends Tweet {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((originId == null) ? 0 : originId.hashCode());
+		result = prime * result + (originId == null ? 0 : originId.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(final Object obj) {
+		if (this == obj)
 			return true;
-		}
-		if (!super.equals(obj)) {
+		if (!super.equals(obj))
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		Retweet other = (Retweet) obj;
+		final Retweet other = (Retweet) obj;
 		if (originId == null) {
-			if (other.originId != null) {
+			if (other.originId != null)
 				return false;
-			}
-		} else if (!originId.equals(other.originId)) {
+		} else if (!originId.equals(other.originId))
 			return false;
-		}
 		return true;
 	}
-	
-	
 
 }
