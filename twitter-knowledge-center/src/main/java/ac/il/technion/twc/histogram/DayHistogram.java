@@ -1,4 +1,4 @@
-package ac.il.technion.twc.histgram;
+package ac.il.technion.twc.histogram;
 
 import java.util.Map;
 

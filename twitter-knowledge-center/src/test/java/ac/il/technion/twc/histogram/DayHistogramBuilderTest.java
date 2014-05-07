@@ -1,4 +1,4 @@
-package ac.il.technion.twc.histgram;
+package ac.il.technion.twc.histogram;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -11,6 +11,9 @@ import com.google.inject.Key;
 import com.google.inject.name.Names;
 
 import ac.il.technion.twc.God;
+import ac.il.technion.twc.histogram.DayHistogram;
+import ac.il.technion.twc.histogram.DayHistogramBuilder;
+import ac.il.technion.twc.histogram.DayOfWeek;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;

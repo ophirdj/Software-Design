@@ -2,7 +2,7 @@ package ac.il.technion.twc;
 
 import java.util.List;
 
-import ac.il.technion.twc.histgram.DayHistogramCache;
+import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.Tweet;

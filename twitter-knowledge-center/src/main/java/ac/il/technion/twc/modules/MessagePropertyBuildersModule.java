@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ac.il.technion.twc.histgram.DayHistogramBuilder;
+import ac.il.technion.twc.histogram.DayHistogramBuilder;
 import ac.il.technion.twc.lifetime.LifeTimeBuilder;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 

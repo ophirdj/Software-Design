@@ -1,4 +1,4 @@
-package ac.il.technion.twc.histgram;
+package ac.il.technion.twc.histogram;
 
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
