@@ -88,6 +88,7 @@ public class DayHistogramModule extends AbstractModule {
 	}
 
 	/**
+	 * @param defaultDayHistogram
 	 * @return empty histogram (always 0 tweets)
 	 */
 	@Provides

@@ -73,6 +73,8 @@ public class MessagePropertyBuilder<T, S> implements MessageVisitor<Void> {
 	 * @return The stored cache or the supplied <code>defaultReturnValue</code>
 	 *         if load fails.
 	 */
+	// TODO: move this to another class to reduce coupling and enhance
+	// performance
 	public final S loadCache(final S defaultCache) {
 		return cacheStorageHandler.load(defaultCache);
 	}
