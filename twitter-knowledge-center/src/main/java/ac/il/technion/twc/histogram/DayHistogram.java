@@ -104,8 +104,8 @@ public class DayHistogram {
 	}
 
 	/**
-	 * Prepares the string representation of this this histogram (for
-	 * performance).
+	 * Prepares the string representation of this this histogram and caches it
+	 * (for performance enhancement).
 	 * 
 	 * @return Histogram with prepared string representation
 	 */
