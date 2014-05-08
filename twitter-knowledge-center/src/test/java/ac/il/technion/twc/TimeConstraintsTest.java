@@ -11,6 +11,7 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.inject.Key;
@@ -53,6 +54,7 @@ public class TimeConstraintsTest {
 		$.cleanPersistentData();
 	}
 
+	@Ignore
 	@Test
 	public final void importData() throws Exception {
 		final long start = System.currentTimeMillis();
@@ -62,6 +64,7 @@ public class TimeConstraintsTest {
 				* lines.length, end - start <= 2 * lines.length);
 	}
 
+	@Ignore
 	@Test
 	public final void setupIndex() throws Exception {
 		$.importData(lines);
@@ -72,6 +75,7 @@ public class TimeConstraintsTest {
 				* lines.length / 1000, end - start <= 2 * lines.length / 1000);
 	}
 
+	@Ignore
 	@Test
 	public final void getDailyHistogram() throws Exception {
 		$.importData(lines);
@@ -84,6 +88,7 @@ public class TimeConstraintsTest {
 				- start <= 20);
 	}
 
+	@Ignore
 	@Test
 	public final void getLifeTimeOfTweets() throws Exception {
 		$.importData(lines);
@@ -96,56 +101,59 @@ public class TimeConstraintsTest {
 				- start <= 20);
 	}
 
-	// /**
-	// * Test method for {@link TwitterKnowledgeCenter#importData(String[])}
-	// *
-	// * @throws Exception
-	// */
-	// @Test(timeout = 2 * linesLengthApproximation)
-	// public final void importDataShouldRun2msForEachTweet() throws Exception {
-	// tkcImportData.importData(lines);
-	// }
-	//
-	// /**
-	// * Test method for {@link TwitterKnowledgeCenter#setupIndex()}
-	// *
-	// * @throws Exception
-	// */
-	// @Test(timeout = (2 * linesLengthApproximation / 1000))
-	// public final void setupIndexSouldRun2000nsForEachTweet() throws Exception
-	// {
-	// tkcSetupIndex.setupIndex();
-	// }
-	//
-	// /**
-	// *
-	// * Test method for {@link TwitterKnowledgeCenter#getDailyHistogram()}
-	// *
-	// * @throws Exception
-	// */
-	// @Test(timeout = 20)
-	// public final void getDailyHistogramSouldRun2000ns() throws Exception {
-	// for (int i = 0; i < 10000; ++i)
-	// $.getDailyHistogram();
-	// }
-	//
-	// /**
-	// * Test method for
-	// * {@link TwitterKnowledgeCenter#getLifetimeOfTweets(String)}
-	// *
-	// * @throws Exception
-	// */
-	// @Test(timeout = 20)
-	// public final void getLifeTimeOfTweetsSouldRun2000ns() throws Exception {
-	// int baseTweetNum = 0;
-	// for (int i = 0; i < 10000; ++i) {
-	// $.getLifetimeOfTweets("base " + baseTweetNum);
-	// baseTweetNum = (baseTweetNum + 1) % BASE_TWEETS;
-	// }
-	// }
+	/**
+	 * Test method for {@link TwitterKnowledgeCenter#importData(String[])}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
+	@Test(timeout = 2 * linesLengthApproximation)
+	public final void importDataShouldRun2msForEachTweet() throws Exception {
+		tkcImportData.importData(lines);
+	}
 
 	/**
-	 * Generate tweets (base tweets & retweets) for a total of
+	 * Test method for {@link TwitterKnowledgeCenter#setupIndex()}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
+	@Test(timeout = (2 * linesLengthApproximation / 1000))
+	public final void setupIndexSouldRun2000nsForEachTweet() throws Exception {
+		tkcSetupIndex.setupIndex();
+	}
+
+	/**
+	 * 
+	 * Test method for {@link TwitterKnowledgeCenter#getDailyHistogram()}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
+	@Test(timeout = 20)
+	public final void getDailyHistogramSouldRun2000ns() throws Exception {
+		for (int i = 0; i < 10000; ++i)
+			$.getDailyHistogram();
+	}
+
+	/**
+	 * Test method for
+	 * {@link TwitterKnowledgeCenter#getLifetimeOfTweets(String)}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
+	@Test(timeout = 20)
+	public final void getLifeTimeOfTweetsSouldRun2000ns() throws Exception {
+		int baseTweetNum = 0;
+		for (int i = 0; i < 10000; ++i) {
+			$.getLifetimeOfTweets("base " + baseTweetNum);
+			baseTweetNum = (baseTweetNum + 1) % BASE_TWEETS;
+		}
+	}
+
+	/**
+	 * Generate tweets (base tweets and retweets) for a total of
 	 * <code>numBase</code> * (<code>numRetweetsForEach</code> ^
 	 * <code>numLevels</code> - 1) / (<code>numRetweetsForEach</code> - 1)
 	 * tweets.

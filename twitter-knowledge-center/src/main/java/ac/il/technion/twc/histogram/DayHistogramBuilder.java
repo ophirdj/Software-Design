@@ -21,8 +21,6 @@ import com.google.inject.name.Named;
  */
 public class DayHistogramBuilder extends MessagePropertyBuilder<DayHistogram> {
 
-	private final DayHistogram histogram;
-
 	/**
 	 * @param storageHandler
 	 * @param defaultHistogram
@@ -31,27 +29,26 @@ public class DayHistogramBuilder extends MessagePropertyBuilder<DayHistogram> {
 	public DayHistogramBuilder(
 			final StorageHandler<DayHistogram> storageHandler,
 			@Named("default") final DayHistogram defaultHistogram) {
-		super(storageHandler);
-		histogram = storageHandler.load(defaultHistogram);
+		super(storageHandler, defaultHistogram);
 	}
 
 	@Override
 	public Void visit(final BaseTweet t) {
 		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		histogram.basetweets.put(day, histogram.basetweets.get(day) + 1);
+		data.basetweets.put(day, data.basetweets.get(day) + 1);
 		return null;
 	}
 
 	@Override
 	public Void visit(final Retweet t) {
 		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		histogram.retweets.put(day, histogram.retweets.get(day) + 1);
+		data.retweets.put(day, data.retweets.get(day) + 1);
 		return null;
 	}
 
 	@Override
 	protected DayHistogram getResult() {
-		return histogram.prepareStringRepresentation();
+		return data.prepareStringRepresentation();
 	}
 
 }
