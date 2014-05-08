@@ -54,7 +54,6 @@ public class TimeConstraintsTest {
 		$.cleanPersistentData();
 	}
 
-	@Ignore
 	@Test
 	public final void importData() throws Exception {
 		final long start = System.currentTimeMillis();
@@ -64,7 +63,6 @@ public class TimeConstraintsTest {
 				* lines.length, end - start <= 2 * lines.length);
 	}
 
-	@Ignore
 	@Test
 	public final void setupIndex() throws Exception {
 		$.importData(lines);
@@ -75,7 +73,6 @@ public class TimeConstraintsTest {
 				* lines.length / 1000, end - start <= 2 * lines.length / 1000);
 	}
 
-	@Ignore
 	@Test
 	public final void getDailyHistogram() throws Exception {
 		$.importData(lines);
@@ -88,7 +85,6 @@ public class TimeConstraintsTest {
 				- start <= 20);
 	}
 
-	@Ignore
 	@Test
 	public final void getLifeTimeOfTweets() throws Exception {
 		$.importData(lines);

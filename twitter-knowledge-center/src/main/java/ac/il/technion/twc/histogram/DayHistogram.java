@@ -24,11 +24,6 @@ public class DayHistogram {
 	final Map<DayOfWeek, Integer> retweets;
 
 	/**
-	 * String array representing the histogram (used for caching purposes)
-	 */
-	String stringRepresentation[];
-
-	/**
 	 * for gson
 	 */
 	@SuppressWarnings("unused")
@@ -46,7 +41,6 @@ public class DayHistogram {
 			final Map<DayOfWeek, Integer> retweets) {
 		basetweets = tweets;
 		this.retweets = retweets;
-		stringRepresentation = null;
 	}
 
 	/**
@@ -101,34 +95,6 @@ public class DayHistogram {
 		} else if (!retweets.equals(other.retweets))
 			return false;
 		return true;
-	}
-
-	/**
-	 * Prepares the string representation of this this histogram and caches it
-	 * (for performance enhancement).
-	 * 
-	 * @return Histogram with prepared string representation
-	 */
-	DayHistogram prepareStringRepresentation() {
-		stringRepresentation = new String[DayOfWeek.values().length];
-		for (final DayOfWeek day : DayOfWeek.values())
-			stringRepresentation[day.ordinal()] = new StringBuilder()
-					.append(tweets(day)).append(',').append(retweets(day))
-					.toString();
-		return this;
-	}
-
-	/**
-	 * @return A representation of this histogram as an array of strings. Each
-	 *         string in the format of
-	 *         ("<number of tweets (including retweets),number of retweets only>"
-	 *         ), for example: ["100,10","250,20",...,"587,0"]. The 0th index of
-	 *         the array is Sunday.
-	 */
-	public String[] getStringRepresentation() {
-		if (stringRepresentation == null)
-			prepareStringRepresentation();
-		return stringRepresentation;
 	}
 
 }

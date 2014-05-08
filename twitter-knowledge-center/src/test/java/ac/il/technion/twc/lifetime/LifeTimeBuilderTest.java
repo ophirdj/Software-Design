@@ -3,19 +3,17 @@ package ac.il.technion.twc.lifetime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
-import ac.il.technion.twc.lifetime.LifeTimeData.UndefinedTimeException;
+import ac.il.technion.twc.lifetime.LifeTimeCache.UndefinedTimeException;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.BaseTweet;
@@ -33,8 +31,7 @@ import com.google.inject.name.Names;
  */
 public class LifeTimeBuilderTest {
 
-	private LifeTimeBuilder underTest;
-	private final StorageHandler<LifeTimeData> storageHandler;
+	private final LifeTimeBuilder underTest;
 	private final TransitiveRootFinder rootFinder;
 	private final LifeTimeData emptyLifeTime;
 
@@ -44,10 +41,10 @@ public class LifeTimeBuilderTest {
 	// mocking of generic type can't be checked
 	@SuppressWarnings("unchecked")
 	public LifeTimeBuilderTest() {
-		storageHandler = mock(StorageHandler.class);
 		rootFinder = mock(TransitiveRootFinder.class);
 		emptyLifeTime = TwitterKnowledgeCenter.injector.getInstance(Key.get(
 				LifeTimeData.class, Names.named("default")));
+		underTest = new LifeTimeBuilder(rootFinder);
 	}
 
 	/**
@@ -94,13 +91,11 @@ public class LifeTimeBuilderTest {
 				}
 		}
 
-		return new LifeTimeData(new HashMap<ID, Long>(), baseTweets, retweets);
+		return new LifeTimeData(baseTweets, retweets);
 	}
 
 	private void initBuilder(final LifeTimeData storedLifeTime) {
-		when(storageHandler.load(emptyLifeTime)).thenReturn(storedLifeTime);
-		underTest = new LifeTimeBuilder(storageHandler, rootFinder,
-				emptyLifeTime);
+		underTest.initializeFromState(storedLifeTime);
 	}
 
 	/**
@@ -110,7 +105,6 @@ public class LifeTimeBuilderTest {
 	@Test
 	public final void constructorShouldCallStorageHandlerToLoadMap() {
 		initBuilder(emptyLifeTime);
-		verify(storageHandler).load(emptyLifeTime);
 		assertNotNull(underTest);
 	}
 
@@ -121,8 +115,7 @@ public class LifeTimeBuilderTest {
 	@Test
 	public final void constructorShouldUseEmptyLifeTimeReturnedByStorageHandler() {
 		initBuilder(emptyLifeTime);
-		verify(storageHandler).load(emptyLifeTime);
-		assertEquals(emptyLifeTime, underTest.getResult());
+		assertEquals(emptyLifeTime, underTest.getState());
 	}
 
 	/**
@@ -137,14 +130,13 @@ public class LifeTimeBuilderTest {
 			throws NoRootFoundException {
 		final LifeTimeData storedLifeTime = getLifeTimeData(10, 3, 2);
 		initBuilder(storedLifeTime);
-		verify(storageHandler).load(emptyLifeTime);
-		assertEquals(storedLifeTime, underTest.getResult());
+		assertEquals(storedLifeTime, underTest.getState());
 	}
 
 	/**
 	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
 	 * {@link LifeTimeBuilder#visit(Retweet)},
-	 * {@link LifeTimeBuilder#getResult()}
+	 * {@link LifeTimeBuilder#getState()}
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
@@ -163,14 +155,14 @@ public class LifeTimeBuilderTest {
 		when(rootFinder.findRoot(re)).thenReturn(base);
 		underTest.visit(base);
 		underTest.visit(re);
-		assertEquals(Long.valueOf(90 * 60 * 1000),
-				underTest.getResult().get(base.id()));
+		assertEquals(Long.valueOf(90 * 60 * 1000).toString(), underTest
+				.getResultCache().getLifetimeOfTweets(base.id()));
 	}
 
 	/**
 	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
 	 * {@link LifeTimeBuilder#visit(Retweet)},
-	 * {@link LifeTimeBuilder#getResult()}
+	 * {@link LifeTimeBuilder#getState()}
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
@@ -195,14 +187,14 @@ public class LifeTimeBuilderTest {
 		underTest.visit(base);
 		underTest.visit(re);
 		underTest.visit(noRelated);
-		assertEquals(Long.valueOf(24 * 60 * 60 * 1000), underTest.getResult()
-				.get(base.id()));
+		assertEquals(Long.valueOf(24 * 60 * 60 * 1000).toString(), underTest
+				.getResultCache().getLifetimeOfTweets(base.id()));
 	}
 
 	/**
 	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
 	 * {@link LifeTimeBuilder#visit(Retweet)},
-	 * {@link LifeTimeBuilder#getResult()}
+	 * {@link LifeTimeBuilder#getState()}
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
@@ -221,21 +213,22 @@ public class LifeTimeBuilderTest {
 		when(rootFinder.findRoot(re)).thenReturn(base);
 		underTest.visit(base);
 		underTest.visit(re);
-		assertEquals(Long.valueOf(interval),
-				underTest.getResult().get(base.id()));
+		assertEquals(Long.valueOf(interval).toString(), underTest
+				.getResultCache().getLifetimeOfTweets(base.id()));
 	}
 
 	/**
 	 * Test method for {@link LifeTimeBuilder#visit(BaseTweet)},
 	 * {@link LifeTimeBuilder#visit(Retweet)},
-	 * {@link LifeTimeBuilder#getResult()}
+	 * {@link LifeTimeBuilder#getState()}
 	 * 
 	 * @throws NoRootFoundException
 	 *             Never.
+	 * @throws UndefinedTimeException
 	 */
 	@Test
 	public final void lifeTimeShouldBeDeterminedByTheChronologicallyLatestRetweet()
-			throws NoRootFoundException {
+			throws NoRootFoundException, UndefinedTimeException {
 		initBuilder(emptyLifeTime);
 		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
 				10, 00).getTime(), new ID("base"));
@@ -252,8 +245,8 @@ public class LifeTimeBuilderTest {
 		underTest.visit(re1);
 		underTest.visit(re2);
 		underTest.visit(re3);
-		assertEquals(Long.valueOf(4 * 60 * 60 * 1000),
-				underTest.getResult().map.get(base.id()));
+		assertEquals(Long.valueOf(4 * 60 * 60 * 1000).toString(), underTest
+				.getResultCache().getLifetimeOfTweets(base.id()));
 	}
 
 }

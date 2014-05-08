@@ -1,13 +1,10 @@
 package ac.il.technion.twc.lifetime;
 
-import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
-import ac.il.technion.twc.storage.StorageHandler;
+import ac.il.technion.twc.message.visitor.PropertyBuilder;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 
 /**
  * Builder for {@link LifeTimeData}.
@@ -16,53 +13,49 @@ import com.google.inject.name.Named;
  * @author Ophir De Jager
  * 
  */
-public class LifeTimeBuilder extends MessagePropertyBuilder<LifeTimeData> {
+public class LifeTimeBuilder implements
+		PropertyBuilder<LifeTimeData, LifeTimeCache> {
 
+	LifeTimeData metaData;
 	private final TransitiveRootFinder baseTweetFinder;
 
 	/**
-	 * @param storageHandler
-	 *            A storage handler for {@link LifeTimeData}.
 	 * @param rootFinder
 	 *            Finds base tweet for each tweet.
-	 * @param defaultLifeTime
-	 *            Default state of tweets if nothing was loadeds.
 	 */
 	@Inject
-	public LifeTimeBuilder(final StorageHandler<LifeTimeData> storageHandler,
-			final TransitiveRootFinder rootFinder,
-			@Named("default") final LifeTimeData defaultLifeTime) {
-		super(storageHandler, defaultLifeTime);
+	public LifeTimeBuilder(final TransitiveRootFinder rootFinder) {
 		baseTweetFinder = rootFinder;
-		baseTweetFinder.addBaseTweets(data.baseTweets);
-		baseTweetFinder.addRetweets(data.retweets);
+	}
+
+	@Override
+	public void initializeFromState(final LifeTimeData state) {
+		metaData = state;
+		baseTweetFinder.addBaseTweets(metaData.baseTweets);
+		baseTweetFinder.addRetweets(metaData.retweets);
 	}
 
 	@Override
 	public Void visit(final BaseTweet t) {
-		data.baseTweets.add(t);
+		metaData.baseTweets.add(t);
 		baseTweetFinder.addTweet(t);
 		return null;
 	}
 
 	@Override
 	public Void visit(final Retweet t) {
-		data.retweets.add(t);
+		metaData.retweets.add(t);
 		baseTweetFinder.addTweet(t);
 		return null;
 	}
 
 	@Override
-	protected LifeTimeData getResult() {
-		for (final Retweet t : data.retweets)
-			try {
-				final BaseTweet base = baseTweetFinder.findRoot(t);
-				data.map.put(base.id(), Math.max(t.date().getTime()
-						- base.date().getTime(), !data.map.containsKey(base
-						.id()) ? 0L : data.map.get(base.id())));
-			} catch (final NoRootFoundException e) {
-				continue;
-			}
-		return data;
+	public LifeTimeData getState() {
+		return metaData;
+	}
+
+	@Override
+	public LifeTimeCache getResultCache() {
+		return new LifeTimeCache(metaData, baseTweetFinder);
 	}
 }

@@ -2,9 +2,6 @@ package ac.il.technion.twc.histogram;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
@@ -27,8 +24,7 @@ import com.google.inject.name.Names;
  */
 public class DayHistogramBuilderTest {
 
-	private DayHistogramBuilder underTest;
-	private final StorageHandler<DayHistogram> storageHandler;
+	private final DayHistogramBuilder underTest;
 	private final DayHistogram emptyHistogram;
 
 	/**
@@ -37,14 +33,13 @@ public class DayHistogramBuilderTest {
 	// mocking of generic type can't be checked
 	@SuppressWarnings("unchecked")
 	public DayHistogramBuilderTest() {
-		storageHandler = mock(StorageHandler.class);
+		underTest = new DayHistogramBuilder();
 		emptyHistogram = TwitterKnowledgeCenter.injector.getInstance(Key.get(
 				DayHistogram.class, Names.named("default")));
 	}
 
 	private void initBuilder(final DayHistogram storedHistogram) {
-		when(storageHandler.load(emptyHistogram)).thenReturn(storedHistogram);
-		underTest = new DayHistogramBuilder(storageHandler, emptyHistogram);
+		underTest.initializeFromState(storedHistogram);
 	}
 
 	/**
@@ -54,7 +49,6 @@ public class DayHistogramBuilderTest {
 	@Test
 	public final void constructorShouldCallStorageHandlerToLoadHistogram() {
 		initBuilder(emptyHistogram);
-		verify(storageHandler).load(emptyHistogram);
 		assertNotNull(underTest);
 	}
 
@@ -65,8 +59,7 @@ public class DayHistogramBuilderTest {
 	@Test
 	public final void constructorShouldUseEmptyHistogramReturnedByStorageHandler() {
 		initBuilder(emptyHistogram);
-		verify(storageHandler).load(emptyHistogram);
-		assertEquals(emptyHistogram, underTest.getResult());
+		assertEquals(emptyHistogram, underTest.getState());
 	}
 
 	/**
@@ -80,13 +73,12 @@ public class DayHistogramBuilderTest {
 		storedHistogram.basetweets.put(DayOfWeek.SUNDAY, 1);
 		storedHistogram.retweets.put(DayOfWeek.MONDAY, 23);
 		initBuilder(storedHistogram);
-		verify(storageHandler).load(emptyHistogram);
-		assertEquals(storedHistogram, underTest.getResult());
+		assertEquals(storedHistogram, underTest.getState());
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitBaseTweetShouldIncreaseNumberOfTweetsBy1() {
@@ -97,12 +89,12 @@ public class DayHistogramBuilderTest {
 		final DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		final int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet);
-		assertEquals(numTweetsBefore + 1, underTest.getResult().tweets(day));
+		assertEquals(numTweetsBefore + 1, underTest.getState().tweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitBaseTweetShouldNotChangeNumberOfRetweets() {
@@ -113,7 +105,7 @@ public class DayHistogramBuilderTest {
 		final DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		final int numRetweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet);
-		assertEquals(numRetweetsBefore, underTest.getResult().retweets(day));
+		assertEquals(numRetweetsBefore, underTest.getState().retweets(day));
 	}
 
 	/**
@@ -128,7 +120,7 @@ public class DayHistogramBuilderTest {
 		final DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		final int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet);
-		assertEquals(numTweetsBefore + 1, underTest.getResult().tweets(day));
+		assertEquals(numTweetsBefore + 1, underTest.getState().tweets(day));
 	}
 
 	/**
@@ -143,12 +135,12 @@ public class DayHistogramBuilderTest {
 		final DayOfWeek day = DayOfWeek.fromDate(tweet.date());
 		final int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet);
-		assertEquals(numTweetsBefore + 1, underTest.getResult().retweets(day));
+		assertEquals(numTweetsBefore + 1, underTest.getState().retweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitBaseTweetTwiceInEqualDayShouldIncreaseNumberOfTweetsBy2() {
@@ -163,12 +155,12 @@ public class DayHistogramBuilderTest {
 		final int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
-		assertEquals(numTweetsBefore + 2, underTest.getResult().tweets(day));
+		assertEquals(numTweetsBefore + 2, underTest.getState().tweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(Retweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitRetweetTwiceInEqualDayShouldIncreaseNumberOfTweetsBy2() {
@@ -183,12 +175,12 @@ public class DayHistogramBuilderTest {
 		final int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
-		assertEquals(numTweetsBefore + 2, underTest.getResult().tweets(day));
+		assertEquals(numTweetsBefore + 2, underTest.getState().tweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(Retweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitRetweetTwiceInEqualDayShouldIncreaseNumberOfRetweetsBy2() {
@@ -203,13 +195,13 @@ public class DayHistogramBuilderTest {
 		final int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
-		assertEquals(numTweetsBefore + 2, underTest.getResult().retweets(day));
+		assertEquals(numTweetsBefore + 2, underTest.getState().retweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
 	 * {@link DayHistogramBuilder#visit(Retweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitBaseTweetAndRetweetInEqualDayShouldIncreaseNumberOfTweetsBy2() {
@@ -224,13 +216,13 @@ public class DayHistogramBuilderTest {
 		final int numTweetsBefore = emptyHistogram.tweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
-		assertEquals(numTweetsBefore + 2, underTest.getResult().tweets(day));
+		assertEquals(numTweetsBefore + 2, underTest.getState().tweets(day));
 	}
 
 	/**
 	 * Test method for {@link DayHistogramBuilder#visit(BaseTweet)},
 	 * {@link DayHistogramBuilder#visit(Retweet)},
-	 * {@link DayHistogramBuilder#getResult()}
+	 * {@link DayHistogramBuilder#getState()}
 	 */
 	@Test
 	public final void visitBaseTweetAndRetweetInEqualDayShouldIncreaseNumberOfRetweetsBy1() {
@@ -245,7 +237,7 @@ public class DayHistogramBuilderTest {
 		final int numTweetsBefore = emptyHistogram.retweets(day);
 		underTest.visit(tweet1);
 		underTest.visit(tweet2);
-		assertEquals(numTweetsBefore + 1, underTest.getResult().retweets(day));
+		assertEquals(numTweetsBefore + 1, underTest.getState().retweets(day));
 	}
 
 }

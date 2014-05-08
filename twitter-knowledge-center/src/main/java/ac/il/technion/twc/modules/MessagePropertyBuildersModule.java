@@ -7,10 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import ac.il.technion.twc.histogram.DayHistogramBuilder;
-import ac.il.technion.twc.lifetime.LifeTimeBuilder;
+import ac.il.technion.twc.histogram.DayHistogram;
+import ac.il.technion.twc.histogram.DayHistogramCache;
+import ac.il.technion.twc.lifetime.LifeTimeCache;
+import ac.il.technion.twc.lifetime.LifeTimeCacheSerializer;
 import ac.il.technion.twc.lifetime.LifeTimeData;
-import ac.il.technion.twc.lifetime.LifeTimeDataSerializer;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 
 import com.google.gson.Gson;
@@ -45,10 +46,10 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	 * @return All the builders for properties to be calculated
 	 */
 	@Provides
-	List<MessagePropertyBuilder<?>> getPropertyBuilders(
-			final DayHistogramBuilder dayHistogramBuilder,
-			final LifeTimeBuilder lifeTimeBuilder) {
-		final List<MessagePropertyBuilder<?>> $ = new ArrayList<>();
+	List<MessagePropertyBuilder<?, ?>> getPropertyBuilders(
+			final MessagePropertyBuilder<DayHistogram, DayHistogramCache> dayHistogramBuilder,
+			final MessagePropertyBuilder<LifeTimeData, LifeTimeCache> lifeTimeBuilder) {
+		final List<MessagePropertyBuilder<?, ?>> $ = new ArrayList<>();
 		$.add(dayHistogramBuilder);
 		$.add(lifeTimeBuilder);
 		return $;
@@ -69,8 +70,8 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	@Provides
 	@Named("serializer")
 	Gson lifeTimeDataGson() {
-		return new GsonBuilder().registerTypeAdapter(LifeTimeData.class,
-				new LifeTimeDataSerializer()).create();
+		return new GsonBuilder().registerTypeAdapter(LifeTimeCache.class,
+				new LifeTimeCacheSerializer()).create();
 	}
 
 }

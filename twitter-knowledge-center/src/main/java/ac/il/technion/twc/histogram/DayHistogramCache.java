@@ -14,7 +14,14 @@ import com.google.inject.Inject;
  */
 public class DayHistogramCache {
 
-	private final DayHistogram histogram;
+	private final String[] stringRepresentation;
+
+	/**
+	 * For Gson.
+	 */
+	public DayHistogramCache() {
+		stringRepresentation = null;
+	}
 
 	/**
 	 * @param histogram
@@ -22,7 +29,11 @@ public class DayHistogramCache {
 	 */
 	@Inject
 	public DayHistogramCache(final DayHistogram histogram) {
-		this.histogram = histogram;
+		stringRepresentation = new String[DayOfWeek.values().length];
+		for (final DayOfWeek day : DayOfWeek.values())
+			stringRepresentation[day.ordinal()] = new StringBuilder()
+					.append(histogram.tweets(day)).append(',')
+					.append(histogram.retweets(day)).toString();
 	}
 
 	/**
@@ -32,7 +43,7 @@ public class DayHistogramCache {
 	 *         the array is Sunday.
 	 */
 	public String[] getDailyHistogram() {
-		return histogram.getStringRepresentation();
+		return stringRepresentation;
 	}
 
 }

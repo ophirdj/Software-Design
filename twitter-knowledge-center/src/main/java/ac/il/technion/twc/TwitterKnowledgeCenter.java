@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
-import ac.il.technion.twc.lifetime.LifeTimeData.UndefinedTimeException;
+import ac.il.technion.twc.lifetime.LifeTimeCache.UndefinedTimeException;
+import ac.il.technion.twc.lifetime.LifeTimeData;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.Tweet;
 import ac.il.technion.twc.message.tweet.builder.TweetBuilder;
@@ -40,7 +42,7 @@ public class TwitterKnowledgeCenter {
 			new LifeTimeModule());
 
 	private final TweetBuilder tweetBuilder;
-	private List<MessagePropertyBuilder<?>> propertyBuilders;
+	private List<MessagePropertyBuilder<?, ?>> propertyBuilders;
 	private DayHistogramCache dayHistogram;
 	private LifeTimeCache lifeTime;
 
@@ -62,14 +64,14 @@ public class TwitterKnowledgeCenter {
 	 */
 	public void importData(final String[] lines) throws Exception {
 		propertyBuilders = injector.getInstance(Key
-				.get(new TypeLiteral<List<MessagePropertyBuilder<?>>>() {
+				.get(new TypeLiteral<List<MessagePropertyBuilder<?, ?>>>() {
 				}));
 		for (final String line : lines) {
 			final Tweet t = tweetBuilder.parse(line);
-			for (final MessagePropertyBuilder<?> builder : propertyBuilders)
+			for (final MessagePropertyBuilder<?, ?> builder : propertyBuilders)
 				t.accept(builder);
 		}
-		for (final MessagePropertyBuilder<?> builder : propertyBuilders)
+		for (final MessagePropertyBuilder<?, ?> builder : propertyBuilders)
 			builder.saveResult();
 	}
 
@@ -82,8 +84,18 @@ public class TwitterKnowledgeCenter {
 	 *             If for any reason, loading the index failed
 	 */
 	public void setupIndex() throws Exception {
-		dayHistogram = injector.getInstance(DayHistogramCache.class);
-		lifeTime = injector.getInstance(LifeTimeCache.class);
+		dayHistogram = injector
+				.getInstance(
+						Key.get(new TypeLiteral<MessagePropertyBuilder<DayHistogram, DayHistogramCache>>() {
+						})).loadCache(
+						injector.getInstance(Key.get(DayHistogramCache.class,
+								Names.named("default"))));
+		lifeTime = injector
+				.getInstance(
+						Key.get(new TypeLiteral<MessagePropertyBuilder<LifeTimeData, LifeTimeCache>>() {
+						})).loadCache(
+						injector.getInstance(Key.get(LifeTimeCache.class,
+								Names.named("default"))));
 	}
 
 	/**

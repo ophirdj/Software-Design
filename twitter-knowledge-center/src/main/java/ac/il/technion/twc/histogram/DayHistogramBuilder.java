@@ -2,11 +2,7 @@ package ac.il.technion.twc.histogram;
 
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
-import ac.il.technion.twc.storage.StorageHandler;
-
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import ac.il.technion.twc.message.visitor.PropertyBuilder;
 
 /**
  * 
@@ -19,36 +15,38 @@ import com.google.inject.name.Named;
  * 
  *        handling histogram property index building, storing and loading
  */
-public class DayHistogramBuilder extends MessagePropertyBuilder<DayHistogram> {
+public class DayHistogramBuilder implements
+		PropertyBuilder<DayHistogram, DayHistogramCache> {
 
-	/**
-	 * @param storageHandler
-	 * @param defaultHistogram
-	 */
-	@Inject
-	public DayHistogramBuilder(
-			final StorageHandler<DayHistogram> storageHandler,
-			@Named("default") final DayHistogram defaultHistogram) {
-		super(storageHandler, defaultHistogram);
+	DayHistogram histogram;
+
+	@Override
+	public void initializeFromState(final DayHistogram state) {
+		histogram = state;
 	}
 
 	@Override
 	public Void visit(final BaseTweet t) {
 		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		data.basetweets.put(day, data.basetweets.get(day) + 1);
+		histogram.basetweets.put(day, histogram.basetweets.get(day) + 1);
 		return null;
 	}
 
 	@Override
 	public Void visit(final Retweet t) {
 		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		data.retweets.put(day, data.retweets.get(day) + 1);
+		histogram.retweets.put(day, histogram.retweets.get(day) + 1);
 		return null;
 	}
 
 	@Override
-	protected DayHistogram getResult() {
-		return data.prepareStringRepresentation();
+	public DayHistogram getState() {
+		return histogram;
+	}
+
+	@Override
+	public DayHistogramCache getResultCache() {
+		return new DayHistogramCache(histogram);
 	}
 
 }
