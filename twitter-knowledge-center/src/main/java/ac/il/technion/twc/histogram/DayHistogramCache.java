@@ -14,29 +14,25 @@ import com.google.inject.Inject;
  */
 public class DayHistogramCache {
 
-  private final DayHistogram histogram;
+	private final DayHistogram histogram;
 
-  /**
-   * @param histogram
-   *          The histogram for keeping
-   */
-  @Inject
-  public DayHistogramCache(final DayHistogram histogram) {
-    this.histogram = histogram;
-  }
+	/**
+	 * @param histogram
+	 *            The histogram for keeping
+	 */
+	@Inject
+	public DayHistogramCache(final DayHistogram histogram) {
+		this.histogram = histogram;
+	}
 
-  /**
-   * @return An array of strings, each string in the format of
-   *         ("<number of tweets (including retweets),number of retweets only>"
-   *         ), for example: ["100,10","250,20",...,"587,0"]. The 0th index of
-   *         the array is Sunday.
-   */
-  public String[] getDailyHistogram() {
-    final String[] $ = new String[DayOfWeek.values().length];
-    for (final DayOfWeek day : DayOfWeek.values())
-      $[day.ordinal()] =
-          "" + histogram.tweets(day) + "," + histogram.retweets(day);
-    return $;
-  }
+	/**
+	 * @return An array of strings, each string in the format of
+	 *         ("<number of tweets (including retweets),number of retweets only>"
+	 *         ), for example: ["100,10","250,20",...,"587,0"]. The 0th index of
+	 *         the array is Sunday.
+	 */
+	public String[] getDailyHistogram() {
+		return histogram.getStringRepresentation();
+	}
 
 }
