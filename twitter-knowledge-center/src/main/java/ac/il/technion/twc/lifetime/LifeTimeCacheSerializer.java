@@ -34,11 +34,11 @@ public class LifeTimeCacheSerializer implements JsonSerializer<LifeTimeCache>,
 			final JsonDeserializationContext context) throws JsonParseException {
 		// System.out.println("deserialize called");
 		final JsonObject jsonObject = json.getAsJsonObject();
-		final Map<ID, Long> lifeTimeFromId = new HashMap<>();
 		final Map<String, Long> m = context.deserialize(
 				jsonObject.get("lifeTimeFromId"),
 				new TypeToken<HashMap<String, Long>>() {
 				}.getType());
+		final Map<ID, Long> lifeTimeFromId = new HashMap<>();
 		for (final Entry<String, Long> e : m.entrySet())
 			lifeTimeFromId.put(new ID(e.getKey()), e.getValue());
 		return new LifeTimeCache(lifeTimeFromId);

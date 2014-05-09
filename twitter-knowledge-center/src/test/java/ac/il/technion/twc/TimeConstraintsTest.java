@@ -59,8 +59,14 @@ public class TimeConstraintsTest {
 		$.cleanPersistentData();
 	}
 
+	/**
+	 * Test method for {@link TwitterKnowledgeCenter#importData(String[])}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
 	@Test
-	public final void importData() throws Exception {
+	public final void importDataActualTime() throws Exception {
 		final long start = System.currentTimeMillis();
 		$.importData(lines);
 		final long end = System.currentTimeMillis();
@@ -68,8 +74,14 @@ public class TimeConstraintsTest {
 				* lines.length, end - start <= 2 * lines.length);
 	}
 
+	/**
+	 * Test method for {@link TwitterKnowledgeCenter#setupIndex()}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
 	@Test
-	public final void setupIndex() throws Exception {
+	public final void setupIndexActualTime() throws Exception {
 		$.importData(lines);
 		final long start = System.currentTimeMillis();
 		$.setupIndex();
@@ -78,28 +90,41 @@ public class TimeConstraintsTest {
 				* lines.length / 1000, end - start <= 2 * lines.length / 1000);
 	}
 
+	/**
+	 * Test method for {@link TwitterKnowledgeCenter#getDailyHistogram()}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
 	@Test
-	public final void getDailyHistogram() throws Exception {
+	public final void getDailyHistogramActualTime() throws Exception {
 		$.importData(lines);
 		$.setupIndex();
 		final long start = System.currentTimeMillis();
-		for (int i = 0; i < 10000; ++i)
+		for (int i = 0; i < 50000; ++i)
 			$.getDailyHistogram();
 		final long end = System.currentTimeMillis();
-		assertTrue("Took " + (end - start) + " millis instead of 20", end
-				- start <= 20);
+		assertTrue("Took " + (end - start) + " millis instead of 100", end
+				- start <= 100);
 	}
 
+	/**
+	 * Test method for
+	 * {@link TwitterKnowledgeCenter#getLifetimeOfTweets(String)}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
 	@Test
-	public final void getLifeTimeOfTweets() throws Exception {
+	public final void getLifeTimeOfTweetsActualTime() throws Exception {
 		$.importData(lines);
 		$.setupIndex();
 		final long start = System.currentTimeMillis();
-		for (int i = 0; i < 10000; ++i)
+		for (int i = 0; i < 50000; ++i)
 			$.getLifetimeOfTweets("base " + i % BASE_TWEETS);
 		final long end = System.currentTimeMillis();
-		assertTrue("Took " + (end - start) + " millis instead of 20", end
-				- start <= 20);
+		assertTrue("Took " + (end - start) + " millis instead of 100", end
+				- start <= 100);
 	}
 
 	/**
@@ -107,7 +132,6 @@ public class TimeConstraintsTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Ignore
 	@Test(timeout = 2 * linesLengthApproximation)
 	public final void importDataShouldRun2msForEachTweet() throws Exception {
 		tkcImportData.importData(lines);
@@ -118,22 +142,19 @@ public class TimeConstraintsTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Ignore
 	@Test(timeout = (2 * linesLengthApproximation / 1000))
 	public final void setupIndexSouldRun2000nsForEachTweet() throws Exception {
 		tkcSetupIndex.setupIndex();
 	}
 
 	/**
-	 * 
 	 * Test method for {@link TwitterKnowledgeCenter#getDailyHistogram()}
 	 * 
 	 * @throws Exception
 	 */
-	@Ignore
-	@Test(timeout = 20)
+	@Test(timeout = 100)
 	public final void getDailyHistogramSouldRun2000ns() throws Exception {
-		for (int i = 0; i < 10000; ++i)
+		for (int i = 0; i < 50000; ++i)
 			$.getDailyHistogram();
 	}
 
@@ -143,14 +164,10 @@ public class TimeConstraintsTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Ignore
-	@Test(timeout = 20)
+	@Test(timeout = 100)
 	public final void getLifeTimeOfTweetsSouldRun2000ns() throws Exception {
-		int baseTweetNum = 0;
-		for (int i = 0; i < 10000; ++i) {
-			$.getLifetimeOfTweets("base " + baseTweetNum);
-			baseTweetNum = (baseTweetNum + 1) % BASE_TWEETS;
-		}
+		for (int i = 0; i < 50000; ++i)
+			$.getLifetimeOfTweets("base " + i % BASE_TWEETS);
 	}
 
 	/**
