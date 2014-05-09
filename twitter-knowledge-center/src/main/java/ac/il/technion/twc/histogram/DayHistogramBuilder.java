@@ -16,37 +16,40 @@ import ac.il.technion.twc.message.visitor.PropertyBuilder;
  *        handling histogram property index building, storing and loading
  */
 public class DayHistogramBuilder implements
-		PropertyBuilder<DayHistogram, DayHistogramCache> {
+    PropertyBuilder<DayHistogram, DayHistogramCache> {
 
-	DayHistogram histogram;
+  /**
+   * Ongoing histogram state
+   */
+  DayHistogram histogram;
 
-	@Override
-	public void initializeFromState(final DayHistogram state) {
-		histogram = state;
-	}
+  @Override
+  public void initializeFromState(final DayHistogram state) {
+    histogram = state;
+  }
 
-	@Override
-	public Void visit(final BaseTweet t) {
-		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		histogram.basetweets.put(day, histogram.basetweets.get(day) + 1);
-		return null;
-	}
+  @Override
+  public Void visit(final BaseTweet t) {
+    final DayOfWeek day = DayOfWeek.fromDate(t.date());
+    histogram.basetweets.put(day, histogram.basetweets.get(day) + 1);
+    return null;
+  }
 
-	@Override
-	public Void visit(final Retweet t) {
-		final DayOfWeek day = DayOfWeek.fromDate(t.date());
-		histogram.retweets.put(day, histogram.retweets.get(day) + 1);
-		return null;
-	}
+  @Override
+  public Void visit(final Retweet t) {
+    final DayOfWeek day = DayOfWeek.fromDate(t.date());
+    histogram.retweets.put(day, histogram.retweets.get(day) + 1);
+    return null;
+  }
 
-	@Override
-	public DayHistogram getState() {
-		return histogram;
-	}
+  @Override
+  public DayHistogram getState() {
+    return histogram;
+  }
 
-	@Override
-	public DayHistogramCache getResultCache() {
-		return new DayHistogramCache(histogram);
-	}
+  @Override
+  public DayHistogramCache getResultCache() {
+    return new DayHistogramCache(histogram);
+  }
 
 }

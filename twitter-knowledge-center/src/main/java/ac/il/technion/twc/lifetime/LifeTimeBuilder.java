@@ -14,48 +14,51 @@ import com.google.inject.Inject;
  * 
  */
 public class LifeTimeBuilder implements
-		PropertyBuilder<LifeTimeData, LifeTimeCache> {
+    PropertyBuilder<LifeTimeData, LifeTimeCache> {
 
-	LifeTimeData metaData;
-	private final TransitiveRootFinder baseTweetFinder;
+  /**
+   * Ongoing data for life time building
+   */
+  LifeTimeData metaData;
+  private final TransitiveRootFinder baseTweetFinder;
 
-	/**
-	 * @param rootFinder
-	 *            Finds base tweet for each tweet.
-	 */
-	@Inject
-	public LifeTimeBuilder(final TransitiveRootFinder rootFinder) {
-		baseTweetFinder = rootFinder;
-	}
+  /**
+   * @param rootFinder
+   *          Finds base tweet for each tweet.
+   */
+  @Inject
+  public LifeTimeBuilder(final TransitiveRootFinder rootFinder) {
+    baseTweetFinder = rootFinder;
+  }
 
-	@Override
-	public void initializeFromState(final LifeTimeData state) {
-		metaData = state;
-		baseTweetFinder.addBaseTweets(metaData.baseTweets);
-		baseTweetFinder.addRetweets(metaData.retweets);
-	}
+  @Override
+  public void initializeFromState(final LifeTimeData state) {
+    metaData = state;
+    baseTweetFinder.addBaseTweets(metaData.baseTweets);
+    baseTweetFinder.addRetweets(metaData.retweets);
+  }
 
-	@Override
-	public Void visit(final BaseTweet t) {
-		metaData.baseTweets.add(t);
-		baseTweetFinder.addTweet(t);
-		return null;
-	}
+  @Override
+  public Void visit(final BaseTweet t) {
+    metaData.baseTweets.add(t);
+    baseTweetFinder.addTweet(t);
+    return null;
+  }
 
-	@Override
-	public Void visit(final Retweet t) {
-		metaData.retweets.add(t);
-		baseTweetFinder.addTweet(t);
-		return null;
-	}
+  @Override
+  public Void visit(final Retweet t) {
+    metaData.retweets.add(t);
+    baseTweetFinder.addTweet(t);
+    return null;
+  }
 
-	@Override
-	public LifeTimeData getState() {
-		return metaData;
-	}
+  @Override
+  public LifeTimeData getState() {
+    return metaData;
+  }
 
-	@Override
-	public LifeTimeCache getResultCache() {
-		return new LifeTimeCache(metaData, baseTweetFinder);
-	}
+  @Override
+  public LifeTimeCache getResultCache() {
+    return new LifeTimeCache(metaData, baseTweetFinder);
+  }
 }
