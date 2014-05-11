@@ -9,7 +9,7 @@ import ac.il.technion.twc.lifetime.LifeTimeData;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.visitor.PropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 import ac.il.technion.twc.storage.FileHandler;
 import ac.il.technion.twc.storage.StorageHandler;
 
@@ -33,7 +33,7 @@ public class LifeTimeModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(new TypeLiteral<PropertyBuilder<LifeTimeData, LifeTimeCache>>() {
+    bind(new TypeLiteral<MessagePropertyBuilder<LifeTimeData, LifeTimeCache>>() {
     }).to(LifeTimeBuilder.class);
   }
 

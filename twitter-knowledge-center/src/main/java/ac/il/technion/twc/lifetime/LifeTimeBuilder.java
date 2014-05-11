@@ -2,7 +2,7 @@ package ac.il.technion.twc.lifetime;
 
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.visitor.PropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 
 import com.google.inject.Inject;
 
@@ -14,7 +14,7 @@ import com.google.inject.Inject;
  * 
  */
 public class LifeTimeBuilder implements
-    PropertyBuilder<LifeTimeData, LifeTimeCache> {
+    MessagePropertyBuilder<LifeTimeData, LifeTimeCache> {
 
   /**
    * Ongoing data for life time building

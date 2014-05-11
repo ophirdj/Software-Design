@@ -12,7 +12,7 @@ import ac.il.technion.twc.lifetime.LifeTimeCache.UndefinedTimeException;
 import ac.il.technion.twc.message.ID;
 import ac.il.technion.twc.message.tweet.Tweet;
 import ac.il.technion.twc.message.tweet.builder.TweetBuilder;
-import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertySaver;
 import ac.il.technion.twc.modules.DayHistogramModule;
 import ac.il.technion.twc.modules.LifeTimeModule;
 import ac.il.technion.twc.modules.MessagePropertyBuildersModule;
@@ -41,7 +41,7 @@ public class TwitterKnowledgeCenter {
       new LifeTimeModule());
 
   private final TweetBuilder tweetBuilder;
-  private List<MessagePropertyBuilder<?, ?>> propertyBuilders;
+  private List<MessagePropertySaver<?, ?>> propertyBuilders;
   private DayHistogramCache dayHistogram;
   private LifeTimeCache lifeTime;
 
@@ -64,14 +64,14 @@ public class TwitterKnowledgeCenter {
   public void importData(final String[] lines) throws Exception {
     propertyBuilders =
         injector.getInstance(Key
-            .get(new TypeLiteral<List<MessagePropertyBuilder<?, ?>>>() {
+            .get(new TypeLiteral<List<MessagePropertySaver<?, ?>>>() {
             }));
     for (final String line : lines) {
       final Tweet t = tweetBuilder.parse(line);
-      for (final MessagePropertyBuilder<?, ?> builder : propertyBuilders)
+      for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
         t.accept(builder);
     }
-    for (final MessagePropertyBuilder<?, ?> builder : propertyBuilders)
+    for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
       builder.saveResult();
   }
 

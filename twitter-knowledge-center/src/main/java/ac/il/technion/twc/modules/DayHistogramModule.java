@@ -7,7 +7,7 @@ import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayHistogramBuilder;
 import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.histogram.DayOfWeek;
-import ac.il.technion.twc.message.visitor.PropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 import ac.il.technion.twc.storage.FileHandler;
 import ac.il.technion.twc.storage.StorageHandler;
 
@@ -34,7 +34,7 @@ public class DayHistogramModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(
-				new TypeLiteral<PropertyBuilder<DayHistogram, DayHistogramCache>>() {
+				new TypeLiteral<MessagePropertyBuilder<DayHistogram, DayHistogramCache>>() {
 				}).to(DayHistogramBuilder.class);
 	}
 

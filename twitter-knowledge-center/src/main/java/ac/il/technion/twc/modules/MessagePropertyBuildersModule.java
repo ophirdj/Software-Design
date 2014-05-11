@@ -12,7 +12,7 @@ import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
 import ac.il.technion.twc.lifetime.LifeTimeCacheSerializer;
 import ac.il.technion.twc.lifetime.LifeTimeData;
-import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertySaver;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,10 +46,10 @@ public class MessagePropertyBuildersModule extends AbstractModule {
 	 * @return All the builders for properties to be calculated
 	 */
 	@Provides
-	List<MessagePropertyBuilder<?, ?>> getPropertyBuilders(
-			final MessagePropertyBuilder<DayHistogram, DayHistogramCache> dayHistogramBuilder,
-			final MessagePropertyBuilder<LifeTimeData, LifeTimeCache> lifeTimeBuilder) {
-		final List<MessagePropertyBuilder<?, ?>> $ = new ArrayList<>();
+	List<MessagePropertySaver<?, ?>> getPropertyBuilders(
+			final MessagePropertySaver<DayHistogram, DayHistogramCache> dayHistogramBuilder,
+			final MessagePropertySaver<LifeTimeData, LifeTimeCache> lifeTimeBuilder) {
+		final List<MessagePropertySaver<?, ?>> $ = new ArrayList<>();
 		$.add(dayHistogramBuilder);
 		$.add(lifeTimeBuilder);
 		return $;

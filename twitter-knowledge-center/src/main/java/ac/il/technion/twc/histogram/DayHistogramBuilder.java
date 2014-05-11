@@ -2,7 +2,7 @@ package ac.il.technion.twc.histogram;
 
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.visitor.PropertyBuilder;
+import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 
 /**
  * 
@@ -16,7 +16,7 @@ import ac.il.technion.twc.message.visitor.PropertyBuilder;
  *        handling histogram property index building, storing and loading
  */
 public class DayHistogramBuilder implements
-    PropertyBuilder<DayHistogram, DayHistogramCache> {
+    MessagePropertyBuilder<DayHistogram, DayHistogramCache> {
 
   /**
    * Ongoing histogram state
