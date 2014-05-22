@@ -2,8 +2,8 @@ package ac.il.technion.twc.message.tweet;
 
 import java.util.Date;
 
+import ac.il.technion.twc.api.MessageVisitor;
 import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.visitor.MessageVisitor;
 
 /**
  * Tweet that is not a retwwet.

@@ -1,6 +1,6 @@
 package ac.il.technion.twc.message;
 
-import ac.il.technion.twc.message.visitor.MessageVisitor;
+import ac.il.technion.twc.api.MessageVisitor;
 
 /**
  * @author Ophir De Jager

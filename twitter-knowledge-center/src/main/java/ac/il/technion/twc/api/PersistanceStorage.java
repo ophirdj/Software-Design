@@ -42,4 +42,9 @@ public interface PersistanceStorage {
    *          The types of the objects we want to load
    */
   void prepare(Class<?>... types);
+
+  /**
+   * Remove all stored data from system
+   */
+  void clearAll();
 }

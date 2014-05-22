@@ -2,9 +2,9 @@ package ac.il.technion.twc.example;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.api.PersistanceStorage;
-import ac.il.technion.twc.api.TweetsParser;
 import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.TwitterServicesCenterBuilder;
+import ac.il.technion.twc.api.parsers.TweetsParser;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
 import ac.il.technion.twc.api.services.ServiceBuilder;

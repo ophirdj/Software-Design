@@ -1,5 +1,6 @@
-package ac.il.technion.twc.api;
+package ac.il.technion.twc.api.parsers;
 
+import java.text.ParseException;
 import java.util.Collection;
 
 import ac.il.technion.twc.message.tweet.Tweet;
@@ -20,6 +21,8 @@ public interface TweetsParser {
    * @param lines
    *          a string representation of tweets
    * @return a collection of tweets objects corresponding to those tweets.
+   * @throws ParseException
+   *           if the parser can't parse all the given tweets
    */
-  Collection<Tweet> parse(String... lines);
+  Collection<Tweet> parse(String... lines) throws ParseException;
 }

@@ -2,7 +2,7 @@ package ac.il.technion.twc.example.mockClasses;
 
 import java.util.Collection;
 
-import ac.il.technion.twc.api.TweetsParser;
+import ac.il.technion.twc.api.parsers.TweetsParser;
 import ac.il.technion.twc.message.tweet.Tweet;
 
 public class MyParser implements TweetsParser {

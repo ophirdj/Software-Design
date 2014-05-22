@@ -1,5 +1,6 @@
 package ac.il.technion.twc.api.properties;
 
+import ac.il.technion.twc.api.MessageVisitor;
 import ac.il.technion.twc.message.tweet.BaseTweet;
 import ac.il.technion.twc.message.tweet.Retweet;
 
@@ -15,19 +16,13 @@ import ac.il.technion.twc.message.tweet.Retweet;
  * @param <T>
  *          The type of the property
  */
-public interface PropertyBuilder<T> {
+public interface PropertyBuilder<T> extends MessageVisitor<Void> {
 
-  /**
-   * @param t
-   *          a base tweet
-   */
-  void visit(BaseTweet t);
+  @Override
+  Void visit(BaseTweet t);
 
-  /**
-   * @param t
-   *          a retweet
-   */
-  void visit(Retweet t);
+  @Override
+  Void visit(Retweet t);
 
   /**
    * return the builder to basic state

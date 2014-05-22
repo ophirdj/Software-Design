@@ -1,5 +1,6 @@
 package ac.il.technion.twc.message.visitor;
 
+import ac.il.technion.twc.api.MessageVisitor;
 import ac.il.technion.twc.message.Message;
 
 /**

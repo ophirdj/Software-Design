@@ -7,15 +7,13 @@ import ac.il.technion.twc.message.tweet.Retweet;
 public class Buidler1 implements PropertyBuilder<MyProperty> {
 
   @Override
-  public void visit(BaseTweet t) {
-    // TODO Auto-generated method stub
-
+  public Void visit(final BaseTweet t) {
+    return null;
   }
 
   @Override
-  public void visit(Retweet t) {
-    // TODO Auto-generated method stub
-
+  public Void visit(final Retweet t) {
+    return null;
   }
 
   @Override
