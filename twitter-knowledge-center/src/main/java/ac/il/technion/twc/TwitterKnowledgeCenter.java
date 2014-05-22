@@ -33,115 +33,142 @@ import com.google.inject.name.Names;
  */
 public class TwitterKnowledgeCenter {
 
-  /**
-   * injector for the entire project
-   */
-  public static final Injector injector = Guice.createInjector(
-      new MessagePropertyBuildersModule(), new DayHistogramModule(),
-      new LifeTimeModule());
+	/**
+	 * injector for the entire project
+	 */
+	public static final Injector injector = Guice.createInjector(
+			new MessagePropertyBuildersModule(), new DayHistogramModule(),
+			new LifeTimeModule());
 
-  private final TweetBuilder tweetBuilder;
-  private List<MessagePropertySaver<?, ?>> propertyBuilders;
-  private DayHistogramCache dayHistogram;
-  private LifeTimeCache lifeTime;
+	private final TweetBuilder tweetBuilder;
+	private List<MessagePropertySaver<?, ?>> propertyBuilders;
+	private DayHistogramCache dayHistogram;
+	private LifeTimeCache lifeTime;
 
-  /**
-   * C'tor.
-   */
-  public TwitterKnowledgeCenter() {
-    tweetBuilder = injector.getInstance(TweetBuilder.class);
-  }
+	private final API api;
+	private MyService s1;
+	private MyOtherService s2;
 
-  /**
-   * Loads the data from an array of lines
-   * 
-   * @param lines
-   *          An array of lines, each line formatted as <time (dd/MM/yyyy
-   *          HH:mm:ss)>,<tweet id>[,original tweet]
-   * @throws Exception
-   *           If for any reason, handling the data failed
-   */
-  public void importData(final String[] lines) throws Exception {
-    propertyBuilders =
-        injector.getInstance(Key
-            .get(new TypeLiteral<List<MessagePropertySaver<?, ?>>>() {
-            }));
-    for (final String line : lines) {
-      final Tweet t = tweetBuilder.parse(line);
-      for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
-        t.accept(builder);
-    }
-    for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
-      builder.saveResult();
-  }
+	/**
+	 * C'tor.
+	 */
+	public TwitterKnowledgeCenter() {
+		tweetBuilder = injector.getInstance(TweetBuilder.class);
+		final APIBuilder apiBuilder = new APIBuilder();
+		final Builder<MyProperty> b1 = new Buidler1();
+		final Builder<MyProperty> b2 = new Buidler2();
+		final PropertyRetriever<MyProperty> pr1 = apiBuilder
+				.registerBuilder(b1);
+		final PropertyRetriever<MyOtherProperty> pr2 = apiBuilder
+				.registerBuilder(b2);
+		api = apiBuilder.build();
+	}
 
-  /**
-   * Loads the index, allowing for queries on the data that was imported using
-   * {@link TwitterKnowledgeCenter#importData(String[])}. setupIndex will be
-   * called before any queries can be run on the system
-   * 
-   * @throws Exception
-   *           If for any reason, loading the index failed
-   */
-  public void setupIndex() throws Exception {
-    dayHistogram =
-        injector.getInstance(
-            Key.get(new TypeLiteral<StorageHandler<DayHistogramCache>>() {
-            })).load(
-            injector.getInstance(Key.get(new TypeLiteral<DayHistogramCache>() {
-            }, Names.named("default"))));
-    lifeTime =
-        injector.getInstance(
-            Key.get(new TypeLiteral<StorageHandler<LifeTimeCache>>() {
-            })).load(
-            injector.getInstance(Key.get(new TypeLiteral<LifeTimeCache>() {
-            }, Names.named("default"))));
-  }
+	/**
+	 * Loads the data from an array of lines
+	 * 
+	 * @param lines
+	 *            An array of lines, each line formatted as <time (dd/MM/yyyy
+	 *            HH:mm:ss)>,<tweet id>[,original tweet]
+	 * @throws Exception
+	 *             If for any reason, handling the data failed
+	 */
+	public void importData(final String[] lines) throws Exception {
+		propertyBuilders = injector.getInstance(Key
+				.get(new TypeLiteral<List<MessagePropertySaver<?, ?>>>() {
+				}));
+		for (final String line : lines) {
+			final Tweet t = tweetBuilder.parse(line);
+			for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
+				t.accept(builder);
+		}
+		for (final MessagePropertySaver<?, ?> builder : propertyBuilders)
+			builder.saveResult();
 
-  /**
-   * Gets the lifetime of the tweet, in milliseconds.
-   * 
-   * @param tweetId
-   *          The tweet's identifier
-   * @return A string, counting the number of milliseconds between the tweet's
-   *         publication and its last retweet
-   */
-  public String getLifetimeOfTweets(final String tweetId) {
-    try {
-      return lifeTime.getLifetimeOfTweets(new ID(tweetId));
-    } catch (final UndefinedTimeException e) {
-      throw new RuntimeException(e);
-    }
-  }
+		final Parser parser = new MyParser();
+		api.importData(parser.parse(lines));
+		final MyProperty p1 = pr1.get();
+		final MyOtherProperty p2 = pr2.get();
+		final ServiceBuilder<MyService> sb1 = new MyServiceBuilder(p1, p2);
+		final ServiceBuilder<MyOtherService> sb2 = new MyOtherServiceBuilder(p1);
+		api.store(sb1.getService());
+		api.store(sb2.getService());
+	}
 
-  /**
-   * Gets the weekly histogram of all tweet data
-   * 
-   * @return An array of strings, each string in the format of
-   *         ("<number of tweets (including retweets), number of retweets only>"
-   *         ), for example: ["100, 10","250,20",...,"587,0"]. The 0th index of
-   *         the array is Sunday.
-   * @throws Exception
-   *           If it is not possible to complete the operation
-   */
-  public String[] getDailyHistogram() throws Exception {
-    return dayHistogram.getDailyHistogram();
-  }
+	/**
+	 * Loads the index, allowing for queries on the data that was imported using
+	 * {@link TwitterKnowledgeCenter#importData(String[])}. setupIndex will be
+	 * called before any queries can be run on the system
+	 * 
+	 * @throws Exception
+	 *             If for any reason, loading the index failed
+	 */
+	public void setupIndex() throws Exception {
+		dayHistogram = injector.getInstance(
+				Key.get(new TypeLiteral<StorageHandler<DayHistogramCache>>() {
+				})).load(
+				injector.getInstance(Key.get(
+						new TypeLiteral<DayHistogramCache>() {
+						}, Names.named("default"))));
+		lifeTime = injector.getInstance(
+				Key.get(new TypeLiteral<StorageHandler<LifeTimeCache>>() {
+				})).load(
+				injector.getInstance(Key.get(new TypeLiteral<LifeTimeCache>() {
+				}, Names.named("default"))));
 
-  /**
-   * Cleans up all persistent data from the system; this method will be called
-   * before every test, to ensure that all tests are independent.
-   */
-  public void cleanPersistentData() {
-    try {
-      FileUtils.cleanDirectory(injector.getInstance(
-          Key.get(Path.class, Names.named("storage directory"))).toFile());
-      propertyBuilders = null;
-    } catch (final IOException e) {
-      // can't find/clean the folder
-    } catch (final IllegalArgumentException e) {
-      // cache doesn't exist yet
-    }
-  }
+		s1 = api.load(MyService.class);
+		s2 = api.load(MyOtherService.class);
+	}
+
+	/**
+	 * Gets the lifetime of the tweet, in milliseconds.
+	 * 
+	 * @param tweetId
+	 *            The tweet's identifier
+	 * @return A string, counting the number of milliseconds between the tweet's
+	 *         publication and its last retweet
+	 */
+	public String getLifetimeOfTweets(final String tweetId) {
+		try {
+			return lifeTime.getLifetimeOfTweets(new ID(tweetId));
+		} catch (final UndefinedTimeException e) {
+			throw new RuntimeException(e);
+		}
+		return s1.get(tweetId);
+	}
+
+	/**
+	 * Gets the weekly histogram of all tweet data
+	 * 
+	 * @return An array of strings, each string in the format of
+	 *         ("<number of tweets (including retweets), number of retweets only>"
+	 *         ), for example: ["100, 10","250,20",...,"587,0"]. The 0th index
+	 *         of the array is Sunday.
+	 * @throws Exception
+	 *             If it is not possible to complete the operation
+	 */
+	public String[] getDailyHistogram() throws Exception {
+		return dayHistogram.getDailyHistogram();
+		return s2.get();
+	}
+
+	/**
+	 * Cleans up all persistent data from the system; this method will be called
+	 * before every test, to ensure that all tests are independent.
+	 */
+	public void cleanPersistentData() {
+		try {
+			FileUtils.cleanDirectory(injector.getInstance(
+					Key.get(Path.class, Names.named("storage directory")))
+					.toFile());
+			propertyBuilders = null;
+		} catch (final IOException e) {
+			// can't find/clean the folder
+		} catch (final IllegalArgumentException e) {
+			// cache doesn't exist yet
+		}
+
+		api.clearBuilders(); // clears builders + any persistent data
+	}
 
 }
