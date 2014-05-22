@@ -8,6 +8,16 @@ import ac.il.technion.twc.api.TwitterServicesCenterBuilder;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
 import ac.il.technion.twc.api.services.ServiceBuilder;
+import ac.il.technion.twc.example.mockClasses.APIBuilder;
+import ac.il.technion.twc.example.mockClasses.Buidler1;
+import ac.il.technion.twc.example.mockClasses.Buidler2;
+import ac.il.technion.twc.example.mockClasses.MyOtherProperty;
+import ac.il.technion.twc.example.mockClasses.MyOtherService;
+import ac.il.technion.twc.example.mockClasses.MyOtherServiceBuilder;
+import ac.il.technion.twc.example.mockClasses.MyParser;
+import ac.il.technion.twc.example.mockClasses.MyProperty;
+import ac.il.technion.twc.example.mockClasses.MyService;
+import ac.il.technion.twc.example.mockClasses.MyServiceBuilder;
 
 /**
  * This class is meant to act as a wrapper to test your functionality. You

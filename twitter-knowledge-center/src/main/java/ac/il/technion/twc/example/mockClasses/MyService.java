@@ -1,4 +1,4 @@
-package ac.il.technion.twc.example;
+package ac.il.technion.twc.example.mockClasses;
 
 public class MyService {
 

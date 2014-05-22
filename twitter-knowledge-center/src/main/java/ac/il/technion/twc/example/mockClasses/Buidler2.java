@@ -1,4 +1,4 @@
-package ac.il.technion.twc.example;
+package ac.il.technion.twc.example.mockClasses;
 
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.message.tweet.BaseTweet;

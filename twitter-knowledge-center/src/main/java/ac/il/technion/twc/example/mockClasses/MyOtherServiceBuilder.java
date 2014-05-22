@@ -1,11 +1,11 @@
-package ac.il.technion.twc.example;
+package ac.il.technion.twc.example.mockClasses;
 
 import ac.il.technion.twc.api.services.Service;
 import ac.il.technion.twc.api.services.ServiceBuilder;
 
-public class MyServiceBuilder implements ServiceBuilder {
+public class MyOtherServiceBuilder implements ServiceBuilder {
 
-  public MyServiceBuilder(final MyProperty p1, final MyOtherProperty p2) {
+  public MyOtherServiceBuilder(final MyProperty p1) {
     // TODO Auto-generated constructor stub
   }
 

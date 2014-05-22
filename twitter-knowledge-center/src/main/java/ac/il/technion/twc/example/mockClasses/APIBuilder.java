@@ -1,4 +1,4 @@
-package ac.il.technion.twc.example;
+package ac.il.technion.twc.example.mockClasses;
 
 import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.TwitterServicesCenterBuilder;
