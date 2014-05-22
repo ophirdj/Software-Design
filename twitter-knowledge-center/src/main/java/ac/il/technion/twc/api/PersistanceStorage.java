@@ -44,7 +44,8 @@ public interface PersistanceStorage {
   void prepare(Class<?>... types);
 
   /**
-   * Remove all stored data from system
+   * Remove all data that was stored by instance of the same group. The group is
+   * implementation depended.
    */
   void clearAll();
 }

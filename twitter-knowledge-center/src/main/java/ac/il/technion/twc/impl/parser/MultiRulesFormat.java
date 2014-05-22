@@ -5,10 +5,24 @@ import java.util.List;
 
 import ac.il.technion.twc.message.tweet.Tweet;
 
+/**
+ * Format that have multiple rules. Useful for adding new kinds of tweets with
+ * the same format
+ * 
+ * @author Ziv Ronen
+ * @date 22.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class MultiRulesFormat implements ParserFormat {
 
   private final List<ParserFormat> rules;
 
+  /**
+   * @param rules
+   */
   public MultiRulesFormat(final List<ParserFormat> rules) {
     this.rules = rules;
   }

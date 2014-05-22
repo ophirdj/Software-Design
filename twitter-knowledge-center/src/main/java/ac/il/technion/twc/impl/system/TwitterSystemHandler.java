@@ -8,11 +8,25 @@ import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.message.tweet.Tweet;
 
+/**
+ * Used for keeping the tweets data and build the properties
+ * 
+ * @author Ziv Ronen
+ * @date 22.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class TwitterSystemHandler implements TwitterServicesCenter {
 
   private final List<PropertyBuilder<?>> builders;
   private final PersistanceStorage storage;
 
+  /**
+   * @param builders
+   * @param storage
+   */
   public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
       final PersistanceStorage storage) {
     this.builders = builders;

@@ -18,18 +18,32 @@ import ac.il.technion.twc.message.tweet.Tweet;
 public class Tweets {
   private List<Tweet> tweets;
 
+  /**
+   * 
+   */
   public Tweets() {
     tweets = new ArrayList<>();
   }
 
+  /**
+   * @param tweets
+   */
   public Tweets(final List<Tweet> tweets) {
     setTweets(tweets);
   }
 
+  /**
+   * @return the tweets
+   */
   public List<Tweet> getTweets() {
     return tweets;
   }
 
+  /**
+   * set the tweets to the given value
+   * 
+   * @param tweets
+   */
   public void setTweets(final List<Tweet> tweets) {
     this.tweets = tweets;
   }

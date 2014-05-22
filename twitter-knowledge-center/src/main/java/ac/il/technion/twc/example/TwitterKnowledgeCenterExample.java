@@ -111,7 +111,14 @@ public class TwitterKnowledgeCenterExample {
    * before every test, to ensure that all tests are independent.
    */
   public void cleanPersistentData() {
-    api.clearSystem(); // clears builders + any persistent data
+
+    /*
+     * If the api use PersistanceStorage of the same group as storage, the first
+     * call will not be needed in our implementation. However, this can't be
+     * assumed in general.
+     */
+    api.clearSystem(); // clears builders.
+    storage.clearAll(); // clears any persistent data.
   }
 
 }

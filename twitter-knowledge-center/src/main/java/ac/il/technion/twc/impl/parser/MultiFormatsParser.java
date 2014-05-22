@@ -10,11 +10,24 @@ import ac.il.technion.twc.api.parsers.TweetsParser;
 import ac.il.technion.twc.impl.Pair;
 import ac.il.technion.twc.message.tweet.Tweet;
 
-public class ParserImpl implements TweetsParser {
+/**
+ * A parser that support multiple formats
+ * 
+ * @author Ziv Ronen
+ * @date 22.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
+public class MultiFormatsParser implements TweetsParser {
 
   private final List<ParserFormat> formats;
 
-  public ParserImpl(final List<ParserFormat> formats) {
+  /**
+   * @param formats
+   */
+  public MultiFormatsParser(final List<ParserFormat> formats) {
     this.formats = formats;
   }
 
