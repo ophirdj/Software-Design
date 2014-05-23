@@ -19,39 +19,42 @@ import ac.il.technion.twc.api.tweets.Retweet;
  */
 // XXX: maybe it is better to use NavigableSet of the date and calculate
 // DayOfWeek on usage?
-public class DaysMappingBuilder implements
-    PropertyBuilder<NavigableMap<Date, DayOfWeek>> {
+public class DaysMappingBuilder implements PropertyBuilder<DayMapping> {
 
-  private final NavigableMap<Date, DayOfWeek> dayByDate;
+  private final NavigableMap<Date, DayOfWeek> dayByDateBase;
+  private final NavigableMap<Date, DayOfWeek> dayByDateRe;
 
   /**
    * @param map
    */
-  public DaysMappingBuilder(final NavigableMap<Date, DayOfWeek> map) {
-    dayByDate = map;
+  public DaysMappingBuilder(final NavigableMap<Date, DayOfWeek> map1,
+      final NavigableMap<Date, DayOfWeek> map2) {
+    dayByDateBase = map1;
+    dayByDateRe = map2;
   }
 
   @Override
   public Void visit(final BaseTweet t) {
-    dayByDate.put(t.date(), DayOfWeek.fromDate(t.date()));
+    dayByDateBase.put(t.date(), DayOfWeek.fromDate(t.date()));
     return null;
   }
 
   @Override
   public Void visit(final Retweet t) {
-    dayByDate.put(t.date(), DayOfWeek.fromDate(t.date()));
+    dayByDateRe.put(t.date(), DayOfWeek.fromDate(t.date()));
     return null;
   }
 
   @Override
   public void clear() {
-    dayByDate.clear();
+    dayByDateBase.clear();
+    dayByDateRe.clear();
   }
 
   // TODO: create new instance
   @Override
-  public NavigableMap<Date, DayOfWeek> getResult() {
-    return dayByDate;
+  public DayMapping getResult() {
+    return new DayMapping(dayByDateBase, dayByDateRe);
   }
 
 }
