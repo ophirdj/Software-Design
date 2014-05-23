@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
 import ac.il.technion.twc.lifetime.LifeTimeCache.UndefinedTimeException;
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.Tweet;
 import ac.il.technion.twc.message.tweet.builder.TweetBuilder;
 import ac.il.technion.twc.message.visitor.MessagePropertySaver;
 import ac.il.technion.twc.modules.DayHistogramModule;

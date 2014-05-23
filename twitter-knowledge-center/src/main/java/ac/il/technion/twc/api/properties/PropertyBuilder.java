@@ -1,8 +1,8 @@
 package ac.il.technion.twc.api.properties;
 
 import ac.il.technion.twc.api.MessageVisitor;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Build a property form the tweets

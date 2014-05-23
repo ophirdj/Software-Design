@@ -7,8 +7,8 @@ import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayHistogramBuilder;
 import ac.il.technion.twc.histogram.DayHistogramCache;
 import ac.il.technion.twc.histogram.DayOfWeek;
+import ac.il.technion.twc.impl.storage.FileHandler;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
-import ac.il.technion.twc.storage.FileHandler;
 import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.gson.Gson;

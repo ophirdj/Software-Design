@@ -4,10 +4,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;

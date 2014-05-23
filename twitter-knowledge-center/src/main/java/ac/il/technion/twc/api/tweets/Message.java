@@ -1,4 +1,4 @@
-package ac.il.technion.twc.message;
+package ac.il.technion.twc.api.tweets;
 
 import ac.il.technion.twc.api.MessageVisitor;
 

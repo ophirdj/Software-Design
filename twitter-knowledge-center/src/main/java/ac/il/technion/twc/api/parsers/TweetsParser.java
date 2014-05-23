@@ -3,7 +3,7 @@ package ac.il.technion.twc.api.parsers;
 import java.text.ParseException;
 import java.util.Collection;
 
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Parse given tweets

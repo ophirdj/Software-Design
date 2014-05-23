@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ac.il.technion.twc.message.ID;
+import ac.il.technion.twc.api.tweets.ID;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

@@ -1,5 +1,7 @@
 package ac.il.technion.twc.api;
 
+import java.io.IOException;
+
 /**
  * For storing and loading values.
  * 
@@ -19,8 +21,9 @@ public interface PersistanceStorage {
    * 
    * @param service
    *          The object to store.
+   * @throws IOException
    */
-  <T> void store(T service);
+  <T> void store(T service) throws IOException;
 
   /**
    * @param type
@@ -46,6 +49,8 @@ public interface PersistanceStorage {
   /**
    * Remove all data that was stored by instance of the same group. The group is
    * implementation depended.
+   * 
+   * @throws IOException
    */
-  void clearAll();
+  void clearAll() throws IOException;
 }

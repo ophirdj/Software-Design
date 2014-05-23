@@ -3,7 +3,7 @@ package ac.il.technion.twc.impl.parser;
 import java.text.ParseException;
 import java.util.List;
 
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Format that have multiple rules. Useful for adding new kinds of tweets with

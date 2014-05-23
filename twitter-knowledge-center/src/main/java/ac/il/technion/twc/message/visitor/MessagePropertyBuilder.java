@@ -1,7 +1,7 @@
 package ac.il.technion.twc.message.visitor;
 
 import ac.il.technion.twc.api.MessageVisitor;
-import ac.il.technion.twc.message.Message;
+import ac.il.technion.twc.api.tweets.Message;
 
 /**
  * Builder of a specific property of a {@link Message}.

@@ -2,8 +2,8 @@ package ac.il.technion.twc.lifetime;
 
 import java.util.Set;
 
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Returns the life time for each base tweet.

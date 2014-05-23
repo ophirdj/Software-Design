@@ -1,8 +1,9 @@
 package ac.il.technion.twc.api;
 
+import java.io.IOException;
 import java.util.Collection;
 
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Our main api for supporting tweets
@@ -21,12 +22,17 @@ public interface TwitterServicesCenter {
    * 
    * @param parsedTweets
    *          new tweets
+   * @throws IOException
+   *           If storing system state as failed
    */
-  void importData(Collection<Tweet> parsedTweets);
+  // TODO: should be a different exception
+  void importData(Collection<Tweet> parsedTweets) throws IOException;
 
   /**
    * Clear the data from all builders.
+   * 
+   * @throws IOException
    */
-  void clearSystem();
+  void clearSystem() throws IOException;
 
 }

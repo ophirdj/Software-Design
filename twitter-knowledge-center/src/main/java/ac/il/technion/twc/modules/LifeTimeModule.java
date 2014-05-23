@@ -3,14 +3,14 @@ package ac.il.technion.twc.modules;
 import java.nio.file.Path;
 import java.util.HashSet;
 
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.impl.storage.FileHandler;
 import ac.il.technion.twc.lifetime.LifeTimeBuilder;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
 import ac.il.technion.twc.lifetime.LifeTimeData;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
-import ac.il.technion.twc.storage.FileHandler;
 import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.gson.Gson;

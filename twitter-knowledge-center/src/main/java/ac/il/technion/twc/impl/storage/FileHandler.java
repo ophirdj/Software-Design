@@ -1,4 +1,4 @@
-package ac.il.technion.twc.storage;
+package ac.il.technion.twc.impl.storage;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

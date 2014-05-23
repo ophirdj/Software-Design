@@ -1,12 +1,13 @@
 package ac.il.technion.twc.impl.system;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
 import ac.il.technion.twc.api.PersistanceStorage;
 import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Used for keeping the tweets data and build the properties
@@ -34,7 +35,8 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
   }
 
   @Override
-  public void importData(final Collection<Tweet> importedTweets) {
+  public void importData(final Collection<Tweet> importedTweets)
+      throws IOException {
     final List<Tweet> tweets =
         storage.load(Tweets.class, new Tweets()).getTweets();
     tweets.addAll(importedTweets);
@@ -49,7 +51,7 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
   }
 
   @Override
-  public void clearSystem() {
+  public void clearSystem() throws IOException {
     for (final PropertyBuilder<?> builder : builders)
       builder.clear();
     storage.clearAll();

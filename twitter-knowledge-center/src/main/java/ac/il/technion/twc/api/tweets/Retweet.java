@@ -1,9 +1,8 @@
-package ac.il.technion.twc.message.tweet;
+package ac.il.technion.twc.api.tweets;
 
 import java.util.Date;
 
 import ac.il.technion.twc.api.MessageVisitor;
-import ac.il.technion.twc.message.ID;
 
 /**
  * @author Ophir De Jager

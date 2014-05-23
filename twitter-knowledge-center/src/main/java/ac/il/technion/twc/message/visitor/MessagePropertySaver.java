@@ -3,8 +3,8 @@ package ac.il.technion.twc.message.visitor;
 import java.io.IOException;
 
 import ac.il.technion.twc.api.MessageVisitor;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.storage.StorageHandler;
 
 import com.google.inject.Inject;

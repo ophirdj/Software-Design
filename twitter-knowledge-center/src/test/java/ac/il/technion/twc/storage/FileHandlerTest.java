@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import ac.il.technion.twc.impl.storage.FileHandler;
+
 /**
  * Test for FileHandler class
  * 

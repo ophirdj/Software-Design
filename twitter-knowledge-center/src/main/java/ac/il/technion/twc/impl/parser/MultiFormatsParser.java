@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import ac.il.technion.twc.api.parsers.TweetsParser;
+import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.impl.Pair;
-import ac.il.technion.twc.message.tweet.Tweet;
 
 /**
  * A parser that support multiple formats

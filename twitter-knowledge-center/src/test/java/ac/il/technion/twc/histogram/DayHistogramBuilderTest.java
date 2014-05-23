@@ -8,9 +8,9 @@ import java.util.GregorianCalendar;
 import org.junit.Test;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;

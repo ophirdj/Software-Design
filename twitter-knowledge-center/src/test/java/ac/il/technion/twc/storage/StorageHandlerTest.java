@@ -17,12 +17,13 @@ import java.util.Set;
 import org.junit.Test;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayOfWeek;
+import ac.il.technion.twc.impl.storage.FileHandler;
 import ac.il.technion.twc.lifetime.LifeTimeData;
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
 
 import com.google.gson.Gson;
 import com.google.inject.Key;

@@ -3,7 +3,7 @@ package ac.il.technion.twc.impl.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Wrap class for list of tweets.

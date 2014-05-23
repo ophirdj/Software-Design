@@ -1,5 +1,7 @@
 package ac.il.technion.twc.example;
 
+import java.io.IOException;
+
 import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.api.PersistanceStorage;
 import ac.il.technion.twc.api.TwitterServicesCenter;
@@ -117,8 +119,12 @@ public class TwitterKnowledgeCenterExample {
      * call will not be needed in our implementation. However, this can't be
      * assumed in general.
      */
-    api.clearSystem(); // clears builders.
-    storage.clearAll(); // clears any persistent data.
+    try {
+      api.clearSystem(); // clears builders.
+      storage.clearAll(); // clears any persistent data.
+    } catch (final IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

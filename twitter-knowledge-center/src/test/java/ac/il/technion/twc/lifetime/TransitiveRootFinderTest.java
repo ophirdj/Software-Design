@@ -10,10 +10,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.lifetime.TransitiveRootFinder.NoRootFoundException;
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
 
 /**
  * Test for the TransitiveRootFinder class
@@ -60,8 +61,7 @@ public class TransitiveRootFinderTest {
 
   /**
    * Test method for: {@link TransitiveRootFinder#addTweet(Retweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet) )} .
    * 
    * 
    * @throws Exception
@@ -81,8 +81,7 @@ public class TransitiveRootFinderTest {
   /**
    * Test method for: {@link TransitiveRootFinder#addTweet(Retweet)},
    * {@link TransitiveRootFinder#addTweet(BaseTweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -103,8 +102,7 @@ public class TransitiveRootFinderTest {
   /**
    * Test method for: {@link TransitiveRootFinder#addTweet(Retweet)},
    * {@link TransitiveRootFinder#addTweet(BaseTweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -125,8 +123,7 @@ public class TransitiveRootFinderTest {
   /**
    * Test method for: {@link TransitiveRootFinder#addTweet(Retweet)},
    * {@link TransitiveRootFinder#addTweet(BaseTweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -146,8 +143,7 @@ public class TransitiveRootFinderTest {
   /**
    * Test method for: {@link TransitiveRootFinder#addTweet(Retweet)},
    * {@link TransitiveRootFinder#addTweet(BaseTweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -171,8 +167,7 @@ public class TransitiveRootFinderTest {
    * Test method for:
    * {@link TransitiveRootFinder#addRetweets(java.util.Collection)},
    * {@link TransitiveRootFinder#addTweet(BaseTweet)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -197,8 +192,7 @@ public class TransitiveRootFinderTest {
   /**
    * Test method for:
    * {@link TransitiveRootFinder#addRetweets(java.util.Collection)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */
@@ -223,8 +217,7 @@ public class TransitiveRootFinderTest {
    * Test method for:
    * {@link TransitiveRootFinder#addRetweets(java.util.Collection)},
    * {@link TransitiveRootFinder#addBaseTweets(java.util.Collection)},
-   * {@link TransitiveRootFinder#findRoot(ac.il.technion.twc.message.tweet.Tweet)}
-   * .
+   * {@link TransitiveRootFinder#findRoot(Tweet)} .
    * 
    * @throws Exception
    */

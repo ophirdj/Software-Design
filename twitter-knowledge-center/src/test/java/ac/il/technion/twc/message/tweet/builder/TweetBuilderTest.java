@@ -15,10 +15,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
-import ac.il.technion.twc.message.ID;
-import ac.il.technion.twc.message.tweet.BaseTweet;
-import ac.il.technion.twc.message.tweet.Retweet;
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * Tests for {@link TweetBuilder}.

@@ -2,7 +2,7 @@ package ac.il.technion.twc.impl.parser;
 
 import java.text.ParseException;
 
-import ac.il.technion.twc.message.tweet.Tweet;
+import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
  * represent a format of tweet
