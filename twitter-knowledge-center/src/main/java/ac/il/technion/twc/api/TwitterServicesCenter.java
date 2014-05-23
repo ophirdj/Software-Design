@@ -25,7 +25,7 @@ public interface TwitterServicesCenter {
    * @throws IOException
    *           If storing system state as failed
    */
-  // TODO: should be a different exception
+  // TODO: should use a different exception
   void importData(Collection<Tweet> parsedTweets) throws IOException;
 
   /**

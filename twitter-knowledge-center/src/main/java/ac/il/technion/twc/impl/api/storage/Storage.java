@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.storage;
+package ac.il.technion.twc.impl.api.storage;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
 
-import ac.il.technion.twc.api.PersistanceStorage;
+import ac.il.technion.twc.api.storage.PersistanceStorage;
 
 import com.google.gson.Gson;
 
@@ -69,7 +69,7 @@ public class Storage implements PersistanceStorage {
       // It will be wise to limit the time for such operation
       return type.cast(value.get());
     } catch (final InterruptedException e) {
-      // TODO: not sure how to handle that
+      // TODO not sure what to do here
       throw new RuntimeException(e);
     } catch (final ExecutionException e) {
       // TODO: need to handle differently

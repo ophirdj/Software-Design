@@ -1,14 +1,15 @@
-package ac.il.technion.twc.impl.system;
+package ac.il.technion.twc.impl.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
-import ac.il.technion.twc.api.PersistanceStorage;
 import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.TwitterServicesCenterBuilder;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
-import ac.il.technion.twc.impl.properties.PropertyRetrieverFactory;
+import ac.il.technion.twc.api.storage.PersistanceStorage;
+import ac.il.technion.twc.impl.api.properties.PropertyRetrieverFactory;
 
 /**
  * Builder for {@link TwitterSystemHandler}
@@ -25,8 +26,10 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   private final List<PropertyBuilder<?>> builders = new ArrayList<>();
   private final PropertyRetrieverFactory factory;
   private final PersistanceStorage storage;
+  private final ExecutorService threadPool;
 
   /**
+   * @param threadPool
    * @param factory
    *          used for creating the PropertyRetriever when
    *          {@link TwitterSystemBuilder#registerBuilder} is called.
@@ -35,9 +38,10 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
    *          build by this builder will use the same storage.
    */
   public TwitterSystemBuilder(final PropertyRetrieverFactory factory,
-      final PersistanceStorage storage) {
+      final PersistanceStorage storage, final ExecutorService threadPool) {
     this.factory = factory;
     this.storage = storage;
+    this.threadPool = threadPool;
   }
 
   @Override
@@ -49,6 +53,6 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
 
   @Override
   public TwitterServicesCenter getResult() {
-    return new TwitterSystemHandler(builders, storage);
+    return new TwitterSystemHandler(builders, storage, threadPool);
   }
 }

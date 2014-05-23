@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.parser;
+package ac.il.technion.twc.impl.api.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class MultiFormatsParserBuilder {
    *          format to add
    * @return the builder
    */
-  MultiFormatsParserBuilder addFormat(final ParserFormat format) {
+  public MultiFormatsParserBuilder addFormat(final ParserFormat format) {
     formats.add(format);
     return this;
   }
@@ -33,7 +33,7 @@ public class MultiFormatsParserBuilder {
    * @return the parser using all the formats. if several formats are suitable
    *         for all tweets, the result will be of the first added format.
    */
-  TweetsParser getResult() {
+  public TweetsParser getResult() {
     return new MultiFormatsParser(formats);
   }
 }

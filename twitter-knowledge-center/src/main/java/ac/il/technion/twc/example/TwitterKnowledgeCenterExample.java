@@ -3,23 +3,23 @@ package ac.il.technion.twc.example;
 import java.io.IOException;
 
 import ac.il.technion.twc.TwitterKnowledgeCenter;
-import ac.il.technion.twc.api.PersistanceStorage;
 import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.TwitterServicesCenterBuilder;
 import ac.il.technion.twc.api.parsers.TweetsParser;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
-import ac.il.technion.twc.api.services.ServiceBuilder;
+import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.example.mockClasses.APIBuilder;
 import ac.il.technion.twc.example.mockClasses.Buidler1;
 import ac.il.technion.twc.example.mockClasses.Buidler2;
 import ac.il.technion.twc.example.mockClasses.MyOtherProperty;
 import ac.il.technion.twc.example.mockClasses.MyOtherService;
 import ac.il.technion.twc.example.mockClasses.MyOtherServiceBuilder;
-import ac.il.technion.twc.example.mockClasses.MyParser;
 import ac.il.technion.twc.example.mockClasses.MyProperty;
 import ac.il.technion.twc.example.mockClasses.MyService;
 import ac.il.technion.twc.example.mockClasses.MyServiceBuilder;
+import ac.il.technion.twc.impl.api.parser.MultiFormatsParserBuilder;
+import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
 
 /**
  * This class is meant to act as a wrapper to test your functionality. You
@@ -59,12 +59,15 @@ public class TwitterKnowledgeCenterExample {
    *           If for any reason, handling the data failed
    */
   public void importData(final String[] lines) throws Exception {
-    final TweetsParser parser = new MyParser();
+
+    final TweetsParser parser =
+        new MultiFormatsParserBuilder().addFormat(
+            CSFormatUtils.getTweetFormatBuilder().getResult()).getResult();
     api.importData(parser.parse(lines));
     final MyProperty p1 = pr1.retrieve();
     final MyOtherProperty p2 = pr2.retrieve();
-    final ServiceBuilder sb1 = new MyServiceBuilder(p1, p2);
-    final ServiceBuilder sb2 = new MyOtherServiceBuilder(p1);
+    final MyServiceBuilder sb1 = new MyServiceBuilder(p1, p2);
+    final MyOtherServiceBuilder sb2 = new MyOtherServiceBuilder(p1);
     storage.store(sb1.getService());
     storage.store(sb2.getService());
   }

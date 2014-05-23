@@ -31,11 +31,13 @@ import com.google.inject.name.Names;
  * 
  * @author Gal Lalouche
  */
+@SuppressWarnings("deprecation")
 public class TwitterKnowledgeCenter {
 
   /**
    * injector for the entire project
    */
+  @Deprecated
   public static final Injector injector = Guice.createInjector(
       new MessagePropertyBuildersModule(), new DayHistogramModule(),
       new LifeTimeModule());

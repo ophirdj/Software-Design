@@ -21,8 +21,8 @@ import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.histogram.DayHistogram;
-import ac.il.technion.twc.histogram.DayOfWeek;
-import ac.il.technion.twc.impl.storage.FileHandler;
+import ac.il.technion.twc.impl.api.storage.FileHandler;
+import ac.il.technion.twc.impl.properties.DayOfWeek;
 import ac.il.technion.twc.lifetime.LifeTimeData;
 
 import com.google.gson.Gson;

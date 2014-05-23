@@ -8,8 +8,7 @@ import ac.il.technion.twc.api.tweets.Tweet;
 public class MyParser implements TweetsParser {
 
   @Override
-  public Collection<Tweet> parse(String... lines) {
-    // TODO Auto-generated method stub
+  public Collection<Tweet> parse(final String... lines) {
     return null;
   }
 

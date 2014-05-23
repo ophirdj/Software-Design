@@ -2,6 +2,8 @@ package ac.il.technion.twc.histogram;
 
 import java.util.Map;
 
+import ac.il.technion.twc.impl.properties.DayOfWeek;
+
 /**
  * @author Ziv Ronen
  * @date 07.05.2014

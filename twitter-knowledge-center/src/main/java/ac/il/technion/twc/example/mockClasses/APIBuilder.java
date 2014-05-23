@@ -8,14 +8,13 @@ import ac.il.technion.twc.api.properties.PropertyRetriever;
 public class APIBuilder implements TwitterServicesCenterBuilder {
 
   @Override
-  public <T> PropertyRetriever<T> registerBuilder(PropertyBuilder<T> builder) {
-    // TODO Auto-generated method stub
+  public <T> PropertyRetriever<T> registerBuilder(
+      final PropertyBuilder<T> builder) {
     return null;
   }
 
   @Override
   public TwitterServicesCenter getResult() {
-    // TODO Auto-generated method stub
     return null;
   }
 

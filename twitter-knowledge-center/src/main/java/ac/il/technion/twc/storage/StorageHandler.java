@@ -3,7 +3,7 @@ package ac.il.technion.twc.storage;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import ac.il.technion.twc.impl.storage.FileHandler;
+import ac.il.technion.twc.impl.api.storage.FileHandler;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

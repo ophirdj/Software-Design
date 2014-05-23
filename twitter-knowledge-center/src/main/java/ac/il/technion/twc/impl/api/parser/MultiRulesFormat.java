@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.parser;
+package ac.il.technion.twc.impl.api.parser;
 
 import java.text.ParseException;
 import java.util.List;

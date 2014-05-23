@@ -18,13 +18,11 @@ public class Buidler1 implements PropertyBuilder<MyProperty> {
 
   @Override
   public void clear() {
-    // TODO Auto-generated method stub
 
   }
 
   @Override
   public MyProperty getResult() {
-    // TODO Auto-generated method stub
     return null;
   }
 

@@ -1,4 +1,4 @@
-package ac.il.technion.twc.histogram;
+package ac.il.technion.twc.impl.properties;
 
 import java.util.Calendar;
 import java.util.Date;

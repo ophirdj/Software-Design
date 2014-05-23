@@ -6,8 +6,8 @@ import java.util.EnumMap;
 import ac.il.technion.twc.histogram.DayHistogram;
 import ac.il.technion.twc.histogram.DayHistogramBuilder;
 import ac.il.technion.twc.histogram.DayHistogramCache;
-import ac.il.technion.twc.histogram.DayOfWeek;
-import ac.il.technion.twc.impl.storage.FileHandler;
+import ac.il.technion.twc.impl.api.storage.FileHandler;
+import ac.il.technion.twc.impl.properties.DayOfWeek;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 import ac.il.technion.twc.storage.StorageHandler;
 

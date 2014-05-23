@@ -5,11 +5,11 @@ import java.util.HashSet;
 
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.impl.storage.FileHandler;
+import ac.il.technion.twc.impl.api.storage.FileHandler;
+import ac.il.technion.twc.impl.properties.TransitiveRootFinder;
 import ac.il.technion.twc.lifetime.LifeTimeBuilder;
 import ac.il.technion.twc.lifetime.LifeTimeCache;
 import ac.il.technion.twc.lifetime.LifeTimeData;
-import ac.il.technion.twc.lifetime.TransitiveRootFinder;
 import ac.il.technion.twc.message.visitor.MessagePropertyBuilder;
 import ac.il.technion.twc.storage.StorageHandler;
 
@@ -29,12 +29,14 @@ import com.google.inject.name.Named;
  * 
  *        Guice module for life time property
  */
+@Deprecated
 public class LifeTimeModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    bind(new TypeLiteral<MessagePropertyBuilder<LifeTimeData, LifeTimeCache>>() {
-    }).to(LifeTimeBuilder.class);
+    bind(
+        new TypeLiteral<MessagePropertyBuilder<LifeTimeData, LifeTimeCache>>() {
+        }).to(LifeTimeBuilder.class);
   }
 
   /**

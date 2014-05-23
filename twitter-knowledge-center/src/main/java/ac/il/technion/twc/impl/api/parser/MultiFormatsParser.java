@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.parser;
+package ac.il.technion.twc.impl.api.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import ac.il.technion.twc.api.parsers.TweetsParser;
 import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.Pair;
+import ac.il.technion.twc.impl.api.Pair;
 
 /**
  * A parser that support multiple formats
@@ -20,6 +20,7 @@ import ac.il.technion.twc.impl.Pair;
  * @version 2.0
  * @since 2.0
  */
+// TODO: find shorter name
 public class MultiFormatsParser implements TweetsParser {
 
   private final List<ParserFormat> formats;

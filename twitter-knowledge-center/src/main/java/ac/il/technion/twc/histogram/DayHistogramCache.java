@@ -1,5 +1,7 @@
 package ac.il.technion.twc.histogram;
 
+import ac.il.technion.twc.impl.properties.DayOfWeek;
+
 import com.google.inject.Inject;
 
 /**

@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.parser;
+package ac.il.technion.twc.impl.api.parser;
 
 import java.text.ParseException;
 
@@ -30,5 +30,6 @@ public interface ParserFormat {
    *          String represent a tweet
    * @return true if the tweet if from the current format
    */
+  // XXX: I see that most parser don't support that. Maybe we should remove it?
   boolean isFromFormat(String line);
 }

@@ -18,9 +18,15 @@ import ac.il.technion.twc.api.tweets.Retweet;
  */
 public interface PropertyBuilder<T> extends MessageVisitor<Void> {
 
+  /**
+   * Note: must not throw any exception!
+   */
   @Override
   Void visit(BaseTweet t);
 
+  /**
+   * Note: must not throw any exception!
+   */
   @Override
   Void visit(Retweet t);
 
