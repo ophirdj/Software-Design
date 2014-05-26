@@ -8,6 +8,7 @@ import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.impl.properties.TransitiveRootFinder;
 import ac.il.technion.twc.impl.properties.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime.UndefinedTimeException;
 
 /**
  * 
@@ -16,18 +17,6 @@ import ac.il.technion.twc.impl.properties.TransitiveRootFinder.NoRootFoundExcept
  * 
  */
 public class LifeTimeCache {
-
-  /**
-   * Thrown when trying to calculate life time of a tweet that has no
-   * well-defined life time (either because it isn't a base tweet, it doesn't
-   * exist, or ot has no retweets).
-   * 
-   * @author Ophir De Jager
-   * 
-   */
-  public static final class UndefinedTimeException extends Exception {
-    private static final long serialVersionUID = -4180968758763049887L;
-  }
 
   /**
    * Mapping between id and its life time

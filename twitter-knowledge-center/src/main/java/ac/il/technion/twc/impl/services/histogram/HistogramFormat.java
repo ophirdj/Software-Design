@@ -4,9 +4,26 @@ import java.util.Collection;
 
 import ac.il.technion.twc.impl.properties.DayOfWeek;
 
+/**
+ * Build the histogram from a collection of tweets
+ * 
+ * @author Ziv Ronen
+ * @date 26.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class HistogramFormat {
 
-  // TODO: for ophir: improve code quality.
+  // TODO: improve code quality.
+  /**
+   * @param baseTweets
+   *          all the days of base tweets
+   * @param retweets
+   *          all the days of retweets
+   * @return the histogram
+   */
   public String[] buildHistogram(final Collection<DayOfWeek> baseTweets,
       final Collection<DayOfWeek> retweets) {
     final int[] histogram = new int[DayOfWeek.values().length];

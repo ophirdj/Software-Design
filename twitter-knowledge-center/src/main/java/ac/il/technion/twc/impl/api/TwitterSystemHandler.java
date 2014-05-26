@@ -79,7 +79,7 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
   public void clearSystem() throws IOException {
     for (final PropertyBuilder<?> builder : builders)
       builder.clear();
-    storage.clearAll();
+    storage.clear();
   }
 
 }

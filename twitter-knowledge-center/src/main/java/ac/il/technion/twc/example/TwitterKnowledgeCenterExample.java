@@ -124,7 +124,7 @@ public class TwitterKnowledgeCenterExample {
      */
     try {
       api.clearSystem(); // clears builders.
-      storage.clearAll(); // clears any persistent data.
+      storage.clear(); // clears any persistent data.
     } catch (final IOException e) {
       e.printStackTrace();
     }

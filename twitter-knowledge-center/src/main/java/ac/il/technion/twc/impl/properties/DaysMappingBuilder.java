@@ -25,12 +25,13 @@ public class DaysMappingBuilder implements PropertyBuilder<DayMapping> {
   private final NavigableMap<Date, DayOfWeek> dayByDateRe;
 
   /**
-   * @param map
+   * @param dayByDateBase
+   * @param dayByDateRe
    */
-  public DaysMappingBuilder(final NavigableMap<Date, DayOfWeek> map1,
-      final NavigableMap<Date, DayOfWeek> map2) {
-    dayByDateBase = map1;
-    dayByDateRe = map2;
+  public DaysMappingBuilder(final NavigableMap<Date, DayOfWeek> dayByDateBase,
+      final NavigableMap<Date, DayOfWeek> dayByDateRe) {
+    this.dayByDateBase = dayByDateBase;
+    this.dayByDateRe = dayByDateRe;
   }
 
   @Override

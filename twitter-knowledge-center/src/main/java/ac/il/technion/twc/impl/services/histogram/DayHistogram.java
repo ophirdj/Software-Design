@@ -1,10 +1,13 @@
 package ac.il.technion.twc.impl.services.histogram;
 
-import ac.il.technion.twc.TwitterKnowledgeCenter;
+import java.util.ArrayList;
+
+import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.impl.properties.DayMapping;
+import ac.il.technion.twc.impl.properties.DayOfWeek;
 
 /**
- * Service that answer {@link TwitterKnowledgeCenter#getDailyHistogram()} query.
+ * Service that answer {@link FuntionalityTester#getDailyHistogram()} query.
  * 
  * @author Ziv Ronen
  * @date 23.05.2014
@@ -16,6 +19,12 @@ import ac.il.technion.twc.impl.properties.DayMapping;
 public class DayHistogram {
 
   private final String[] answer;
+
+  private DayHistogram(final HistogramFormat format) {
+    answer =
+        format.buildHistogram(new ArrayList<DayOfWeek>(),
+            new ArrayList<DayOfWeek>());
+  }
 
   /**
    * 
@@ -30,10 +39,16 @@ public class DayHistogram {
   }
 
   /**
-   * @return The answer in the correct format
+   * @return histogram of all the tweets in the system
    */
   public String[] get() {
     return answer;
   }
 
+  /**
+   * @return an empty DayHistogram
+   */
+  public static DayHistogram empty() {
+    return new DayHistogram(new HistogramFormat());
+  }
 }

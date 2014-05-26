@@ -52,5 +52,5 @@ public interface PersistanceStorage {
    * 
    * @throws IOException
    */
-  void clearAll() throws IOException;
+  void clear() throws IOException;
 }

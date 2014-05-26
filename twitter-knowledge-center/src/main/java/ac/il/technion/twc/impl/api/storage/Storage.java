@@ -98,7 +98,7 @@ public class Storage implements PersistanceStorage {
   }
 
   @Override
-  public void clearAll() throws IOException {
+  public void clear() throws IOException {
     FileUtils.cleanDirectory(storePath.toFile());
     retriverByType.clear();
   }
