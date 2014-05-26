@@ -11,9 +11,16 @@ import java.util.List;
  */
 public abstract class Tweet implements Message {
 
-  private final Long date;
-  private final ID id;
-  private final List<String> hashtags;
+  private Long date;
+  private ID id;
+  private List<String> hashtags;
+
+  /**
+   * For Gson
+   */
+  private Tweet() {
+
+  }
 
   /**
    * @param date

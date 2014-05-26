@@ -1,5 +1,6 @@
 package ac.il.technion.twc.impl.properties;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,8 @@ import ac.il.technion.twc.api.tweets.Retweet;
  */
 public class IdHashtagsBuilder implements PropertyBuilder<IdHashtags> {
 
-  private Map<ID, List<String>> tagsById;
+  private final Map<ID, List<String>> tagsById =
+      new HashMap<ID, List<String>>();
 
   @Override
   public Void visit(final BaseTweet t) {

@@ -3,6 +3,8 @@ package ac.il.technion.twc.impl.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
@@ -16,36 +18,41 @@ import ac.il.technion.twc.api.tweets.Tweet;
  * @since 2.0
  */
 public class Tweets {
-  private List<Tweet> tweets;
-
-  /**
-   * 
-   */
-  public Tweets() {
-    tweets = new ArrayList<>();
-  }
+  private List<BaseTweet> baseTweets;
+  private List<Retweet> retweets;
 
   /**
    * @param tweets
    */
   public Tweets(final List<Tweet> tweets) {
-    setTweets(tweets);
+    baseTweets = new ArrayList<>();
+    retweets = new ArrayList<>();
+    for (final Tweet tweet : tweets)
+      if (tweet instanceof BaseTweet)
+        baseTweets.add((BaseTweet) tweet);
+      else
+        retweets.add((Retweet) tweet);
   }
 
-  /**
-   * @return the tweets
-   */
-  public List<Tweet> getTweets() {
-    return tweets;
+  public Tweets() {
+    baseTweets = new ArrayList<>();
+    retweets = new ArrayList<>();
   }
 
-  /**
-   * set the tweets to the given value
-   * 
-   * @param tweets
-   */
-  public void setTweets(final List<Tweet> tweets) {
-    this.tweets = tweets;
+  public List<BaseTweet> getBaseTweets() {
+    return baseTweets;
+  }
+
+  public void setBaseTweets(final List<BaseTweet> baseTweets) {
+    this.baseTweets = baseTweets;
+  }
+
+  public List<Retweet> getRetweets() {
+    return retweets;
+  }
+
+  public void setRetweets(final List<Retweet> retweets) {
+    this.retweets = retweets;
   }
 
 }

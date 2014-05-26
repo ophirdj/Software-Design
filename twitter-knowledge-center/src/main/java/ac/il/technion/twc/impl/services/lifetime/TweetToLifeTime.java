@@ -27,10 +27,14 @@ public class TweetToLifeTime {
   /**
    * Mapping between id and its life time
    */
-  private final Map<ID, Long> lifeTimeFromId = new HashMap<ID, Long>();
+  final Map<ID, Long> lifeTimeFromId;
 
   private TweetToLifeTime() {
+    lifeTimeFromId = new HashMap<ID, Long>();
+  }
 
+  TweetToLifeTime(final Map<ID, Long> lifeTimeFromId) {
+    this.lifeTimeFromId = lifeTimeFromId;
   }
 
   /**
@@ -39,6 +43,7 @@ public class TweetToLifeTime {
    */
   public TweetToLifeTime(final TransitiveRootFinder baseTweetFinder,
       final TweetsRetriever tweets) {
+    lifeTimeFromId = new HashMap<ID, Long>();
     for (final Retweet retweet : tweets.getRetweets())
       try {
         final BaseTweet base = baseTweetFinder.findRoot(retweet);

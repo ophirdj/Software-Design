@@ -46,9 +46,12 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
   @Override
   public void importData(final Collection<Tweet> importedTweets)
       throws IOException {
-    final List<Tweet> tweets =
-        storage.load(Tweets.class, new Tweets()).getTweets();
+    final Tweets storedTweets = storage.load(Tweets.class, new Tweets());
+    final List<Tweet> tweets = new ArrayList<>();
     tweets.addAll(importedTweets);
+    tweets.addAll(storedTweets.getBaseTweets());
+    tweets.addAll(storedTweets.getRetweets());
+
     final List<Callable<Void>> buildingTasks = new ArrayList<>();
     for (final PropertyBuilder<?> builder : builders)
       buildingTasks.add(new Callable<Void>() {

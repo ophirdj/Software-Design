@@ -1,6 +1,7 @@
 package ac.il.technion.twc.impl.api.storage;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -73,7 +74,10 @@ public class Storage implements PersistanceStorage {
       throw new RuntimeException(e);
     } catch (final ExecutionException e) {
       // TODO: need to handle differently
-      throw new RuntimeException(e);
+      if (e.getCause() instanceof IOException)
+        return defualt;
+      else
+        throw new RuntimeException(e.getCause());
     }
   }
 
@@ -99,7 +103,8 @@ public class Storage implements PersistanceStorage {
 
   @Override
   public void clear() throws IOException {
-    FileUtils.cleanDirectory(storePath.toFile());
+    if (Files.exists(storePath) && Files.isDirectory(storePath))
+      FileUtils.cleanDirectory(storePath.toFile());
     retriverByType.clear();
   }
 

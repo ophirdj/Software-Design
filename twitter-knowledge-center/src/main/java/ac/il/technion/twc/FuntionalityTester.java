@@ -3,6 +3,7 @@ package ac.il.technion.twc;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
@@ -18,6 +19,7 @@ import ac.il.technion.twc.impl.api.properties.PropertyRetrieverImpl;
 import ac.il.technion.twc.impl.api.storage.FileHandler;
 import ac.il.technion.twc.impl.api.storage.Storage;
 import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
+import ac.il.technion.twc.impl.parsers.jsonFormat.JSONTweetFormat;
 import ac.il.technion.twc.impl.properties.DayMapping;
 import ac.il.technion.twc.impl.properties.DayOfWeek;
 import ac.il.technion.twc.impl.properties.DaysMappingBuilder;
@@ -31,9 +33,10 @@ import ac.il.technion.twc.impl.services.histogram.DayHistogram;
 import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime;
+import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTimeSerializer;
 import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * This class is meant to act as a wrapper to test your functionality. You
@@ -69,8 +72,8 @@ public class FuntionalityTester {
     final TwitterSystemBuilder systemBuilder =
         new TwitterSystemBuilder(
             new PropertyRetrieverImpl.PropertyRetrieverImplFactory(),
-            new Storage(new Gson(), Paths.get("system"), new FileHandler(),
-                Executors.newCachedThreadPool()),
+            new Storage(new GsonBuilder().create(), Paths.get("system"),
+                new FileHandler(), Executors.newCachedThreadPool()),
             Executors.newCachedThreadPool());
     dayMappingRetriever =
         systemBuilder.registerBuilder(new DaysMappingBuilder(
@@ -84,12 +87,17 @@ public class FuntionalityTester {
 
     serviceCenter = systemBuilder.getResult();
     storage =
-        new Storage(new Gson(), Paths.get("services"), new FileHandler(),
+        new Storage(new GsonBuilder()
+            .setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
+            .registerTypeAdapter(TweetToLifeTime.class,
+                new TweetToLifeTimeSerializer()).create(),
+            Paths.get("services"), new FileHandler(),
             Executors.newCachedThreadPool());
 
     parser =
-        new MultiFormatsParserBuilder().addFormat(
-            CSFormatUtils.getTweetFormatBuilder().getResult()).getResult();
+        new MultiFormatsParserBuilder()
+            .addFormat(CSFormatUtils.getTweetFormatBuilder().getResult())
+            .addFormat(new JSONTweetFormat()).getResult();
   }
 
   /**
@@ -102,6 +110,11 @@ public class FuntionalityTester {
    *           If for any reason, handling the data failed
    */
   public void importData(final String[] lines) throws Exception {
+    generalImportLine(lines);
+  }
+
+  private void generalImportLine(final String[] lines) throws IOException,
+      ParseException {
     serviceCenter.importData(parser.parse(lines));
     final DayMapping dayMap = dayMappingRetriever.retrieve();
     final TransitiveRootFinder rootFinder = rootFinderRetriever.retrieve();
@@ -123,7 +136,7 @@ public class FuntionalityTester {
    *           If for any reason, handling the data failed
    */
   public void importDataJson(final String[] lines) throws Exception {
-    throw new UnsupportedOperationException("Not implemented");
+    generalImportLine(lines);
   }
 
   /**
@@ -140,10 +153,10 @@ public class FuntionalityTester {
     histogramService = storage.load(DayHistogram.class, DayHistogram.empty());
     temporalHistogramService =
         storage.load(TemporalHistogram.class, TemporalHistogram.empty());
-    lifeTimeService =
-        storage.load(TweetToLifeTime.class, TweetToLifeTime.empty());
     tagPopularityService =
         storage.load(TagToPopularity.class, TagToPopularity.empty());
+    lifeTimeService =
+        storage.load(TweetToLifeTime.class, TweetToLifeTime.empty());
   }
 
   /**

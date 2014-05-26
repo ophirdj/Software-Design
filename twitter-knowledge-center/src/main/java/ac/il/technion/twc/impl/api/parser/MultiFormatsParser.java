@@ -42,7 +42,8 @@ public class MultiFormatsParser implements TweetsParser {
 
   private static class RunningFormat {
 
-    private List<Pair<ParserFormat, List<Tweet>>> formats;
+    private final List<Pair<ParserFormat, List<Tweet>>> formats =
+        new ArrayList<>();
 
     public RunningFormat(final List<ParserFormat> formats) {
       for (final ParserFormat parserFormat : formats)
