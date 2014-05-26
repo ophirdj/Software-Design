@@ -1,6 +1,6 @@
 package ac.il.technion.twc.impl.parsers.jsonFormat;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,13 +14,13 @@ import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.impl.api.parser.ParserFormat;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
 
 /**
  * Rule for parsing a tweet from json format
@@ -36,78 +36,13 @@ public class JSONTweetFormat implements ParserFormat {
 
   @Override
   public Tweet parse(final String line) throws ParseException {
-    final Gson g =
-        new GsonBuilder().registerTypeAdapter(JsonTweet.class,
-            JsonTweetAdapter()).create();
     try {
-      final JsonTweet tweet = g.fromJson(line, JsonTweet.class);
-      return tweet.prevId == null ? new BaseTweet(tweet.date, tweet.id,
-          tweet.hashtags) : new Retweet(tweet.date, tweet.id, tweet.prevId);
+      return new GsonBuilder()
+          .registerTypeAdapter(Tweet.class, new TweetDeserializer()).create()
+          .fromJson(line, Tweet.class);
     } catch (final JsonSyntaxException e) {
       throw new ParseException(line, 0);
     }
-  }
-
-  private TypeAdapter<JsonTweet> JsonTweetAdapter() {
-    return new TypeAdapter<JsonTweet>() {
-
-      @Override
-      public JsonTweet read(final JsonReader reader) throws IOException {
-        final JsonTweet tweet = new JsonTweet();
-        reader.beginObject();
-        while (reader.hasNext()) {
-          final String name = reader.nextName();
-          if (name.equals("id_str"))
-            tweet.id = new ID(reader.nextString());
-          else if (name.equals("text"))
-            tweet.hashtags = readHashtags(reader.nextString());
-          else if (name.equals("created_at")) {
-            final String dateStr = reader.nextString();
-            try {
-              tweet.date =
-                  new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy",
-                      Locale.ENGLISH).parse(dateStr);
-            } catch (final ParseException e) {
-              // TODO not sure what to do here
-              e.printStackTrace();
-            }
-          } else if (name.equals("in_reply_to_status_id_str")) {
-            if (reader.peek().equals(JsonToken.NULL))
-              reader.nextNull();
-            else
-              tweet.prevId = new ID(reader.nextString());
-          } else
-            reader.skipValue();
-        }
-        reader.endObject();
-        return tweet;
-      }
-
-      private List<String> readHashtags(final String text) {
-        final List<String> $ = new ArrayList<>();
-        for (final String word : text.split(" "))
-          if (word.startsWith("#"))
-            $.add(word.substring(1));
-        return $;
-      }
-
-      @Override
-      public void write(final JsonWriter arg0, final JsonTweet arg1)
-          throws IOException {
-        // Not needed
-      }
-
-    };
-
-  }
-
-  private class JsonTweet {
-
-    protected ID prevId;
-    protected Date date;
-    protected List<String> hashtags = new ArrayList<>();
-    protected ID id;
-
   }
 
   @Override
@@ -117,6 +52,47 @@ public class JSONTweetFormat implements ParserFormat {
       return true;
     } catch (final ParseException e) {
       return false;
+    }
+  }
+
+  private static final class TweetDeserializer implements
+      JsonDeserializer<Tweet> {
+
+    @Override
+    public Tweet deserialize(final JsonElement json, final Type typeOfT,
+        final JsonDeserializationContext context) throws JsonParseException {
+      try {
+        final JsonObject object = json.getAsJsonObject();
+        final ID id = new ID(object.get("id_str").getAsString());
+        final List<String> hashtags =
+            readHashtags(object.get("text").getAsString());
+        ID prevId = null;
+        final JsonElement jsonElement = object.get("in_reply_to_status_id_str");
+        if (jsonElement != null && !jsonElement.isJsonNull())
+          prevId = new ID(jsonElement.getAsString());
+        final Date date =
+            new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.ENGLISH)
+                .parse(object.get("created_at").getAsString());
+        return prevId == null ? new BaseTweet(date, id, hashtags)
+            : new Retweet(date, id, prevId);
+      } catch (final ParseException e) {
+        // TODO not sure what to do here
+        throw new JsonParseException(e);
+
+      } catch (final NullPointerException e) {
+        // TODO not sure what to do here
+        // if one of the needed field (id or date) is not defined
+        throw new JsonParseException(e);
+      }
+
+    }
+
+    private List<String> readHashtags(final String text) {
+      final List<String> $ = new ArrayList<>();
+      for (final String word : text.split(" "))
+        if (word.startsWith("#"))
+          $.add(word.substring(1));
+      return $;
     }
   }
 
