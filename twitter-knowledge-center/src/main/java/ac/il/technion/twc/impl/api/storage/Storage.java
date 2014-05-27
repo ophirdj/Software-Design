@@ -1,7 +1,6 @@
 package ac.il.technion.twc.impl.api.storage;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -10,8 +9,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-
-import org.apache.commons.io.FileUtils;
 
 import ac.il.technion.twc.api.storage.PersistanceStorage;
 
@@ -103,8 +100,7 @@ public class Storage implements PersistanceStorage {
 
   @Override
   public void clear() throws IOException {
-    if (Files.exists(storePath) && Files.isDirectory(storePath))
-      FileUtils.cleanDirectory(storePath.toFile());
+    fileHandling.clear(storePath);
     retriverByType.clear();
   }
 

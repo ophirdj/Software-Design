@@ -2,6 +2,7 @@ package ac.il.technion.twc.impl.properties;
 
 import java.util.Date;
 import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.tweets.BaseTweet;
@@ -23,6 +24,11 @@ public class DaysMappingBuilder implements PropertyBuilder<DayMapping> {
 
   private final NavigableMap<Date, DayOfWeek> dayByDateBase;
   private final NavigableMap<Date, DayOfWeek> dayByDateRe;
+
+  public DaysMappingBuilder() {
+    dayByDateBase = new TreeMap<Date, DayOfWeek>();
+    dayByDateRe = new TreeMap<Date, DayOfWeek>();
+  }
 
   /**
    * @param dayByDateBase

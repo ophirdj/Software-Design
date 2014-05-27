@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.TwitterServicesCenter;
@@ -21,7 +19,6 @@ import ac.il.technion.twc.impl.api.storage.Storage;
 import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JSONTweetFormat;
 import ac.il.technion.twc.impl.properties.DayMapping;
-import ac.il.technion.twc.impl.properties.DayOfWeek;
 import ac.il.technion.twc.impl.properties.DaysMappingBuilder;
 import ac.il.technion.twc.impl.properties.IdHashtags;
 import ac.il.technion.twc.impl.properties.IdHashtagsBuilder;
@@ -76,8 +73,7 @@ public class FuntionalityTester {
                 new FileHandler(), Executors.newCachedThreadPool()),
             Executors.newCachedThreadPool());
     dayMappingRetriever =
-        systemBuilder.registerBuilder(new DaysMappingBuilder(
-            new TreeMap<Date, DayOfWeek>(), new TreeMap<Date, DayOfWeek>()));
+        systemBuilder.registerBuilder(new DaysMappingBuilder());
     rootFinderRetriever =
         systemBuilder.registerBuilder(new TransitivityBuilder());
     idHashtagsRetriever =

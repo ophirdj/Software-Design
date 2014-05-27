@@ -1,6 +1,7 @@
 package ac.il.technion.twc.impl.services.histogram;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.impl.properties.DayMapping;
@@ -50,5 +51,27 @@ public class DayHistogram {
    */
   public static DayHistogram empty() {
     return new DayHistogram(new HistogramFormat());
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(answer);
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final DayHistogram other = (DayHistogram) obj;
+    if (!Arrays.equals(answer, other.answer))
+      return false;
+    return true;
   }
 }

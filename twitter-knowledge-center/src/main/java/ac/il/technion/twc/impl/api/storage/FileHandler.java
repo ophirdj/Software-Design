@@ -6,8 +6,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.io.FileUtils;
+
 /**
- * A wrapping class for actual file storage so we can mock it :)
+ * Handle writing string to file and read it back
  * 
  * @author Ophir De Jager
  * 
@@ -40,6 +42,16 @@ public class FileHandler {
    */
   public String load(final Path storePath) throws IOException {
     return new String(Files.readAllBytes(storePath));
+  }
+
+  /**
+   * @param storePath
+   *          clear the given directory if exist
+   * @throws IOException
+   */
+  public void clear(final Path storePath) throws IOException {
+    if (Files.exists(storePath) && Files.isDirectory(storePath))
+      FileUtils.cleanDirectory(storePath.toFile());
   }
 
 }
