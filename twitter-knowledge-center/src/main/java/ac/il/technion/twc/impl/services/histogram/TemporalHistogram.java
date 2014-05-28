@@ -95,14 +95,14 @@ public class TemporalHistogram {
     for (final Entry<Long, Integer> entry : data) {
       times[i] = entry.getKey();
       amount[i] = entry.getValue();
+      histogram[DayOfWeek.fromDate(new Date(entry.getKey())).ordinal()] +=
+          entry.getValue();
       i++;
       if (i % histogramFrequency == 0) {
         timesHistogram[i / histogramFrequency] = entry.getKey();
         occuarenceHistograms[i / histogramFrequency] =
             Arrays.copyOf(histogram, histogram.length);
       }
-      histogram[DayOfWeek.fromDate(new Date(entry.getKey())).ordinal()] +=
-          entry.getValue();
     }
   }
 
@@ -121,52 +121,55 @@ public class TemporalHistogram {
             occuarenceReHistograms));
   }
 
+  /**
+   * 
+   * @param from
+   * @param to
+   * @param times
+   * @param occurance
+   * @param histogramTime
+   * @param histograms
+   * @return the histogram between from and to (inclusive)
+   */
   private int[] getHistogramBetween(final Date from, final Date to,
       final long[] times, final int[] occurance, final long[] histogramTime,
       final int[][] histograms) {
-    if (0 == times.length)
-      return new int[7];
-    return subHistograms(
-        findHistogramAtTime(to, times, occurance, histogramTime, histograms),
-        findHistogramAtTime(new Date(from.getTime() - 1), times, occurance,
-            histogramTime, histograms));
+    final int[] $ = new int[DayOfWeek.values().length];
+    final int[] toHistogram =
+        findHistogramAtTime(to.getTime(), times, occurance, histogramTime,
+            histograms);
+    // from.getTime() - 1 so we want remove the value in form
+    final int[] fromHistogram =
+        findHistogramAtTime(from.getTime() - 1, times, occurance,
+            histogramTime, histograms);
+    for (int i = 0; i < $.length; i++)
+      $[i] = toHistogram[i] - fromHistogram[i];
+    return $;
   }
 
-  private int[] findHistogramAtTime(final Date time, final long[] times,
+  /**
+   * 
+   * @param time
+   * @return the histogram up to the given time (inclusive)
+   */
+  private int[] findHistogramAtTime(final long time, final long[] times,
       final int[] occurance, final long[] histogramTime,
       final int[][] histograms) {
-    final int index = binarySearch(histogramTime, time.getTime(), true);
-    final int[] histogram =
-        addHistograms(
-            histograms[index],
-            histogramComplete(new Date(histogramTime[index]), time, times,
-                occurance));
-    return histogram;
-  }
-
-  private int[] histogramComplete(final Date from, final Date to,
-      final long[] times, final int[] amounts) {
-    final int[] $ = new int[DayOfWeek.values().length];
-    final int index = binarySearch(times, from.getTime(), false);
-    for (int i = index; i < times.length; i++) {
-      if (times[i] > to.getTime())
+    final int indexPreCalculeted = binarySearch(histogramTime, time, true);
+    // IncompleteHistogram is the histogram up to
+    // histogramTime[indexPreCalculeted] (inclusive)
+    final int[] incompleteHistogram = histograms[indexPreCalculeted];
+    final int[] $ =
+        Arrays.copyOf(incompleteHistogram, incompleteHistogram.length);
+    // histogramTime[indexPreCalculeted] + 1 so we want count
+    // histogramTime[indexPreCalculeted] twice.
+    final int indexCompletion =
+        binarySearch(times, histogramTime[indexPreCalculeted] + 1, false);
+    for (int i = indexCompletion; i < times.length; i++) {
+      if (times[i] > time)
         break;
-      $[DayOfWeek.fromDate(new Date(times[i])).ordinal()] += amounts[i];
+      $[DayOfWeek.fromDate(new Date(times[i])).ordinal()] += occurance[i];
     }
-    return $;
-  }
-
-  private int[] addHistograms(final int[] first, final int[] second) {
-    final int[] $ = new int[DayOfWeek.values().length];
-    for (int i = 0; i < $.length; i++)
-      $[i] = first[i] + second[i];
-    return $;
-  }
-
-  private int[] subHistograms(final int[] first, final int[] second) {
-    final int[] $ = new int[DayOfWeek.values().length];
-    for (int i = 0; i < $.length; i++)
-      $[i] = first[i] - second[i];
     return $;
   }
 
@@ -224,23 +227,15 @@ public class TemporalHistogram {
       return false;
     final TemporalHistogram other = (TemporalHistogram) obj;
     if (format == null) {
-      if (other.format != null) {
-        System.out.println("1");
+      if (other.format != null)
         return false;
-      }
-    } else if (!format.equals(other.format)) {
-      System.out.println("2");
+    } else if (!format.equals(other.format))
       return false;
-    }
-    if (!Arrays.equals(occuarenceBase, other.occuarenceBase)) {
-      System.out.println("3");
+    if (!Arrays.equals(occuarenceBase, other.occuarenceBase))
       return false;
-    }
     if (!Arrays.deepEquals(occuarenceBaseHistograms,
-        other.occuarenceBaseHistograms)) {
-      System.out.println("4");
+        other.occuarenceBaseHistograms))
       return false;
-    }
     if (!Arrays.equals(occuarenceRe, other.occuarenceRe))
       return false;
     if (!Arrays
