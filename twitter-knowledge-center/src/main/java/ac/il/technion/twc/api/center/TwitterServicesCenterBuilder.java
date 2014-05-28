@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api;
+package ac.il.technion.twc.api.center;
 
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;

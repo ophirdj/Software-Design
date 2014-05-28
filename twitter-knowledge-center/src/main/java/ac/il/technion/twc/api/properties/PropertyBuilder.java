@@ -1,8 +1,8 @@
 package ac.il.technion.twc.api.properties;
 
-import ac.il.technion.twc.api.MessageVisitor;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweets.TweetVisitor;
 
 /**
  * Build a property form the tweets
@@ -16,7 +16,7 @@ import ac.il.technion.twc.api.tweets.Retweet;
  * @param <T>
  *          The type of the property
  */
-public interface PropertyBuilder<T> extends MessageVisitor<Void> {
+public interface PropertyBuilder<T> extends TweetVisitor<Void> {
 
   /**
    * Note: must not throw any exception!

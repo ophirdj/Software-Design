@@ -1,8 +1,9 @@
-package ac.il.technion.twc.api.parser;
+package ac.il.technion.twc.api.parser.impl;
 
 import java.text.ParseException;
 import java.util.List;
 
+import ac.il.technion.twc.api.parser.ParserFormat;
 import ac.il.technion.twc.api.tweets.Tweet;
 
 /**

@@ -58,10 +58,12 @@ public class DayHistogram {
   }
 
   /**
+   * @param format
+   *          The format of the answer
    * @return an empty DayHistogram
    */
-  public static DayHistogram empty() {
-    return new DayHistogram(new HistogramFormat());
+  public static DayHistogram empty(final HistogramFormat format) {
+    return new DayHistogram(format);
   }
 
   @Override

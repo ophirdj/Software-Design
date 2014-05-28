@@ -1,14 +1,14 @@
-package ac.il.technion.twc.api.parser;
+package ac.il.technion.twc.api.properties.impl;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import ac.il.technion.twc.api.parser.MultiFormatsParser;
-import ac.il.technion.twc.api.parser.MultiFormatsParserBuilder;
+import ac.il.technion.twc.api.properties.impl.PropertyRetrieverImpl;
 
 /**
- * Tests for {@link MultiFormatsParser} and {@link MultiFormatsParserBuilder}
+ * Test for {@link PropertyRetrieverImpl} and
+ * {@link PropertyRetrieverImpl.PropertyRetrieverImplFactory}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -17,7 +17,7 @@ import ac.il.technion.twc.api.parser.MultiFormatsParserBuilder;
  * @version 2.0
  * @since 2.0
  */
-public class MultiFormatsParserTest {
+public class PropertyRetrieverImplTest {
 
   @Test
   public final void test() {

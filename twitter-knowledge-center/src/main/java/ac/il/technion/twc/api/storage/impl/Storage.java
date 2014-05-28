@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.storage;
+package ac.il.technion.twc.api.storage.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -9,6 +9,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import ac.il.technion.twc.api.storage.PersistanceStorage;
 
 import com.google.gson.Gson;
 

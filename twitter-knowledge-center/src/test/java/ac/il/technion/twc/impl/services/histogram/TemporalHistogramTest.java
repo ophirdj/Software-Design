@@ -79,6 +79,16 @@ public class TemporalHistogramTest {
 
   }
 
+  /**
+   * Test method for {@link TemporalHistogram#empty(HistogramFormat)}
+   */
+  @Test
+  public void emptyHistogramShouldReturnAllZeros() {
+    TemporalHistogram.empty(histogramFormatMock).get(new Date(Long.MIN_VALUE),
+        new Date(Long.MAX_VALUE));
+    verify(histogramFormatMock).formatHistogram(eq(new int[7]), eq(new int[7]));
+  }
+
   @SuppressWarnings("unused")
   // used by JunitParams
       private

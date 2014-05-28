@@ -124,10 +124,11 @@ public class TemporalHistogram {
   }
 
   /**
+   * @param histogramFormat
    * @return An empty {@link TemporalHistogram}
    */
-  public static TemporalHistogram empty() {
-    return new TemporalHistogram(new HistogramFormat());
+  public static TemporalHistogram empty(final HistogramFormat histogramFormat) {
+    return new TemporalHistogram(histogramFormat);
   }
 
   /*

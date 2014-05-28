@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api;
+package ac.il.technion.twc.api.center.impl;
 
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
@@ -15,7 +15,7 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ac.il.technion.twc.api.Tweets;
+import ac.il.technion.twc.api.center.impl.TwitterSystemHandler.Tweets;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;

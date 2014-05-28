@@ -1,9 +1,11 @@
-package ac.il.technion.twc.api;
+package ac.il.technion.twc.api.center.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import ac.il.technion.twc.api.center.TwitterServicesCenter;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
 import ac.il.technion.twc.api.properties.PropertyRetrieverFactory;

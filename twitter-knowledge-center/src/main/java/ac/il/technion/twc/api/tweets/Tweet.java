@@ -9,7 +9,7 @@ import java.util.List;
  * @author Ophir De Jager
  * 
  */
-public abstract class Tweet implements Message {
+public abstract class Tweet {
 
   private final Long date;
   private final ID id;
@@ -41,7 +41,18 @@ public abstract class Tweet implements Message {
     this.hashtags = hashtags;
   }
 
-  @Override
+  /**
+   * For visitor design pattern. Implementing classes should call
+   * <code>visitor.visit(this)</code>.
+   * 
+   * @param visitor
+   * @return Return value of visitor for this message.
+   */
+  public abstract <T> T accept(TweetVisitor<T> visitor);
+
+  /**
+   * @return Message's ID.
+   */
   public ID id() {
     return id;
   }

@@ -2,8 +2,6 @@ package ac.il.technion.twc.api.tweets;
 
 import java.util.Date;
 
-import ac.il.technion.twc.api.MessageVisitor;
-
 /**
  * @author Ophir De Jager
  * 
@@ -29,7 +27,7 @@ public class Retweet extends Tweet {
 	}
 
 	@Override
-	public <T> T accept(final MessageVisitor<T> visitor) {
+	public <T> T accept(final TweetVisitor<T> visitor) {
 		return visitor.visit(this);
 	}
 

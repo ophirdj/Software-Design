@@ -6,15 +6,15 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.concurrent.Executors;
 
-import ac.il.technion.twc.api.TwitterServicesCenter;
-import ac.il.technion.twc.api.TwitterSystemBuilder;
-import ac.il.technion.twc.api.parser.MultiFormatsParserBuilder;
+import ac.il.technion.twc.api.center.TwitterServicesCenter;
+import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder;
 import ac.il.technion.twc.api.parser.TweetsParser;
+import ac.il.technion.twc.api.parser.impl.MultiFormatsParserBuilder;
 import ac.il.technion.twc.api.properties.PropertyRetriever;
-import ac.il.technion.twc.api.properties.PropertyRetrieverImpl;
-import ac.il.technion.twc.api.storage.FileHandler;
+import ac.il.technion.twc.api.properties.impl.PropertyRetrieverImpl;
 import ac.il.technion.twc.api.storage.PersistanceStorage;
-import ac.il.technion.twc.api.storage.Storage;
+import ac.il.technion.twc.api.storage.impl.FileHandler;
+import ac.il.technion.twc.api.storage.impl.Storage;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
@@ -146,9 +146,12 @@ public class FuntionalityTester {
   public void setupIndex() throws Exception {
     storage.prepare(DayHistogram.class, TemporalHistogram.class,
         TagToPopularity.class, TweetToLifeTime.class);
-    histogramService = storage.load(DayHistogram.class, DayHistogram.empty());
+    histogramService =
+        storage.load(DayHistogram.class,
+            DayHistogram.empty(new HistogramFormat()));
     temporalHistogramService =
-        storage.load(TemporalHistogram.class, TemporalHistogram.empty());
+        storage.load(TemporalHistogram.class,
+            TemporalHistogram.empty(new HistogramFormat()));
     tagPopularityService =
         storage.load(TagToPopularity.class, TagToPopularity.empty());
     lifeTimeService =

@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.storage;
+package ac.il.technion.twc.api.storage.impl;
 
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
@@ -25,11 +25,9 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import ac.il.technion.twc.api.Tweets;
-import ac.il.technion.twc.api.storage.FileHandler;
 import ac.il.technion.twc.api.storage.PersistanceStorage;
-import ac.il.technion.twc.api.storage.Storage;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
+import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTimeSerializer;
@@ -114,7 +112,7 @@ public class StorageTest {
       private
       Object[] defualtFromType() {
     return $($(DayHistogram.class), $(TweetToLifeTime.class),
-        $(TemporalHistogram.class), $(TagToPopularity.class), $(Tweets.class));
+        $(TemporalHistogram.class), $(TagToPopularity.class));
   }
 
   /**
@@ -137,11 +135,12 @@ public class StorageTest {
   // used by JunitParams
       private
       Object[] loadFromType() {
-    return $($(DayHistogram.class, DayHistogram.empty()),
-        $(TemporalHistogram.class, TemporalHistogram.empty()),
+    return $(
+        $(DayHistogram.class, DayHistogram.empty(new HistogramFormat())),
+        $(TemporalHistogram.class,
+            TemporalHistogram.empty(new HistogramFormat())),
         $(TweetToLifeTime.class, TweetToLifeTime.empty()),
-        $(TagToPopularity.class, TagToPopularity.empty()),
-        $(Tweets.class, new Tweets()));
+        $(TagToPopularity.class, TagToPopularity.empty()));
   }
 
   /**

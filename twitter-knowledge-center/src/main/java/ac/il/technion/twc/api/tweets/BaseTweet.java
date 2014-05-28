@@ -3,8 +3,6 @@ package ac.il.technion.twc.api.tweets;
 import java.util.Date;
 import java.util.List;
 
-import ac.il.technion.twc.api.MessageVisitor;
-
 /**
  * Tweet that is not a retwwet.
  * 
@@ -31,7 +29,7 @@ public class BaseTweet extends Tweet {
   }
 
   @Override
-  public <T> T accept(final MessageVisitor<T> visitor) {
+  public <T> T accept(final TweetVisitor<T> visitor) {
     return visitor.visit(this);
   }
 

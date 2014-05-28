@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.parser;
+package ac.il.technion.twc.api.parser.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -6,7 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import ac.il.technion.twc.api.Pair;
+import ac.il.technion.twc.api.parser.ParserFormat;
+import ac.il.technion.twc.api.parser.TweetsParser;
 import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
@@ -72,6 +73,28 @@ public class MultiFormatsParser implements TweetsParser {
       }
     }
 
+  }
+
+  private static class Pair<T1, T2> {
+    /**
+     * The first element
+     */
+    public final T1 first;
+    /**
+     * The second element
+     */
+    public final T2 second;
+
+    /**
+     * @param t1
+     *          value for the first element
+     * @param t2
+     *          value for the second element
+     */
+    public Pair(final T1 t1, final T2 t2) {
+      first = t1;
+      second = t2;
+    }
   }
 
 }

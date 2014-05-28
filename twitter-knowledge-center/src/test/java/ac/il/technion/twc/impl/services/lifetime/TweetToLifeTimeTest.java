@@ -48,6 +48,16 @@ public class TweetToLifeTimeTest {
   }
 
   /**
+   * Test method for {@link TweetToLifeTime#empty()}
+   * 
+   * @throws UndefinedTimeException
+   */
+  @Test(expected = UndefinedTimeException.class)
+  public void emptyLifeTimeShouldReturnAllZeros() throws UndefinedTimeException {
+    TweetToLifeTime.empty().getLifeTimeById(new ID("a"));
+  }
+
+  /**
    * init {@literal rootFinderMock} and {@literal tweetsMock} in the following
    * way: <code>numBase</code> base tweets. Each tweet (base or retweet) has
    * <code>numRetweetsForEach</code> retweets, and each retweet has again

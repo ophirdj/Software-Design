@@ -1,7 +1,5 @@
-package ac.il.technion.twc.api;
+package ac.il.technion.twc.api.tweets;
 
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Visitor design pattern for messages (for adding new behaviors)
@@ -15,7 +13,7 @@ import ac.il.technion.twc.api.tweets.Retweet;
  * @param <T>
  *          return value
  */
-public interface MessageVisitor<T> {
+public interface TweetVisitor<T> {
 
   /**
    * @param t

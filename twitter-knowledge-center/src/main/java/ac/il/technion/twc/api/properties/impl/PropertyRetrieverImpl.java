@@ -1,4 +1,8 @@
-package ac.il.technion.twc.api.properties;
+package ac.il.technion.twc.api.properties.impl;
+
+import ac.il.technion.twc.api.properties.PropertyBuilder;
+import ac.il.technion.twc.api.properties.PropertyRetriever;
+import ac.il.technion.twc.api.properties.PropertyRetrieverFactory;
 
 
 /**

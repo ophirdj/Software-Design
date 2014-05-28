@@ -1,7 +1,9 @@
-package ac.il.technion.twc.api.parser;
+package ac.il.technion.twc.api.parser.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ac.il.technion.twc.api.parser.ParserFormat;
 
 /**
  * Builder for {@link MultiRulesFormat}

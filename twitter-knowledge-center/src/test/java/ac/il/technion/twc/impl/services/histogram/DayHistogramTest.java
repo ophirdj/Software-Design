@@ -48,6 +48,15 @@ public class DayHistogramTest {
     histogramFormatMock = mock(HistogramFormat.class);
   }
 
+  /**
+   * Test method for {@link DayHistogram#empty(HistogramFormat)}
+   */
+  @Test
+  public void emptyHistogramShouldReturnAllZeros() {
+    DayHistogram.empty(histogramFormatMock).get();
+    verify(histogramFormatMock).formatHistogram(eq(new int[7]), eq(new int[7]));
+  }
+
   @SuppressWarnings("unused")
   // used by JunitParams
       private
