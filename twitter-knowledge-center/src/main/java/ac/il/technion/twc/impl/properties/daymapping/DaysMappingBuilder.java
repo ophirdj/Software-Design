@@ -1,6 +1,6 @@
 package ac.il.technion.twc.impl.properties.daymapping;
 
-import java.util.Date;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -22,46 +22,53 @@ import ac.il.technion.twc.api.tweets.Retweet;
 // DayOfWeek on usage?
 public class DaysMappingBuilder implements PropertyBuilder<DayMapping> {
 
-  private final NavigableMap<Date, DayOfWeek> dayByDateBase;
-  private final NavigableMap<Date, DayOfWeek> dayByDateRe;
+  private final NavigableMap<Long, Integer> baseOccurencebyTime;
+  private final NavigableMap<Long, Integer> reOccurenceByTime;
 
   public DaysMappingBuilder() {
-    dayByDateBase = new TreeMap<Date, DayOfWeek>();
-    dayByDateRe = new TreeMap<Date, DayOfWeek>();
+    baseOccurencebyTime = new TreeMap<Long, Integer>();
+    reOccurenceByTime = new TreeMap<Long, Integer>();
   }
 
   /**
-   * @param dayByDateBase
-   * @param dayByDateRe
+   * @param baseOccurencebyTime
+   * @param reOccurenceByTime
    */
-  public DaysMappingBuilder(final NavigableMap<Date, DayOfWeek> dayByDateBase,
-      final NavigableMap<Date, DayOfWeek> dayByDateRe) {
-    this.dayByDateBase = dayByDateBase;
-    this.dayByDateRe = dayByDateRe;
+  public DaysMappingBuilder(
+      final NavigableMap<Long, Integer> baseOccurencebyTime,
+      final NavigableMap<Long, Integer> reOccurenceByTime) {
+    this.baseOccurencebyTime = baseOccurencebyTime;
+    this.reOccurenceByTime = reOccurenceByTime;
   }
 
   @Override
   public Void visit(final BaseTweet t) {
-    dayByDateBase.put(t.date(), DayOfWeek.fromDate(t.date()));
+    increaseCounter(t.date().getTime(), baseOccurencebyTime);
     return null;
   }
 
   @Override
   public Void visit(final Retweet t) {
-    dayByDateRe.put(t.date(), DayOfWeek.fromDate(t.date()));
+    increaseCounter(t.date().getTime(), reOccurenceByTime);
     return null;
+  }
+
+  private void increaseCounter(final Long time,
+      final Map<Long, Integer> countersMap) {
+    countersMap.put(time, (!countersMap.containsKey(Long.valueOf(time)) ? 0
+        : countersMap.get(time)) + 1);
   }
 
   @Override
   public void clear() {
-    dayByDateBase.clear();
-    dayByDateRe.clear();
+    baseOccurencebyTime.clear();
+    reOccurenceByTime.clear();
   }
 
   // TODO: create new instance
   @Override
   public DayMapping getResult() {
-    return new DayMapping(dayByDateBase, dayByDateRe);
+    return new DayMapping(baseOccurencebyTime, reOccurenceByTime);
   }
 
 }

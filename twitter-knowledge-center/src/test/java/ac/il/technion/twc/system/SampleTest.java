@@ -1,4 +1,4 @@
-package ac.il.technion.twc;
+package ac.il.technion.twc.system;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -7,8 +7,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ac.il.technion.twc.FuntionalityTester;
+
 public class SampleTest {
   FuntionalityTester $ = new FuntionalityTester();
+
+  // @AfterClass
+  // public static void teardownClass() throws Exception {
+  // final Path path = Paths.get(Storage.class.getCanonicalName());
+  // if (Files.exists(path) && Files.isDirectory(path))
+  // FileUtils.deleteDirectory(path.toFile());
+  // }
 
   @Before
   public void setup() throws Exception {
@@ -55,6 +64,6 @@ public class SampleTest {
     $.setupIndex();
     assertArrayEquals(new String[] { "0,0", "0,0", "0,0", "0,0", "0,0", "0,0",
         "2,1" },
-        $.getTemporalHistogram("04/04/2014 12:00:00", "05/04/2014 12:00:00"));
+        $.getTemporalHistogram("05/04/2014 12:00:00", "05/04/2014 12:00:00"));
   }
 }

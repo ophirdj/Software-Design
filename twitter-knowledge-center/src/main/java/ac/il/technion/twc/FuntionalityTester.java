@@ -17,7 +17,7 @@ import ac.il.technion.twc.impl.api.properties.PropertyRetrieverImpl;
 import ac.il.technion.twc.impl.api.storage.FileHandler;
 import ac.il.technion.twc.impl.api.storage.Storage;
 import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
-import ac.il.technion.twc.impl.parsers.jsonFormat.JSONTweetFormat;
+import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DaysMappingBuilder;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
@@ -70,7 +70,7 @@ public class FuntionalityTester {
         new TwitterSystemBuilder(
             new PropertyRetrieverImpl.PropertyRetrieverImplFactory(),
             new Storage(new GsonBuilder().create(), Paths.get("system"),
-                new FileHandler(), Executors.newCachedThreadPool()),
+                new FileHandler(), Executors.newFixedThreadPool(5)),
             Executors.newCachedThreadPool());
     dayMappingRetriever =
         systemBuilder.registerBuilder(new DaysMappingBuilder());
@@ -88,12 +88,12 @@ public class FuntionalityTester {
             .registerTypeAdapter(TweetToLifeTime.class,
                 new TweetToLifeTimeSerializer()).create(),
             Paths.get("services"), new FileHandler(),
-            Executors.newCachedThreadPool());
+            Executors.newFixedThreadPool(4));
 
     parser =
         new MultiFormatsParserBuilder()
             .addFormat(CSFormatUtils.getTweetFormatBuilder().getResult())
-            .addFormat(new JSONTweetFormat()).getResult();
+            .addFormat(new JsonTweetFormat()).getResult();
   }
 
   /**
@@ -137,15 +137,15 @@ public class FuntionalityTester {
 
   /**
    * Loads the index, allowing for queries on the data that was imported using
-   * {@link TwitterKnowledgeCenter#importData(String[])}. setupIndex will be
-   * called before any queries can be run on the system
+   * {@link FuntionalityTester#importData(String[])}. setupIndex will be called
+   * before any queries can be run on the system
    * 
    * @throws Exception
    *           If for any reason, loading the index failed
    */
   public void setupIndex() throws Exception {
     storage.prepare(DayHistogram.class, TemporalHistogram.class,
-        TweetToLifeTime.class, TagToPopularity.class);
+        TagToPopularity.class, TweetToLifeTime.class);
     histogramService = storage.load(DayHistogram.class, DayHistogram.empty());
     temporalHistogramService =
         storage.load(TemporalHistogram.class, TemporalHistogram.empty());

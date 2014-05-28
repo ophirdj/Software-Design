@@ -45,8 +45,13 @@ public class StorageTest {
     @Override
     public Future<Object> answer(final InvocationOnMock invocation)
         throws Throwable {
+
+      @SuppressWarnings("unchecked")
+      // The call always use Callable<Object>
       final Callable<Object> caller =
           (Callable<Object>) invocation.getArguments()[0];
+      // can't check generic types while mocking
+      @SuppressWarnings("unchecked")
       final Future<Object> $ = mock(Future.class);
       try {
         final Object retVal = caller.call();
@@ -70,11 +75,13 @@ public class StorageTest {
   ExpectedException thrown = ExpectedException.none();
   private final FileHandler fileHandlingMock;
   private final ExecutorService threadPoolMock;
-  final Gson gson;
+  private final Gson gson;
 
   /**
    * C'tor
    */
+  // can't check generic types while mocking
+  @SuppressWarnings("unchecked")
   public StorageTest() {
     fileHandlingMock = mock(FileHandler.class);
     threadPoolMock = mock(ExecutorService.class);

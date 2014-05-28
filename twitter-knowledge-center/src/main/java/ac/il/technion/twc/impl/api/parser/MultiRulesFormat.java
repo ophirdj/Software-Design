@@ -32,7 +32,7 @@ public class MultiRulesFormat implements ParserFormat {
     for (final ParserFormat rule : rules)
       if (rule.isFromFormat(line))
         return rule.parse(line);
-    throw new ParseException(line, 0);
+    throw new ParseException("Bad tweet format: " + line, 0);
   }
 
   @Override

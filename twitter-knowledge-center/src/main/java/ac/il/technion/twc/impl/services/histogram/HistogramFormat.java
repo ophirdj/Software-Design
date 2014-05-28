@@ -1,7 +1,5 @@
 package ac.il.technion.twc.impl.services.histogram;
 
-import java.util.Collection;
-
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
 /**
@@ -16,34 +14,22 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  */
 public class HistogramFormat {
 
-  // TODO: improve code quality.
   /**
-   * @param baseTweets
-   *          all the days of base tweets
-   * @param retweets
-   *          all the days of retweets
-   * @return the histogram
+   * @param histogramBase
+   *          histogram of base tweets
+   * @param histogramRe
+   *          histogram of retweets
+   * @return the histogram as should be returned to the client
    */
-  public String[] buildHistogram(final Collection<DayOfWeek> baseTweets,
-      final Collection<DayOfWeek> retweets) {
-    final int[] histogram = new int[DayOfWeek.values().length];
-    for (int i = 0; i < histogram.length; i++)
-      histogram[i] = 0;
-    final int[] histogramRe = new int[DayOfWeek.values().length];
-    for (int i = 0; i < histogramRe.length; i++)
-      histogramRe[i] = 0;
-    for (final DayOfWeek day : baseTweets)
-      histogram[day.ordinal()]++;
-    for (final DayOfWeek day : retweets) {
-      histogram[day.ordinal()]++;
-      histogramRe[day.ordinal()]++;
-    }
+  public String[] formatHistogram(final int[] histogramBase,
+      final int[] histogramRe) {
 
     final String[] $ = new String[DayOfWeek.values().length];
     for (final DayOfWeek day : DayOfWeek.values())
       $[day.ordinal()] =
-          new StringBuilder().append(histogram[day.ordinal()]).append(',')
-              .append(histogramRe[day.ordinal()]).toString();
+          new StringBuilder()
+              .append(histogramBase[day.ordinal()] + histogramRe[day.ordinal()])
+              .append(',').append(histogramRe[day.ordinal()]).toString();
     return $;
   }
 

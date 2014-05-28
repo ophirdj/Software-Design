@@ -1,7 +1,9 @@
 package ac.il.technion.twc.impl.services.histogram;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map.Entry;
 
 import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
@@ -23,8 +25,8 @@ public class DayHistogram {
 
   private DayHistogram(final HistogramFormat format) {
     answer =
-        format.buildHistogram(new ArrayList<DayOfWeek>(),
-            new ArrayList<DayOfWeek>());
+        format.formatHistogram(new int[DayOfWeek.values().length],
+            new int[DayOfWeek.values().length]);
   }
 
   /**
@@ -34,9 +36,18 @@ public class DayHistogram {
    */
   public DayHistogram(final DayMapping dayMapProperty,
       final HistogramFormat format) {
+
     answer =
-        format.buildHistogram(dayMapProperty.getAllDaysBase(),
-            dayMapProperty.getAllDaysRe());
+        format.formatHistogram(makeHistogram(dayMapProperty.getAllDaysBase()),
+            makeHistogram(dayMapProperty.getAllDaysRe()));
+  }
+
+  private int[] makeHistogram(final Collection<Entry<Long, Integer>> samples) {
+    final int[] $ = new int[DayOfWeek.values().length];
+    for (final Entry<Long, Integer> entry : samples)
+      $[DayOfWeek.fromDate(new Date(entry.getKey())).ordinal()] +=
+          entry.getValue();
+    return $;
   }
 
   /**

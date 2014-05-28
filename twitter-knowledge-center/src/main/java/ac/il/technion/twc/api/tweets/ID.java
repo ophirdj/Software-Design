@@ -50,4 +50,9 @@ public class ID {
     return string.matches("[A-Za-z0-9]+");
   }
 
+  @Override
+  public String toString() {
+    return "ID [id=" + id + "]";
+  }
+
 }

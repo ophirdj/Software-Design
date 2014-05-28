@@ -14,13 +14,13 @@ import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.impl.api.parser.ParserFormat;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 
 /**
  * Rule for parsing a tweet from json format
@@ -32,16 +32,19 @@ import com.google.gson.JsonSyntaxException;
  * @version 2.0
  * @since 2.0
  */
-public class JSONTweetFormat implements ParserFormat {
+public class JsonTweetFormat implements ParserFormat {
+
+  private final Gson gson = new GsonBuilder().registerTypeAdapter(Tweet.class,
+      new TweetDeserializer()).create();
 
   @Override
   public Tweet parse(final String line) throws ParseException {
+    if (null == line || line.equals(""))
+      throw new ParseException("Bad tweet format: " + line, 0);
     try {
-      return new GsonBuilder()
-          .registerTypeAdapter(Tweet.class, new TweetDeserializer()).create()
-          .fromJson(line, Tweet.class);
-    } catch (final JsonSyntaxException e) {
-      throw new ParseException(line, 0);
+      return gson.fromJson(line, Tweet.class);
+    } catch (final JsonParseException e) {
+      throw new ParseException("Bad tweet format: " + line, 0);
     }
   }
 

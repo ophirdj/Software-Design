@@ -1,8 +1,8 @@
 package ac.il.technion.twc.impl.properties.daymapping;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.NavigableMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A mapping between dates of tweets and the day
@@ -16,15 +16,15 @@ import java.util.NavigableMap;
  */
 public class DayMapping {
 
-  private final NavigableMap<Date, DayOfWeek> dayByDateBase;
-  private final NavigableMap<Date, DayOfWeek> dayByDateRe;
+  private final Map<Long, Integer> dayByDateBase;
+  private final Map<Long, Integer> dayByDateRe;
 
   /**
    * @param dayByDateBase
    * @param dayByDateRe
    */
-  public DayMapping(final NavigableMap<Date, DayOfWeek> dayByDateBase,
-      final NavigableMap<Date, DayOfWeek> dayByDateRe) {
+  public DayMapping(final Map<Long, Integer> dayByDateBase,
+      final Map<Long, Integer> dayByDateRe) {
     this.dayByDateBase = dayByDateBase;
     this.dayByDateRe = dayByDateRe;
   }
@@ -32,36 +32,15 @@ public class DayMapping {
   /**
    * @return all the days of base tweets
    */
-  public Collection<DayOfWeek> getAllDaysBase() {
-    return dayByDateBase.values();
-  }
-
-  /**
-   * @param from
-   *          The beginning of the time
-   * @param to
-   *          The end of the time
-   * @return all the days of base tweets that happened in the given time
-   */
-  public Collection<DayOfWeek> getAllDaysBase(final Date from, final Date to) {
-    return dayByDateBase.subMap(from, true, to, true).values();
+  public Set<Entry<Long, Integer>> getAllDaysBase() {
+    return dayByDateBase.entrySet();
   }
 
   /**
    * @return all the days of retweets
    */
-  public Collection<DayOfWeek> getAllDaysRe() {
-    return dayByDateRe.values();
+  public Set<Entry<Long, Integer>> getAllDaysRe() {
+    return dayByDateRe.entrySet();
   }
 
-  /**
-   * @param from
-   *          The beginning of the time
-   * @param to
-   *          The end of the time
-   * @return all the days of retweets that happened in the given time
-   */
-  public Collection<DayOfWeek> getAllDaysRe(final Date from, final Date to) {
-    return dayByDateRe.subMap(from, true, to, true).values();
-  }
 }
