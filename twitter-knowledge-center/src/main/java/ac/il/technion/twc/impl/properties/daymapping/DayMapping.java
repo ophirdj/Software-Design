@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.properties;
+package ac.il.technion.twc.impl.properties.daymapping;
 
 import java.util.Collection;
 import java.util.Date;

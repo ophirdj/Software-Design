@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.properties;
+package ac.il.technion.twc.impl.properties.tweetsretriever;
 
 import java.util.List;
 

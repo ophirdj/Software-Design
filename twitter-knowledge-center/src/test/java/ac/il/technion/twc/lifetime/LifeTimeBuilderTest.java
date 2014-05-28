@@ -16,8 +16,8 @@ import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.impl.properties.TransitiveRootFinder;
-import ac.il.technion.twc.impl.properties.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
+import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime.UndefinedTimeException;
 
 import com.google.inject.Key;

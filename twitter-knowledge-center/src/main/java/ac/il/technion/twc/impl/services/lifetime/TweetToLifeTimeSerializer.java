@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.lifetime.LifeTimeCache;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

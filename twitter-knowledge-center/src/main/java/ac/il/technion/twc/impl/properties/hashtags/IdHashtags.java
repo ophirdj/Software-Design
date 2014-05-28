@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.properties;
+package ac.il.technion.twc.impl.properties.hashtags;
 
 import java.util.ArrayList;
 import java.util.List;

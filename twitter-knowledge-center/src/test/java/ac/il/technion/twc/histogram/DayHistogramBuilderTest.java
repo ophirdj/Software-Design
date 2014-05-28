@@ -11,7 +11,7 @@ import ac.il.technion.twc.TwitterKnowledgeCenter;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.impl.properties.DayOfWeek;
+import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
 import com.google.inject.Key;
 import com.google.inject.name.Names;

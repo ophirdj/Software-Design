@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.impl.properties.DayMapping;
-import ac.il.technion.twc.impl.properties.DayOfWeek;
+import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
+import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
 /**
  * Service that answer {@link FuntionalityTester#getDailyHistogram()} query.

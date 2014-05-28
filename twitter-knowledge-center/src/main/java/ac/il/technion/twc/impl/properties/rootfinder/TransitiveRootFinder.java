@@ -1,12 +1,9 @@
-package ac.il.technion.twc.impl.properties;
+package ac.il.technion.twc.impl.properties.rootfinder;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
@@ -27,15 +24,6 @@ public class TransitiveRootFinder {
   private final Map<ID, BaseTweet> baseTweets;
 
   /**
-   * 
-   */
-  @Deprecated
-  public TransitiveRootFinder() {
-    relation = new HashMap<>();
-    baseTweets = new HashMap<>();
-  }
-
-  /**
    * @param relation
    * @param baseTweets
    */
@@ -43,44 +31,6 @@ public class TransitiveRootFinder {
       final Map<ID, BaseTweet> baseTweets) {
     this.relation = relation;
     this.baseTweets = baseTweets;
-  }
-
-  /**
-   * @param retweet
-   *          Add the retweet to the transitivity relation
-   */
-  @Deprecated
-  public void addTweet(final Retweet retweet) {
-    relation.put(retweet.id(), retweet.originId);
-  }
-
-  /**
-   * @param tweet
-   *          Add the base tweet to the transitivity relation
-   */
-  @Deprecated
-  public void addTweet(final BaseTweet tweet) {
-    baseTweets.put(tweet.id(), tweet);
-  }
-
-  /**
-   * @param tweets
-   *          Add all the given base tweets to the transitivity relation
-   */
-  @Deprecated
-  public void addBaseTweets(final Collection<BaseTweet> tweets) {
-    for (final BaseTweet baseTweet : tweets)
-      addTweet(baseTweet);
-  }
-
-  /**
-   * @param retweets
-   *          Add all the given base retweets to the transitivity relation
-   */
-  @Deprecated
-  public void addRetweets(final Collection<Retweet> retweets) {
-    for (final Retweet retweet : retweets)
-      addTweet(retweet);
   }
 
   /**

@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.After;
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -61,7 +61,7 @@ public class FileHandlerTest {
    */
   @AfterClass
   public static void tearDownClass() throws Exception {
-    Files.deleteIfExists(testDirectory);
+    FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
@@ -70,17 +70,7 @@ public class FileHandlerTest {
    */
   @Before
   public void setup() throws Exception {
-    Files.deleteIfExists(testPath);
-  }
-
-  /**
-   * remove added files
-   * 
-   * @throws Exception
-   */
-  @After
-  public void tearDown() throws Exception {
-    Files.deleteIfExists(testPath);
+    FileUtils.cleanDirectory(testDirectory.toFile());
   }
 
   /**
@@ -175,12 +165,10 @@ public class FileHandlerTest {
   @Test
   public void ClearShouldntRemoveFilesStoredInDifferentDirectory()
       throws IOException {
-    $.store(Paths.get("test_first", "cache"), "abc");
-    $.store(Paths.get("test_second", "cache"), "def");
-    $.clear(Paths.get("test_first"));
-    assertEquals("def", $.load(Paths.get("test_second", "cache")));
-    // in oreder to clean the system
-    $.clear(Paths.get("test_second"));
+    $.store(testDirectory.resolve("test_first").resolve("cache"), "abc");
+    $.store(testDirectory.resolve("test_second").resolve("cache"), "def");
+    $.clear(testDirectory.resolve("test_first"));
+    assertEquals("def", $.load(Paths.get("test", "test_second", "cache")));
   }
 
 }

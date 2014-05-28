@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.TreeMap;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.impl.properties.DayMapping;
-import ac.il.technion.twc.impl.properties.DayOfWeek;
+import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
+import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
 /**
  * Service that answer

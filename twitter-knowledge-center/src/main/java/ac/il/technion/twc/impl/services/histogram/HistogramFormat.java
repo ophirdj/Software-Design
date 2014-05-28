@@ -2,7 +2,7 @@ package ac.il.technion.twc.impl.services.histogram;
 
 import java.util.Collection;
 
-import ac.il.technion.twc.impl.properties.DayOfWeek;
+import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
 /**
  * Build the histogram from a collection of tweets
