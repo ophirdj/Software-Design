@@ -192,7 +192,7 @@ public class TimeConstraintsTest {
    */
   @Test(timeout = 250)
   public final void getHashtagPopularityShouldRun250ms() throws Exception {
-    // TODO make that test!
+    // TODO
     fail("not implemented");
   }
 

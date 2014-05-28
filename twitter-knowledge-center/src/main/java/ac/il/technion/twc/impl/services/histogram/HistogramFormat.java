@@ -33,4 +33,9 @@ public class HistogramFormat {
     return $;
   }
 
+  @Override
+  public boolean equals(final Object obj) {
+    return obj.getClass() == this.getClass();
+  }
+
 }
