@@ -1,7 +1,5 @@
-package ac.il.technion.twc.impl.api.properties;
+package ac.il.technion.twc.api.properties;
 
-import ac.il.technion.twc.api.properties.PropertyBuilder;
-import ac.il.technion.twc.api.properties.PropertyRetriever;
 
 /**
  * Factory for {@link PropertyRetriever} class

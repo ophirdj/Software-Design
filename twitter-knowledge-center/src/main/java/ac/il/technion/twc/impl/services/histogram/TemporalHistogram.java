@@ -1,5 +1,6 @@
 package ac.il.technion.twc.impl.services.histogram;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map.Entry;
 
@@ -127,5 +128,46 @@ public class TemporalHistogram {
    */
   public static TemporalHistogram empty() {
     return new TemporalHistogram(new HistogramFormat());
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(occuarenceBase);
+    result = prime * result + Arrays.hashCode(occuarenceRe);
+    result = prime * result + Arrays.hashCode(timesBase);
+    result = prime * result + Arrays.hashCode(timesRe);
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final TemporalHistogram other = (TemporalHistogram) obj;
+    if (!Arrays.equals(occuarenceBase, other.occuarenceBase))
+      return false;
+    if (!Arrays.equals(occuarenceRe, other.occuarenceRe))
+      return false;
+    if (!Arrays.equals(timesBase, other.timesBase))
+      return false;
+    if (!Arrays.equals(timesRe, other.timesRe))
+      return false;
+    return true;
   }
 }

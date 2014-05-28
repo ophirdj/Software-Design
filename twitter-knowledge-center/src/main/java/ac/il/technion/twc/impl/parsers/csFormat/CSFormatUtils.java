@@ -5,8 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
+import ac.il.technion.twc.api.parser.MultiRulesFormatBuilder;
 import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.impl.api.parser.MultiRulesFormatBuilder;
 
 /**
  * Help functions for comma separated format

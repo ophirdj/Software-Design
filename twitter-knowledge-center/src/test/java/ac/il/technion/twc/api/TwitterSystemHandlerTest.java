@@ -1,8 +1,11 @@
-package ac.il.technion.twc.impl.api;
+package ac.il.technion.twc.api;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import ac.il.technion.twc.api.TwitterSystemBuilder;
+import ac.il.technion.twc.api.TwitterSystemHandler;
 
 /**
  * Test class for {@link TwitterSystemHandler} and {@link TwitterSystemBuilder}

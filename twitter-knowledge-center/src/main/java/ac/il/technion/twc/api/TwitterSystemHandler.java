@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api;
+package ac.il.technion.twc.api;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import ac.il.technion.twc.api.TwitterServicesCenter;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.api.tweets.Tweet;

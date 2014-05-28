@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api.storage;
+package ac.il.technion.twc.api.storage;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,6 +14,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import ac.il.technion.twc.api.storage.FileHandler;
 
 /**
  * Test for {@link FileHandler}

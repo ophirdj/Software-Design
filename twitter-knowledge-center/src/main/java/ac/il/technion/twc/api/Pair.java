@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api;
+package ac.il.technion.twc.api;
 
 /**
  * Stored two elements

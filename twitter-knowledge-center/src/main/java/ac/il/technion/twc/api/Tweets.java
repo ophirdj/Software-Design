@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api;
+package ac.il.technion.twc.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +75,37 @@ public class Tweets {
    */
   public void setRetweets(final List<Retweet> retweets) {
     this.retweets = retweets;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (baseTweets == null ? 0 : baseTweets.hashCode());
+    result = prime * result + (retweets == null ? 0 : retweets.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final Tweets other = (Tweets) obj;
+    if (baseTweets == null) {
+      if (other.baseTweets != null)
+        return false;
+    } else if (!baseTweets.equals(other.baseTweets))
+      return false;
+    if (retweets == null) {
+      if (other.retweets != null)
+        return false;
+    } else if (!retweets.equals(other.retweets))
+      return false;
+    return true;
   }
 
 }

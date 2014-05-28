@@ -1,8 +1,10 @@
-package ac.il.technion.twc.impl.api.properties;
+package ac.il.technion.twc.api.properties;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import ac.il.technion.twc.api.properties.PropertyRetrieverImpl;
 
 /**
  * Test for {@link PropertyRetrieverImpl} and

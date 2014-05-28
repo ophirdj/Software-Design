@@ -65,4 +65,39 @@ public class TagToPopularity {
   public static TagToPopularity empty() {
     return new TagToPopularity();
   }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result =
+        prime
+            * result
+            + (popularityFromHashtag == null ? 0 : popularityFromHashtag
+                .hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final TagToPopularity other = (TagToPopularity) obj;
+    if (popularityFromHashtag == null) {
+      if (other.popularityFromHashtag != null)
+        return false;
+    } else if (!popularityFromHashtag.equals(other.popularityFromHashtag))
+      return false;
+    return true;
+  }
+
 }

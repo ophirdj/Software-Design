@@ -2,10 +2,10 @@ package ac.il.technion.twc.impl.parsers.csFormat;
 
 import java.text.ParseException;
 
+import ac.il.technion.twc.api.parser.ParserFormat;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.api.parser.ParserFormat;
 
 /**
  * Rule for parsing a retweet from comma separated format

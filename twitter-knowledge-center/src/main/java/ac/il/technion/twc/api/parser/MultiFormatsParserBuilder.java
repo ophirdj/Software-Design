@@ -1,9 +1,7 @@
-package ac.il.technion.twc.impl.api.parser;
+package ac.il.technion.twc.api.parser;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ac.il.technion.twc.api.parsers.TweetsParser;
 
 /**
  * A builder for {@link MultiFormatsParser}

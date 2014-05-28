@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api.parser;
+package ac.il.technion.twc.api.parser;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.api.parser;
+package ac.il.technion.twc.api.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -6,9 +6,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import ac.il.technion.twc.api.parsers.TweetsParser;
+import ac.il.technion.twc.api.Pair;
 import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.api.Pair;
 
 /**
  * A parser that support multiple formats

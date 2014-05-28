@@ -1,5 +1,6 @@
-package ac.il.technion.twc.impl.api.storage;
+package ac.il.technion.twc.api.storage;
 
+import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -14,16 +15,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import ac.il.technion.twc.api.Tweets;
+import ac.il.technion.twc.api.storage.FileHandler;
 import ac.il.technion.twc.api.storage.PersistanceStorage;
+import ac.il.technion.twc.api.storage.Storage;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
+import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTimeSerializer;
+import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,6 +48,7 @@ import com.google.gson.GsonBuilder;
  * @version 2.0
  * @since 2.0
  */
+@RunWith(JUnitParamsRunner.class)
 public class StorageTest {
 
   private static final class FutureFromCallable implements
@@ -97,19 +108,22 @@ public class StorageTest {
 
   /**
    * Test method for: {@link PersistanceStorage#load(Class, Object)}
-   * 
-   * @throws IOException
-   * @throws ExecutionException
-   * @throws InterruptedException
    */
-  @Test
-  public void histogramLoadWithoutPreviousStoreShouldReturnDefaultValue()
-      throws IOException, InterruptedException, ExecutionException {
-    checkDefualtAnswer(DayHistogram.class);
-
+  @SuppressWarnings("unused")
+  // used by JunitParams
+      private
+      Object[] defualtFromType() {
+    return $($(DayHistogram.class), $(TweetToLifeTime.class),
+        $(TemporalHistogram.class), $(TagToPopularity.class), $(Tweets.class));
   }
 
-  private <T> void checkDefualtAnswer(final Class<T> type) throws IOException {
+  /**
+   * @param type
+   * @throws IOException
+   */
+  @Parameters(method = "defualtFromType")
+  @Test
+  public <T> void checkDefualtAnswer(final Class<T> type) throws IOException {
     when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
         .thenThrow(new IOException());
     final T defualtVal = mock(type);
@@ -118,18 +132,26 @@ public class StorageTest {
 
   /**
    * Test method for: {@link PersistanceStorage#load(Class, Object)}
-   * 
-   * @throws IOException
-   * @throws ExecutionException
-   * @throws InterruptedException
    */
-  @Test
-  public void histogramLoadReturnStoredValue() throws IOException,
-      InterruptedException, ExecutionException {
-    checkStoredAnswer(DayHistogram.class, DayHistogram.empty());
+  @SuppressWarnings("unused")
+  // used by JunitParams
+      private
+      Object[] loadFromType() {
+    return $($(DayHistogram.class, DayHistogram.empty()),
+        $(TemporalHistogram.class, TemporalHistogram.empty()),
+        $(TweetToLifeTime.class, TweetToLifeTime.empty()),
+        $(TagToPopularity.class, TagToPopularity.empty()),
+        $(Tweets.class, new Tweets()));
   }
 
-  private <T> void checkStoredAnswer(final Class<T> type, final T toStore)
+  /**
+   * @param type
+   * @param toStore
+   * @throws IOException
+   */
+  @Parameters(method = "loadFromType")
+  @Test
+  public <T> void checkStoredAnswer(final Class<T> type, final T toStore)
       throws IOException {
     when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
         .thenReturn(gson.toJson(toStore));

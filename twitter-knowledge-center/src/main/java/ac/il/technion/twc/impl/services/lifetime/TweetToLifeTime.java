@@ -91,4 +91,41 @@ public class TweetToLifeTime {
     return new TweetToLifeTime();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result =
+        prime * result
+            + (lifeTimeFromId == null ? 0 : lifeTimeFromId.hashCode());
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final TweetToLifeTime other = (TweetToLifeTime) obj;
+    if (lifeTimeFromId == null) {
+      if (other.lifeTimeFromId != null)
+        return false;
+    } else if (!lifeTimeFromId.equals(other.lifeTimeFromId))
+      return false;
+    return true;
+  }
+
 }

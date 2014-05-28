@@ -8,11 +8,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ac.il.technion.twc.api.parser.ParserFormat;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.api.parser.ParserFormat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

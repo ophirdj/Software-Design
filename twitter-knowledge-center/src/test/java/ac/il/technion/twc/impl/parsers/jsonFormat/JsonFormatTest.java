@@ -20,11 +20,11 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import ac.il.technion.twc.TestDataReader;
+import ac.il.technion.twc.api.parser.ParserFormat;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.api.parser.ParserFormat;
 
 /**
  * Tests for json format.

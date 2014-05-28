@@ -1,8 +1,11 @@
-package ac.il.technion.twc.impl.api.parser;
+package ac.il.technion.twc.api.parser;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import ac.il.technion.twc.api.parser.MultiFormatsParser;
+import ac.il.technion.twc.api.parser.MultiFormatsParserBuilder;
 
 /**
  * Tests for {@link MultiFormatsParser} and {@link MultiFormatsParserBuilder}
