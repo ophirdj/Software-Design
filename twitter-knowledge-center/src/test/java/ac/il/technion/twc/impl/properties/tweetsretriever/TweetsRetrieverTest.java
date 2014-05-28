@@ -1,9 +1,8 @@
 package ac.il.technion.twc.impl.properties.tweetsretriever;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
 
 /**
  * Test for {@link TweetsRetriever} and {@link TweetsRetrieverBuilder}
@@ -17,20 +16,8 @@ import org.junit.BeforeClass;
  */
 public class TweetsRetrieverTest {
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
+  @Test
+  public final void testRetrive() {
+    fail("Not yet implemented"); // TODO
   }
-
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
-  }
-
-  @Before
-  public void setUp() throws Exception {
-  }
-
-  @After
-  public void tearDown() throws Exception {
-  }
-
 }

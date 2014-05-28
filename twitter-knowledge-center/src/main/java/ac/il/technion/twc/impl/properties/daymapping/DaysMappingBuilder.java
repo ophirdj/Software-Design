@@ -25,20 +25,12 @@ public class DaysMappingBuilder implements PropertyBuilder<DayMapping> {
   private final NavigableMap<Long, Integer> baseOccurencebyTime;
   private final NavigableMap<Long, Integer> reOccurenceByTime;
 
+  /**
+   * c'tor
+   */
   public DaysMappingBuilder() {
     baseOccurencebyTime = new TreeMap<Long, Integer>();
     reOccurenceByTime = new TreeMap<Long, Integer>();
-  }
-
-  /**
-   * @param baseOccurencebyTime
-   * @param reOccurenceByTime
-   */
-  public DaysMappingBuilder(
-      final NavigableMap<Long, Integer> baseOccurencebyTime,
-      final NavigableMap<Long, Integer> reOccurenceByTime) {
-    this.baseOccurencebyTime = baseOccurencebyTime;
-    this.reOccurenceByTime = reOccurenceByTime;
   }
 
   @Override

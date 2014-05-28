@@ -23,6 +23,7 @@ public class Tweets {
 
   /**
    * @param tweets
+   *          get the tweets and split them to base tweets and retweets
    */
   public Tweets(final List<Tweet> tweets) {
     baseTweets = new ArrayList<>();
@@ -34,23 +35,44 @@ public class Tweets {
         retweets.add((Retweet) tweet);
   }
 
+  /**
+   * 
+   */
   public Tweets() {
     baseTweets = new ArrayList<>();
     retweets = new ArrayList<>();
   }
 
+  /**
+   * @return the base tweets
+   */
   public List<BaseTweet> getBaseTweets() {
     return baseTweets;
   }
 
+  /**
+   * set the base tweets
+   * 
+   * @param baseTweets
+   *          new value
+   */
   public void setBaseTweets(final List<BaseTweet> baseTweets) {
     this.baseTweets = baseTweets;
   }
 
+  /**
+   * @return the retweets
+   */
   public List<Retweet> getRetweets() {
     return retweets;
   }
 
+  /**
+   * set the retweets
+   * 
+   * @param retweets
+   *          new value
+   */
   public void setRetweets(final List<Retweet> retweets) {
     this.retweets = retweets;
   }

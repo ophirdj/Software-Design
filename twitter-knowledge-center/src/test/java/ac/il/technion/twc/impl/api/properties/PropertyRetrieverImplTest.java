@@ -1,11 +1,12 @@
-package ac.il.technion.twc.impl.services.tagpopularity;
+package ac.il.technion.twc.impl.api.properties;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 /**
- * Test for {@link TagToPopularity}
+ * Test for {@link PropertyRetrieverImpl} and
+ * {@link PropertyRetrieverImpl.PropertyRetrieverImplFactory}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -14,7 +15,7 @@ import org.junit.Test;
  * @version 2.0
  * @since 2.0
  */
-public class TagToPopularityTest {
+public class PropertyRetrieverImplTest {
 
   @Test
   public final void test() {

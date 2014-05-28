@@ -9,26 +9,39 @@ import org.junit.Test;
 
 import ac.il.technion.twc.FuntionalityTester;
 
+/**
+ * Basic simple test
+ */
 public class SampleTest {
-  FuntionalityTester $ = new FuntionalityTester();
+  private final FuntionalityTester $ = new FuntionalityTester();
 
-  // @AfterClass
-  // public static void teardownClass() throws Exception {
-  // final Path path = Paths.get(Storage.class.getCanonicalName());
-  // if (Files.exists(path) && Files.isDirectory(path))
-  // FileUtils.deleteDirectory(path.toFile());
-  // }
-
+  /**
+   * @throws Exception
+   *           shouldn't happen
+   */
   @Before
   public void setup() throws Exception {
     $.cleanPersistentData();
   }
 
+  /**
+   * remove data in the end
+   * 
+   * @throws Exception
+   *           shouldn't happen
+   * 
+   */
   @After
   public void teardown() throws Exception {
     $.cleanPersistentData();
   }
 
+  /**
+   * Simple general test for the system
+   * 
+   * @throws Exception
+   *           shouldn't happen
+   */
   @Test
   public void sampleTest() throws Exception {
     String[] lines =
@@ -55,15 +68,4 @@ public class SampleTest {
     assertEquals("0", $.getHashtagPopularity("matam"));
   }
 
-  @Test
-  public void sampleTest2() throws Exception {
-    final String[] lines =
-        new String[] { "05/04/2014 12:00:00, iddqd",
-            "05/04/2014 12:00:00, idkfa, iddqd" };
-    $.importData(lines);
-    $.setupIndex();
-    assertArrayEquals(new String[] { "0,0", "0,0", "0,0", "0,0", "0,0", "0,0",
-        "2,1" },
-        $.getTemporalHistogram("05/04/2014 12:00:00", "05/04/2014 12:00:00"));
-  }
 }

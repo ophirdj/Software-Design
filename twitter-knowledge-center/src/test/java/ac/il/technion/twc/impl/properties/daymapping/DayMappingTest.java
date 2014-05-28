@@ -16,14 +16,20 @@ import org.junit.Test;
  */
 public class DayMappingTest {
 
+  // will be used later
+  @SuppressWarnings("unused")
   private final DaysMappingBuilder $;
 
+  /**
+   * c'tor
+   */
   public DayMappingTest() {
     $ = new DaysMappingBuilder();
   }
 
   @Test
   public final void testGetAllDaysBase() {
+
     fail("Not yet implemented"); // TODO
   }
 

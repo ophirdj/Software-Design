@@ -17,7 +17,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Serializer for {@link LifeTimeCache} because Gson has bugs serializing it.
+ * Serializer for {@link TweetToLifeTime} because Gson has bugs serializing it.
  * 
  * @author Ziv Ronen
  * @date 07.05.2014

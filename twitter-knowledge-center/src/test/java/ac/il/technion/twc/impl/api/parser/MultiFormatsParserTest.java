@@ -1,11 +1,11 @@
-package ac.il.technion.twc.impl.services.tagpopularity;
+package ac.il.technion.twc.impl.api.parser;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 /**
- * Test for {@link TagToPopularity}
+ * Tests for {@link MultiFormatsParser} and {@link MultiFormatsParserBuilder}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -14,7 +14,7 @@ import org.junit.Test;
  * @version 2.0
  * @since 2.0
  */
-public class TagToPopularityTest {
+public class MultiFormatsParserTest {
 
   @Test
   public final void test() {

@@ -1,11 +1,11 @@
-package ac.il.technion.twc.impl.services.tagpopularity;
+package ac.il.technion.twc.impl.api;
 
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 /**
- * Test for {@link TagToPopularity}
+ * Test class for {@link TwitterSystemHandler} and {@link TwitterSystemBuilder}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -14,7 +14,7 @@ import org.junit.Test;
  * @version 2.0
  * @since 2.0
  */
-public class TagToPopularityTest {
+public class TwitterSystemHandlerTest {
 
   @Test
   public final void test() {

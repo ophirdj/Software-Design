@@ -3,6 +3,16 @@ package ac.il.technion.twc;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+/**
+ * Get the string for json tweets.
+ * 
+ * @author Ziv Ronen
+ * @date 28.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class TestDataReader {
   private static final String BUNDLE_NAME = "ac.il.technion.twc.testdata"; //$NON-NLS-1$
 
@@ -12,10 +22,14 @@ public class TestDataReader {
   private TestDataReader() {
   }
 
-  public static String getString(String key) {
+  /**
+   * @param key
+   * @return the string named by that key
+   */
+  public static String getString(final String key) {
     try {
       return RESOURCE_BUNDLE.getString(key);
-    } catch (MissingResourceException e) {
+    } catch (final MissingResourceException e) {
       return '!' + key + '!';
     }
   }

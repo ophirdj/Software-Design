@@ -33,6 +33,9 @@ public class TweetToLifeTime {
     lifeTimeFromId = new HashMap<ID, Long>();
   }
 
+  /**
+   * @param lifeTimeFromId
+   */
   TweetToLifeTime(final Map<ID, Long> lifeTimeFromId) {
     this.lifeTimeFromId = lifeTimeFromId;
   }
