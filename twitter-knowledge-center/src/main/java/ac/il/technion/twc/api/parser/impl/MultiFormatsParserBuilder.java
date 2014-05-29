@@ -25,7 +25,7 @@ public class MultiFormatsParserBuilder {
    *          format to add
    * @return the builder
    */
-  public MultiFormatsParserBuilder addFormat(final ParserFormat format) {
+  public MultiFormatsParserBuilder add(final ParserFormat format) {
     formats.add(format);
     return this;
   }

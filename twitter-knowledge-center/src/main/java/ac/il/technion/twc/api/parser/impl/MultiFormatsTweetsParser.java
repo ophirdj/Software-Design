@@ -32,10 +32,10 @@ public class MultiFormatsTweetsParser implements TweetsParser {
 	}
 
 	@Override
-	public List<Tweet> parse(final String... lines) throws ParseException {
+	public List<Tweet> parse(final String... tweets) throws ParseException {
 		final RunningFormat possibleFormats = new RunningFormat(formats);
-		for (final String line : lines)
-			possibleFormats.addTweet(line);
+		for (final String tweet : tweets)
+			possibleFormats.parse(tweet);
 		return possibleFormats.getTweets();
 	}
 
@@ -52,22 +52,25 @@ public class MultiFormatsTweetsParser implements TweetsParser {
 		public List<Tweet> getTweets() throws ParseException {
 			if (formats.isEmpty())
 				throw new ParseException("No matching parser", 0);
+			if (formats.size() > 1 && formats.get(0).second.size() > 0)
+				throw new ParseException("Parsing ambiguity",
+						formats.get(0).second.size());
 			return formats.get(0).second;
 		}
 
-		public void addTweet(final String line) {
+		public void parse(final String tweet) {
 			for (final Iterator<Pair<ParserFormat, List<Tweet>>> iterator = formats
 					.iterator(); iterator.hasNext();) {
 				final Pair<ParserFormat, List<Tweet>> parserFormat = iterator
 						.next();
-				if (!parserFormat.first.isFromFormat(line)) {
+				if (!parserFormat.first.isFromFormat(tweet)) {
 					iterator.remove();
 					continue;
 				}
 				try {
-					parserFormat.second.add(parserFormat.first.parse(line));
+					parserFormat.second.add(parserFormat.first.parse(tweet));
 				} catch (final ParseException e) {
-					// Unreachable
+					// Unreachable, Hopefully :P
 				}
 			}
 		}

@@ -91,8 +91,8 @@ public class FuntionalityTester {
             Executors.newFixedThreadPool(4));
 
     parser =
-        new MultiFormatsParserBuilder().addFormat(new CommaSeparatedTweetFormat())
-            .addFormat(new JsonTweetFormat()).build();
+        new MultiFormatsParserBuilder().add(new CommaSeparatedTweetFormat())
+            .add(new JsonTweetFormat()).build();
   }
 
   /**
