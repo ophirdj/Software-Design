@@ -35,7 +35,7 @@ public class CSFormatTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
-  private final ParserFormat $ = new CSTweetFormat();
+  private final ParserFormat $ = new CommaSeparatedTweetFormat();
 
   @SuppressWarnings("unused")
   // used by JunitParams

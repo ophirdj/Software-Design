@@ -18,7 +18,7 @@ import ac.il.technion.twc.api.tweets.Tweet;
  * @version 2.0
  * @since 2.0
  */
-public class CSTweetFormat implements ParserFormat {
+public class CommaSeparatedTweetFormat implements ParserFormat {
 
   private static final SimpleDateFormat csTweetDateFormat =
       new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

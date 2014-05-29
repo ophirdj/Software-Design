@@ -7,7 +7,7 @@ import ac.il.technion.twc.api.parser.ParserFormat;
 import ac.il.technion.twc.api.parser.TweetsParser;
 
 /**
- * A builder for {@link MultiFormatsParser}
+ * A builder for {@link MultiFormatsTweetsParser}
  * 
  * @author Ziv Ronen
  * @date 22.05.2014
@@ -35,6 +35,6 @@ public class MultiFormatsParserBuilder {
    *         for all tweets, the result will be of the first added format.
    */
   public TweetsParser build() {
-    return new MultiFormatsParser(formats);
+    return new MultiFormatsTweetsParser(formats);
   }
 }
