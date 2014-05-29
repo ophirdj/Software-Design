@@ -34,7 +34,7 @@ public class MultiFormatsParserBuilder {
    * @return the parser using all the formats. if several formats are suitable
    *         for all tweets, the result will be of the first added format.
    */
-  public TweetsParser getResult() {
+  public TweetsParser build() {
     return new MultiFormatsParser(formats);
   }
 }

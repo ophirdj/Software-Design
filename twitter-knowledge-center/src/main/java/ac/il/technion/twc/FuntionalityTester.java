@@ -92,7 +92,7 @@ public class FuntionalityTester {
 
     parser =
         new MultiFormatsParserBuilder().addFormat(new CSTweetFormat())
-            .addFormat(new JsonTweetFormat()).getResult();
+            .addFormat(new JsonTweetFormat()).build();
   }
 
   /**
