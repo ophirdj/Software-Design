@@ -2,8 +2,8 @@ package ac.il.technion.twc;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
@@ -16,7 +16,7 @@ import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.api.storage.impl.FileHandler;
 import ac.il.technion.twc.api.storage.impl.Storage;
 import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
+import ac.il.technion.twc.impl.parsers.csFormat.CSTweetFormat;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DaysMappingBuilder;
@@ -49,8 +49,8 @@ public class FuntionalityTester {
   private final PersistanceStorage storage;
   private final TweetsParser parser;
 
-  // TODO: need to find another way.
-  private final DateFormat dateFormat = CSFormatUtils.getDateFormat();
+  private static final SimpleDateFormat temporalDateFormat =
+      new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
   private final PropertyRetriever<DayMapping> dayMappingRetriever;
   private final PropertyRetriever<TransitiveRootFinder> rootFinderRetriever;
@@ -91,8 +91,7 @@ public class FuntionalityTester {
             Executors.newFixedThreadPool(4));
 
     parser =
-        new MultiFormatsParserBuilder()
-            .addFormat(CSFormatUtils.getTweetFormatBuilder().getResult())
+        new MultiFormatsParserBuilder().addFormat(new CSTweetFormat())
             .addFormat(new JsonTweetFormat()).getResult();
   }
 
@@ -218,8 +217,8 @@ public class FuntionalityTester {
    */
   public String[] getTemporalHistogram(final String t1, final String t2)
       throws Exception {
-    return temporalHistogramService.get(dateFormat.parse(t1),
-        dateFormat.parse(t2));
+    return temporalHistogramService.get(temporalDateFormat.parse(t1),
+        temporalDateFormat.parse(t2));
   }
 
   /**

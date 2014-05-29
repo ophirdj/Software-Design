@@ -35,8 +35,7 @@ public class CSFormatTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
-  private final ParserFormat underTest = CSFormatUtils.getTweetFormatBuilder()
-      .getResult();
+  private final ParserFormat $ = new CSTweetFormat();
 
   @SuppressWarnings("unused")
   // used by JunitParams
@@ -65,7 +64,7 @@ public class CSFormatTest {
   @Test
   public void parseCorrect(final Tweet expected, final String tweetStr)
       throws ParseException {
-    assertEquals(expected, underTest.parse(tweetStr));
+    assertEquals(expected, $.parse(tweetStr));
   }
 
   @SuppressWarnings("unused")
@@ -92,7 +91,7 @@ public class CSFormatTest {
   public void parseBad(final String tweetStr) throws ParseException {
     thrown.expect(ParseException.class);
     thrown.expectMessage("Bad tweet format: " + tweetStr);
-    underTest.parse(tweetStr);
+    $.parse(tweetStr);
   }
 
 }

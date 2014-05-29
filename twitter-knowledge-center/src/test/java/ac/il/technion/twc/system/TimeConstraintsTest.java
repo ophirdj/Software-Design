@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -16,7 +17,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.impl.parsers.csFormat.CSFormatUtils;
 
 /**
  * Assert time constraints of methods of {@link FuntionalityTester}.
@@ -30,6 +30,9 @@ public class TimeConstraintsTest {
   private static final String[] lines = generateTweets(BASE_TWEETS, 5, 3, 0);
   private static final int linesLengthApproximation = 50232;
   private static final int TEMPORAL_NUM_SAMPLES = 10;
+
+  private static final SimpleDateFormat temporalhistogramDateFormat =
+      new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
   // didn't import data
   private final FuntionalityTester tkcImportData = new FuntionalityTester();
@@ -135,8 +138,8 @@ public class TimeConstraintsTest {
     final Random rnd = new Random(0L);
     for (int i = 0; i < TEMPORAL_NUM_SAMPLES; ++i)
       $.getTemporalHistogram(
-          CSFormatUtils.getDateFormat().format(new Date(rnd.nextLong())),
-          CSFormatUtils.getDateFormat().format(new Date(rnd.nextLong())));
+          temporalhistogramDateFormat.format(new Date(rnd.nextLong())),
+          temporalhistogramDateFormat.format(new Date(rnd.nextLong())));
     final long end = System.currentTimeMillis();
     assertTrue("Took " + (end - start) + " millis instead of "
         + TEMPORAL_NUM_SAMPLES * 2 * lines.length / 1000,
@@ -208,8 +211,8 @@ public class TimeConstraintsTest {
     final Random rnd = new Random(0L);
     for (int i = 0; i < TEMPORAL_NUM_SAMPLES; ++i)
       $.getTemporalHistogram(
-          CSFormatUtils.getDateFormat().format(new Date(rnd.nextLong())),
-          CSFormatUtils.getDateFormat().format(new Date(rnd.nextLong())));
+          temporalhistogramDateFormat.format(new Date(rnd.nextLong())),
+          temporalhistogramDateFormat.format(new Date(rnd.nextLong())));
   }
 
   /**
@@ -235,13 +238,14 @@ public class TimeConstraintsTest {
   private static String[] generateTweets(final int numBase,
       final int numRetweetsForEach, final int numLevels, final long seed) {
     final List<String> tweets = new ArrayList<>();
-    final DateFormat dateFormatter = CSFormatUtils.getDateFormat();
     final Random rnd = new Random(seed);
     for (int baseTweetNum = 0; baseTweetNum < numBase; ++baseTweetNum) {
       final String baseId = "base" + baseTweetNum;
       final long baseDate = rnd.nextLong();
-      tweets.add(dateFormatter.format(new Date(baseDate)) + ", " + baseId);
-      generateRetweets(tweets, baseId, baseDate, dateFormatter, rnd,
+      final SimpleDateFormat csTweetDateFormat =
+          new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+      tweets.add(csTweetDateFormat.format(new Date(baseDate)) + ", " + baseId);
+      generateRetweets(tweets, baseId, baseDate, csTweetDateFormat, rnd,
           numRetweetsForEach, numLevels);
     }
     Collections.shuffle(tweets, rnd);
