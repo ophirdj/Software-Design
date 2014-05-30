@@ -10,6 +10,9 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +28,13 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
+import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
+import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
 import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
@@ -51,145 +61,168 @@ import com.google.gson.stream.JsonWriter;
 @RunWith(JUnitParamsRunner.class)
 public class StorageTest {
 
-  private static final class FutureFromCallable implements
-      Answer<Future<Object>> {
-    @Override
-    public Future<Object> answer(final InvocationOnMock invocation)
-        throws Throwable {
+	private static final class FutureFromCallable implements
+			Answer<Future<Object>> {
+		@Override
+		public Future<Object> answer(final InvocationOnMock invocation)
+				throws Throwable {
 
-      @SuppressWarnings("unchecked")
-      // The call always use Callable<Object>
-      final Callable<Object> caller =
-          (Callable<Object>) invocation.getArguments()[0];
-      // can't check generic types while mocking
-      @SuppressWarnings("unchecked")
-      final Future<Object> $ = mock(Future.class);
-      try {
-        final Object retVal = caller.call();
-        when($.get()).thenReturn(retVal);
-      } catch (final Exception e) {
-        when($.get()).thenThrow(new ExecutionException(e));
-      }
-      return $;
-    }
-  }
+			@SuppressWarnings("unchecked")
+			// The call always use Callable<Object>
+			final Callable<Object> caller = (Callable<Object>) invocation
+					.getArguments()[0];
+			// can't check generic types while mocking
+			@SuppressWarnings("unchecked")
+			final Future<Object> $ = mock(Future.class);
+			try {
+				final Object retVal = caller.call();
+				when($.get()).thenReturn(retVal);
+			} catch (final Exception e) {
+				when($.get()).thenThrow(new ExecutionException(e));
+			}
+			return $;
+		}
+	}
 
-  private final Path testPath = Paths.get("test");
-  private final Path fullTestPath = testPath.resolve(Paths.get(Storage.class
-      .getSimpleName()));
-  private final Storage $;
+	private final Path testPath = Paths.get("test");
+	private final Path fullTestPath = testPath.resolve(Paths.get(Storage.class
+			.getSimpleName()));
+	private final Storage $;
 
-  /**
+	/**
    * 
    */
-  public final @Rule
-  ExpectedException thrown = ExpectedException.none();
-  private final FileHandler fileHandlingMock;
-  private final ExecutorService threadPoolMock;
-  private final Gson gson;
+	public final @Rule
+	ExpectedException thrown = ExpectedException.none();
+	private final FileHandler fileHandlingMock;
+	private final ExecutorService threadPoolMock;
+	private final Gson gson;
 
-  /**
-   * C'tor
-   */
-  // can't check generic types while mocking
-  @SuppressWarnings("unchecked")
-  public StorageTest() {
-    fileHandlingMock = mock(FileHandler.class);
-    threadPoolMock = mock(ExecutorService.class);
-    when(threadPoolMock.submit(any(Callable.class))).thenAnswer(
-        new FutureFromCallable());
-    gson =
-        new GsonBuilder()
-            .setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
-            .registerTypeAdapter(TweetToLifeTime.class,
-                new TypeAdapter<Object>() {
+	/**
+	 * C'tor
+	 */
+	// can't check generic types while mocking
+	@SuppressWarnings("unchecked")
+	public StorageTest() {
+		fileHandlingMock = mock(FileHandler.class);
+		threadPoolMock = mock(ExecutorService.class);
+		when(threadPoolMock.submit(any(Callable.class))).thenAnswer(
+				new FutureFromCallable());
+		gson = new GsonBuilder()
+				.setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
+				.registerTypeAdapter(TweetToLifeTime.class,
+						new TypeAdapter<Object>() {
 
-                  @Override
-                  public void write(final JsonWriter out, final Object value)
-                      throws IOException {
-                    out.value(new TweetToLifeTimeSerializer()
-                        .objectToString(value));
-                  }
+							@Override
+							public void write(final JsonWriter out,
+									final Object value) throws IOException {
+								out.value(new TweetToLifeTimeSerializer()
+										.objectToString(value));
+							}
 
-                  @Override
-                  public Object read(final JsonReader in) throws IOException {
-                    return new TweetToLifeTimeSerializer().stringToObject(in
-                        .nextString());
-                  }
+							@Override
+							public Object read(final JsonReader in)
+									throws IOException {
+								return new TweetToLifeTimeSerializer()
+										.stringToObject(in.nextString());
+							}
 
-                }).create();
-    $ = new Storage(gson, testPath, fileHandlingMock, threadPoolMock);
-  }
+						}).create();
+		$ = new Storage(gson, testPath, fileHandlingMock, threadPoolMock);
+	}
 
-  /**
-   * Test method for: {@link PersistanceStorage#load(Object)}
-   */
-  @SuppressWarnings("unused")
-  // used by JunitParams
-      private
-      Object[] defualtFromType() {
-    return $(
-        $(DayHistogram.class, new DayHistogram(new HistogramFormat())),
-        $(TweetToLifeTime.class, new TweetToLifeTime()),
-        $(TemporalHistogram.class, new TemporalHistogram(new HistogramFormat())),
-        $(TagToPopularity.class, new TagToPopularity()));
-  }
+	/**
+	 * Test method for: {@link PersistanceStorage#load(Object)}
+	 */
+	@SuppressWarnings("unused")
+	// used by JunitParams
+	private Object[] defualtFromType() {
+		return $(
+				$(DayHistogram.class, new DayHistogram(new HistogramFormat())),
+				$(TweetToLifeTime.class, new TweetToLifeTime()),
+				$(TemporalHistogram.class, new TemporalHistogram(
+						new HistogramFormat())),
+				$(TagToPopularity.class, new TagToPopularity()));
+	}
 
-  /**
-   * @param type
-   * @param defaultValue
-   * @throws IOException
-   */
-  @Parameters(method = "defualtFromType")
-  @Test
-  public <T> void checkDefualtAnswer(final Class<T> type, final T defaultValue)
-      throws IOException {
-    when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
-        .thenThrow(new IOException());
-    assertEquals(defaultValue, $.load(defaultValue));
-  }
+	/**
+	 * @param type
+	 * @param defaultValue
+	 * @throws IOException
+	 */
+	@Parameters(method = "defualtFromType")
+	@Test
+	public <T> void checkDefualtAnswer(final Class<T> type, final T defaultValue)
+			throws IOException {
+		when(
+				fileHandlingMock.load(fullTestPath.resolve(type
+						.getCanonicalName()))).thenThrow(new IOException());
+		assertEquals(defaultValue, $.load(defaultValue));
+	}
 
-  /**
-   * Test method for: {@link PersistanceStorage#load(Object)}
-   */
-  @SuppressWarnings("unused")
-  // used by JunitParams
-      private
-      Object[] loadFromType() {
-    return $(
-        $(DayHistogram.class, new DayHistogram(new HistogramFormat())),
-        $(TemporalHistogram.class, new TemporalHistogram(new HistogramFormat())),
-        $(TweetToLifeTime.class, new TweetToLifeTime()),
-        $(TagToPopularity.class, new TagToPopularity()));
-  }
+	/**
+	 * Test method for: {@link PersistanceStorage#load(Object)}
+	 * 
+	 * @throws NoRootFoundException
+	 */
+	@SuppressWarnings("unused")
+	// used by JunitParams
+	private Object[] loadFromType() throws NoRootFoundException {
+		final List<String> hashtags = Arrays.asList("YOLO", "SWAG");
+		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID("base"),
+				hashtags);
+		final Retweet rt = new Retweet(new Date(987654321), new ID("retweet"),
+				new ID("base"));
+		final TransitiveRootFinder trf = mock(TransitiveRootFinder.class);
+		final TweetsRetriever tr = mock(TweetsRetriever.class);
+		final IdHashtags ih = mock(IdHashtags.class);
+		when(tr.getRetweets()).thenReturn(Arrays.asList(rt));
+		when(trf.findRoot(rt)).thenReturn(bt);
+		when(ih.getHashtags(new ID("base"))).thenReturn(hashtags);
+		final TweetToLifeTime defaultTweetToLifeTime = new TweetToLifeTime(trf,
+				tr);
+		final TagToPopularity defaultTagToPopularity = new TagToPopularity(trf,
+				tr, ih);
+		return $(
+				$(DayHistogram.class, new DayHistogram(new HistogramFormat()),
+						new DayHistogram(mock(HistogramFormat.class))),
+				$(TemporalHistogram.class, new TemporalHistogram(
+						new HistogramFormat()), new TemporalHistogram(
+						mock(HistogramFormat.class))),
+				$(TweetToLifeTime.class, new TweetToLifeTime(),
+						defaultTweetToLifeTime),
+				$(TagToPopularity.class, new TagToPopularity(),
+						defaultTagToPopularity));
+	}
 
-  /**
-   * @param type
-   * @param toStore
-   * @param defaultValue
-   * @throws IOException
-   */
-  @Parameters(method = "loadFromType")
-  @Test
-  public <T> void checkStoredAnswer(final Class<T> type, final T toStore,
-      final T defaultValue) throws IOException {
-    when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
-        .thenReturn(gson.toJson(toStore));
-    assertEquals(toStore, $.load(defaultValue));
-  }
+	/**
+	 * @param type
+	 * @param toStore
+	 * @param defaultValue
+	 * @throws IOException
+	 */
+	@Parameters(method = "loadFromType")
+	@Test
+	public <T> void checkStoredAnswer(final Class<T> type, final T toStore,
+			final T defaultValue) throws IOException {
+		when(
+				fileHandlingMock.load(fullTestPath.resolve(type
+						.getCanonicalName()))).thenReturn(gson.toJson(toStore));
+		assertEquals(toStore, $.load(defaultValue));
+	}
 
-  /**
-   * Test method for: {@link Storage#clear()}
-   * 
-   * @throws IOException
-   * @throws ExecutionException
-   * @throws InterruptedException
-   */
-  @Test
-  public void clearShouldCallFileHandlerClearWithTestPath() throws IOException,
-      InterruptedException, ExecutionException {
-    $.clear();
-    verify(fileHandlingMock).clear(fullTestPath);
+	/**
+	 * Test method for: {@link Storage#clear()}
+	 * 
+	 * @throws IOException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void clearShouldCallFileHandlerClearWithTestPath()
+			throws IOException, InterruptedException, ExecutionException {
+		$.clear();
+		verify(fileHandlingMock).clear(fullTestPath);
 
-  }
+	}
 }
