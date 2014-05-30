@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder;
-import ac.il.technion.twc.api.properties.PropertyBuilder;
 
 /**
  * Builder for {@link TwitterSystemHandler}
@@ -22,7 +21,6 @@ import ac.il.technion.twc.api.properties.PropertyBuilder;
  */
 public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
 
-  private final List<PropertyBuilder<?>> builders = new ArrayList<>();
   private final ServiceBuildingManager serviceBuilder =
       new ServiceBuildingManager();
 
@@ -60,7 +58,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
 
   @Override
   public TwitterServicesCenter getResult() {
-    return new TwitterSystemHandler(builders, services, serviceBuilder,
+    return new TwitterSystemHandler(services, serviceBuilder,
         new StorageFactory(serializers).buildStorage(),
         Executors.newFixedThreadPool(1 + services.size()));
   }

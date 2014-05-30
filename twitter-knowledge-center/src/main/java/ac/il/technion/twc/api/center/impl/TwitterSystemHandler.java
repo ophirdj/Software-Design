@@ -8,13 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
-import ac.il.technion.twc.api.properties.PropertyBuilder;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
@@ -32,30 +28,22 @@ import ac.il.technion.twc.api.tweets.Tweet;
 public class TwitterSystemHandler implements TwitterServicesCenter {
 
   private final Map<Class<?>, Object> servicesResult = new HashMap<>();
-
-  private final List<PropertyBuilder<?>> builders;
   private final Storage storage;
-
-  private final ExecutorService threadPool;
   private final Set<Object> services;
-
   private final ServiceBuildingManager serviceBuilder;
 
   /**
-   * @param builders
    * @param services
    * @param serviceBuilder
    * @param storage
    * @param threadPool
    */
-  public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
-      final Set<Object> services, final ServiceBuildingManager serviceBuilder,
-      final Storage storage, final ExecutorService threadPool) {
-    this.builders = builders;
+  public TwitterSystemHandler(final Set<Object> services,
+      final ServiceBuildingManager serviceBuilder, final Storage storage,
+      final ExecutorService threadPool) {
     this.services = services;
     this.serviceBuilder = serviceBuilder;
     this.storage = storage;
-    this.threadPool = threadPool;
   }
 
   @Override
@@ -66,34 +54,9 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
     tweets.addAll(importedTweets);
     tweets.addAll(storedTweets.getBaseTweets());
     tweets.addAll(storedTweets.getRetweets());
-
-    final List<Callable<Void>> buildingTasks = new ArrayList<>();
-    for (final PropertyBuilder<?> builder : builders)
-      buildingTasks.add(new Callable<Void>() {
-
-        @Override
-        public Void call() throws Exception {
-          builder.clear();
-          for (final Tweet tweet : tweets)
-            tweet.accept(builder);
-          return null;
-        }
-      });
     final Tweets newTweets = new Tweets(tweets);
-    try {
-      final List<Future<Void>> barriers = threadPool.invokeAll(buildingTasks);
-      for (final Future<Void> task : barriers)
-        task.get();
-      storage.store(newTweets);
-    } catch (final InterruptedException e) {
-      // TODO not sure what to do here
-      e.printStackTrace();
-    } catch (final ExecutionException e) {
-      // TODO not sure what to do here
-      e.printStackTrace();
-    }
+    storage.store(newTweets);
     setup(newTweets);
-
   }
 
   private void setup(final Tweets tweets) throws IOException {
@@ -123,8 +86,6 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
 
   @Override
   public void clearSystem() throws ClearFailedException {
-    for (final PropertyBuilder<?> builder : builders)
-      builder.clear();
     try {
       storage.clear();
     } catch (final IOException e) {

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -73,18 +74,22 @@ class ServiceBuildingManager {
   /**
    * Make all the properties
    * 
-   * @param base
+   * @param bases
    *          List of base tweets
-   * @param re
+   * @param res
    *          List of Retweets
    */
-  public void setProperties(final List<BaseTweet> base, final List<Retweet> re) {
+  public void
+      setProperties(final List<BaseTweet> bases, final List<Retweet> res) {
+    final List<BaseTweet> unmodifiableBases =
+        Collections.unmodifiableList(bases);
+    final List<Retweet> unmodifiableRes = Collections.unmodifiableList(res);
     for (final Class<?> supportedType : supportedProperties)
       try {
         properties.put(
             supportedType,
             supportedType.getConstructor(List.class, List.class).newInstance(
-                base, re));
+                unmodifiableBases, unmodifiableRes));
       } catch (NoSuchMethodException | SecurityException
           | InstantiationException | IllegalAccessException
           | IllegalArgumentException | InvocationTargetException e) {
