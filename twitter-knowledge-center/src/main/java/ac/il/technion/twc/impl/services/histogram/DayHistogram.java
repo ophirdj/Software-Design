@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map.Entry;
 
 import ac.il.technion.twc.FuntionalityTester;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
@@ -23,7 +24,7 @@ public class DayHistogram {
 
   private final String[] answer;
 
-  private DayHistogram(final HistogramFormat format) {
+  public DayHistogram(final HistogramFormat format) {
     answer =
         format.formatHistogram(new int[DayOfWeek.values().length],
             new int[DayOfWeek.values().length]);
@@ -34,9 +35,16 @@ public class DayHistogram {
    * @param dayMapProperty
    * @param format
    */
+  @ServiceSetup
+  public DayHistogram(final DayMapping dayMapProperty) {
+    answer =
+        new HistogramFormat().formatHistogram(
+            makeHistogram(dayMapProperty.getAllDaysBase()),
+            makeHistogram(dayMapProperty.getAllDaysRe()));
+  }
+
   public DayHistogram(final DayMapping dayMapProperty,
       final HistogramFormat format) {
-
     answer =
         format.formatHistogram(makeHistogram(dayMapProperty.getAllDaysBase()),
             makeHistogram(dayMapProperty.getAllDaysRe()));

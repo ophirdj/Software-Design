@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
@@ -27,7 +28,7 @@ public class TagToPopularity {
   private final Map<String, Integer> popularityFromHashtag =
       new HashMap<String, Integer>();
 
-  private TagToPopularity() {
+  public TagToPopularity() {
 
   }
 
@@ -36,6 +37,7 @@ public class TagToPopularity {
    * @param tweets
    * @param hashtags
    */
+  @ServiceSetup
   public TagToPopularity(final TransitiveRootFinder baseTweetFinder,
       final TweetsRetriever tweets, final IdHashtags hashtags) {
     for (final Retweet retweet : tweets.getRetweets())

@@ -26,15 +26,13 @@ public interface PersistanceStorage {
   <T> void store(T service) throws IOException;
 
   /**
-   * @param type
-   *          The type of the object we want to load
    * @param defualt
    *          default return value.
    * 
    * @return The last stored object of the given type or default if no such
    *         value exists.
    */
-  <T, ST extends T> T load(Class<T> type, ST defualt);
+  <T> T load(T defualt);
 
   /**
    * Prepare enable the storage to prepare the given types for feature load.
@@ -53,4 +51,5 @@ public interface PersistanceStorage {
    * @throws IOException
    */
   void clear() throws IOException;
+
 }

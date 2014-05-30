@@ -7,12 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder;
+import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.parser.TweetsParser;
 import ac.il.technion.twc.api.parser.impl.MultiFormatsParserBuilder;
-import ac.il.technion.twc.api.properties.PropertyRetriever;
-import ac.il.technion.twc.api.properties.impl.PropertyRetrieverImpl;
-import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.api.storage.impl.FileHandler;
 import ac.il.technion.twc.api.storage.impl.Storage;
 import ac.il.technion.twc.api.tweets.ID;
@@ -46,50 +46,35 @@ import com.google.gson.GsonBuilder;
 public class FuntionalityTester {
 
   private final TwitterServicesCenter serviceCenter;
-  private final PersistanceStorage storage;
   private final TweetsParser parser;
 
   private static final SimpleDateFormat temporalDateFormat =
       new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-  private final PropertyRetriever<DayMapping> dayMappingRetriever;
-  private final PropertyRetriever<TransitiveRootFinder> rootFinderRetriever;
-  private final PropertyRetriever<IdHashtags> idHashtagsRetriever;
-  private final PropertyRetriever<TweetsRetriever> tweetsRetriever;
-
-  private DayHistogram histogramService;
-  private TemporalHistogram temporalHistogramService;
-  private TweetToLifeTime lifeTimeService;
-  private TagToPopularity tagPopularityService;
-
   /**
    * 
    */
   public FuntionalityTester() {
-    final TwitterSystemBuilder systemBuilder =
-        new TwitterSystemBuilder(
-            new PropertyRetrieverImpl.PropertyRetrieverImplFactory(),
-            new Storage(new GsonBuilder().create(), Paths.get("system"),
-                new FileHandler(), Executors.newFixedThreadPool(5)),
-            Executors.newCachedThreadPool());
-    dayMappingRetriever =
-        systemBuilder.registerBuilder(new DaysMappingBuilder());
-    rootFinderRetriever =
-        systemBuilder.registerBuilder(new TransitivityBuilder());
-    idHashtagsRetriever =
-        systemBuilder.registerBuilder(new IdHashtagsBuilder());
-    tweetsRetriever =
-        systemBuilder.registerBuilder(new TweetsRetrieverBuilder());
-
-    serviceCenter = systemBuilder.getResult();
-    storage =
-        new Storage(new GsonBuilder()
-            .setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
+    final TwitterServicesCenterBuilder systemBuilder =
+        new TwitterSystemBuilder(new Storage(new GsonBuilder()
             .registerTypeAdapter(TweetToLifeTime.class,
-                new TweetToLifeTimeSerializer()).create(),
-            Paths.get("services"), new FileHandler(),
-            Executors.newFixedThreadPool(4));
-
+                new TweetToLifeTimeSerializer()).create(), Paths.get("system"),
+            new FileHandler(), Executors.newFixedThreadPool(5)),
+            Executors.newCachedThreadPool());
+    systemBuilder.registerBuilder(DayMapping.class, new DaysMappingBuilder())
+        .registerBuilder(TransitiveRootFinder.class, new TransitivityBuilder())
+        .registerBuilder(IdHashtags.class, new IdHashtagsBuilder())
+        .registerBuilder(TweetsRetriever.class, new TweetsRetrieverBuilder());
+    try {
+      systemBuilder.registerService(new DayHistogram(new HistogramFormat()))
+          .registerService(new TemporalHistogram(new HistogramFormat()))
+          .registerService(new TweetToLifeTime())
+          .registerService(new TagToPopularity());
+    } catch (final NotAServiceException | MissingPropertitesException e) {
+      // I know this is a service
+      e.printStackTrace();
+    }
+    serviceCenter = systemBuilder.getResult();
     parser =
         new MultiFormatsParserBuilder().addFormat(new CSTweetFormat())
             .addFormat(new JsonTweetFormat()).getResult();
@@ -111,15 +96,6 @@ public class FuntionalityTester {
   private void generalImportLine(final String[] lines) throws IOException,
       ParseException {
     serviceCenter.importData(parser.parse(lines));
-    final DayMapping dayMap = dayMappingRetriever.retrieve();
-    final TransitiveRootFinder rootFinder = rootFinderRetriever.retrieve();
-    final IdHashtags idHashtags = idHashtagsRetriever.retrieve();
-    final TweetsRetriever tweets = tweetsRetriever.retrieve();
-
-    storage.store(new DayHistogram(dayMap, new HistogramFormat()));
-    storage.store(new TemporalHistogram(dayMap, new HistogramFormat()));
-    storage.store(new TweetToLifeTime(rootFinder, tweets));
-    storage.store(new TagToPopularity(rootFinder, tweets, idHashtags));
   }
 
   /**
@@ -143,18 +119,7 @@ public class FuntionalityTester {
    *           If for any reason, loading the index failed
    */
   public void setupIndex() throws Exception {
-    storage.prepare(DayHistogram.class, TemporalHistogram.class,
-        TagToPopularity.class, TweetToLifeTime.class);
-    histogramService =
-        storage.load(DayHistogram.class,
-            DayHistogram.empty(new HistogramFormat()));
-    temporalHistogramService =
-        storage.load(TemporalHistogram.class,
-            TemporalHistogram.empty(new HistogramFormat()));
-    tagPopularityService =
-        storage.load(TagToPopularity.class, TagToPopularity.empty());
-    lifeTimeService =
-        storage.load(TweetToLifeTime.class, TweetToLifeTime.empty());
+    serviceCenter.loadServices();
   }
 
   /**
@@ -170,7 +135,8 @@ public class FuntionalityTester {
    *           If it is not possible to complete the operation
    */
   public String getLifetimeOfTweets(final String tweetId) throws Exception {
-    return lifeTimeService.getLifeTimeById(new ID(tweetId));
+    return serviceCenter.getService(TweetToLifeTime.class).getLifeTimeById(
+        new ID(tweetId));
   }
 
   /**
@@ -182,7 +148,7 @@ public class FuntionalityTester {
    *         the array is Sunday.
    */
   public String[] getDailyHistogram() {
-    return histogramService.get();
+    return serviceCenter.getService(DayHistogram.class).get();
   }
 
   /**
@@ -194,7 +160,8 @@ public class FuntionalityTester {
    * @return A string, in the format of a number, contain the number of retweets
    */
   public String getHashtagPopularity(final String hashtag) {
-    return tagPopularityService.getPopularityByHashtag(hashtag).toString();
+    return serviceCenter.getService(TagToPopularity.class)
+        .getPopularityByHashtag(hashtag).toString();
   }
 
   /**
@@ -217,8 +184,8 @@ public class FuntionalityTester {
    */
   public String[] getTemporalHistogram(final String t1, final String t2)
       throws Exception {
-    return temporalHistogramService.get(temporalDateFormat.parse(t1),
-        temporalDateFormat.parse(t2));
+    return serviceCenter.getService(TemporalHistogram.class).get(
+        temporalDateFormat.parse(t1), temporalDateFormat.parse(t2));
   }
 
   /**
@@ -228,7 +195,6 @@ public class FuntionalityTester {
   public void cleanPersistentData() {
     try {
       serviceCenter.clearSystem();
-      storage.clear();
     } catch (final IOException e) {
       // TODO Not sure what to do here.
       throw new RuntimeException(e);

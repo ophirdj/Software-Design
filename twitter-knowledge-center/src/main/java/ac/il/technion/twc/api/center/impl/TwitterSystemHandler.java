@@ -1,9 +1,13 @@
 package ac.il.technion.twc.api.center.impl;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -28,27 +32,33 @@ import ac.il.technion.twc.api.tweets.Tweet;
  */
 public class TwitterSystemHandler implements TwitterServicesCenter {
 
+  private final Map<Class<?>, Object> servicesResult = new HashMap<>();
+
   private final List<PropertyBuilder<?>> builders;
   private final PersistanceStorage storage;
 
   private final ExecutorService threadPool;
+  private final Set<Object> services;
 
   /**
    * @param builders
+   * @param services
    * @param storage
    * @param threadPool
    */
   public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
-      final PersistanceStorage storage, final ExecutorService threadPool) {
+      final Set<Object> services, final PersistanceStorage storage,
+      final ExecutorService threadPool) {
     this.builders = builders;
     this.storage = storage;
     this.threadPool = threadPool;
+    this.services = services;
   }
 
   @Override
   public void importData(final Collection<Tweet> importedTweets)
       throws IOException {
-    final Tweets storedTweets = storage.load(Tweets.class, new Tweets());
+    final Tweets storedTweets = storage.load(new Tweets());
     final List<Tweet> tweets = new ArrayList<>();
     tweets.addAll(importedTweets);
     tweets.addAll(storedTweets.getBaseTweets());
@@ -78,6 +88,38 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
       // TODO not sure what to do here
       e.printStackTrace();
     }
+    setup();
+
+  }
+
+  private void setup() throws IOException {
+    final Map<Class<?>, Object> properties = new HashMap<>();
+    for (final PropertyBuilder<?> builder : builders) {
+      final Object property = builder.getResult();
+      properties.put(property.getClass(), property);
+    }
+    for (final Object service : services)
+      try {
+        storage.store(ServiceBuildingManager.getInstance(service.getClass(),
+            properties));
+      } catch (IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | InstantiationException e) {
+        // Shouldn't happen
+        e.printStackTrace();
+      }
+  }
+
+  @Override
+  public void loadServices() {
+    for (final Object service : services)
+      servicesResult.put(service.getClass(), storage.load(service));
+  }
+
+  @Override
+  public <T> T getService(final Class<T> type) {
+    if (!servicesResult.containsKey(type))
+      return null;
+    return type.cast(servicesResult.get(type));
   }
 
   @Override

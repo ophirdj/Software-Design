@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import ac.il.technion.twc.FuntionalityTester;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
@@ -43,7 +44,7 @@ public class TemporalHistogram {
   /**
    * @param format
    */
-  private TemporalHistogram(final HistogramFormat format) {
+  public TemporalHistogram(final HistogramFormat format) {
     timesBase = new long[0];
     occuarenceBase = new int[0];
     timesBaseHistograms = new long[] { 0 };
@@ -61,6 +62,31 @@ public class TemporalHistogram {
    * @param dayMapProperty
    * @param format
    */
+
+  public TemporalHistogram(final DayMapping dayMapProperty) {
+    format = new HistogramFormat();
+
+    final Set<Entry<Long, Integer>> allDaysBase =
+        dayMapProperty.getAllDaysBase();
+    timesBase = new long[allDaysBase.size()];
+    occuarenceBase = new int[allDaysBase.size()];
+    timesBaseHistograms = new long[1 + allDaysBase.size() / histogramFrequency];
+    occuarenceBaseHistograms =
+        new int[1 + allDaysBase.size() / histogramFrequency][7];
+    initArrays(allDaysBase, timesBase, occuarenceBase, timesBaseHistograms,
+        occuarenceBaseHistograms);
+
+    final Set<Entry<Long, Integer>> allDaysRe = dayMapProperty.getAllDaysRe();
+    timesRe = new long[allDaysRe.size()];
+    occuarenceRe = new int[allDaysRe.size()];
+    timesReHistograms = new long[1 + allDaysRe.size() / histogramFrequency];
+    occuarenceReHistograms =
+        new int[1 + allDaysRe.size() / histogramFrequency][7];
+    initArrays(allDaysRe, timesRe, occuarenceRe, timesReHistograms,
+        occuarenceReHistograms);
+  }
+
+  @ServiceSetup
   public TemporalHistogram(final DayMapping dayMapProperty,
       final HistogramFormat format) {
     this.format = format;

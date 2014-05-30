@@ -105,14 +105,18 @@ public class StorageTest {
   }
 
   /**
-   * Test method for: {@link PersistanceStorage#load(Class, Object)}
+   * Test method for: {@link PersistanceStorage#load(Object)}
    */
   @SuppressWarnings("unused")
   // used by JunitParams
       private
       Object[] defualtFromType() {
-    return $($(DayHistogram.class), $(TweetToLifeTime.class),
-        $(TemporalHistogram.class), $(TagToPopularity.class));
+    return $(
+        $(DayHistogram.class, DayHistogram.empty(new HistogramFormat())),
+        $(TweetToLifeTime.class, TweetToLifeTime.empty()),
+        $(TemporalHistogram.class,
+            TemporalHistogram.empty(new HistogramFormat())),
+        $(TagToPopularity.class, TagToPopularity.empty()));
   }
 
   /**
@@ -121,15 +125,16 @@ public class StorageTest {
    */
   @Parameters(method = "defualtFromType")
   @Test
-  public <T> void checkDefualtAnswer(final Class<T> type) throws IOException {
+  public <T> void checkDefualtAnswer(final Class<T> type, final T defaultValue)
+      throws IOException {
     when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
         .thenThrow(new IOException());
     final T defualtVal = mock(type);
-    assertEquals(defualtVal, $.load(type, defualtVal));
+    assertEquals(defualtVal, $.load(defualtVal));
   }
 
   /**
-   * Test method for: {@link PersistanceStorage#load(Class, Object)}
+   * Test method for: {@link PersistanceStorage#load(Object)}
    */
   @SuppressWarnings("unused")
   // used by JunitParams
@@ -146,16 +151,16 @@ public class StorageTest {
   /**
    * @param type
    * @param toStore
+   * @param defaultValue
    * @throws IOException
    */
   @Parameters(method = "loadFromType")
   @Test
-  public <T> void checkStoredAnswer(final Class<T> type, final T toStore)
-      throws IOException {
+  public <T> void checkStoredAnswer(final Class<T> type, final T toStore,
+      final T defaultValue) throws IOException {
     when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
         .thenReturn(gson.toJson(toStore));
-    final T defualtVal = mock(type);
-    assertEquals(toStore, $.load(type, defualtVal));
+    assertEquals(toStore, $.load(defaultValue));
   }
 
   /**

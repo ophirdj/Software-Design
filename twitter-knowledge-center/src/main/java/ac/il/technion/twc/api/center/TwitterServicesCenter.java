@@ -35,4 +35,16 @@ public interface TwitterServicesCenter {
    */
   void clearSystem() throws IOException;
 
+  /**
+   * load all the services
+   */
+  void loadServices();
+
+  /**
+   * 
+   * @param type
+   * @return The service from the given type
+   */
+  <T> T getService(Class<T> type);
+
 }

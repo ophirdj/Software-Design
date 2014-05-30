@@ -59,7 +59,9 @@ public class Storage implements PersistanceStorage {
   }
 
   @Override
-  public <T, ST extends T> T load(final Class<T> type, final ST defualt) {
+  public <T> T load(final T defualt) {
+    @SuppressWarnings("unchecked")
+    final Class<T> type = (Class<T>) defualt.getClass();
     if (!retriverByType.containsKey(type))
       prepareSingle(type);
     final Future<Object> value = retriverByType.get(type);

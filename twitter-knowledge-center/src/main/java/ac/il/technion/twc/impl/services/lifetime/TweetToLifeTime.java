@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.api.tweets.Retweet;
@@ -27,9 +28,9 @@ public class TweetToLifeTime {
   /**
    * Mapping between id and its life time
    */
-  final Map<ID, Long> lifeTimeFromId;
+  Map<ID, Long> lifeTimeFromId;
 
-  private TweetToLifeTime() {
+  public TweetToLifeTime() {
     lifeTimeFromId = new HashMap<ID, Long>();
   }
 
@@ -44,6 +45,7 @@ public class TweetToLifeTime {
    * @param baseTweetFinder
    * @param tweets
    */
+  @ServiceSetup
   public TweetToLifeTime(final TransitiveRootFinder baseTweetFinder,
       final TweetsRetriever tweets) {
     lifeTimeFromId = new HashMap<ID, Long>();
