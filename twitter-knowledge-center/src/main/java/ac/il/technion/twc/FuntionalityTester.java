@@ -16,7 +16,7 @@ import ac.il.technion.twc.api.parser.impl.MultiFormatsParserBuilder;
 import ac.il.technion.twc.api.storage.impl.FileHandler;
 import ac.il.technion.twc.api.storage.impl.Storage;
 import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.impl.parsers.csFormat.CSTweetFormat;
+import ac.il.technion.twc.impl.parsers.csFormat.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DaysMappingBuilder;
@@ -76,8 +76,8 @@ public class FuntionalityTester {
     }
     serviceCenter = systemBuilder.getResult();
     parser =
-        new MultiFormatsParserBuilder().addFormat(new CSTweetFormat())
-            .addFormat(new JsonTweetFormat()).getResult();
+        new MultiFormatsParserBuilder().add(new CommaSeparatedTweetFormat())
+            .add(new JsonTweetFormat()).build();
   }
 
   /**
