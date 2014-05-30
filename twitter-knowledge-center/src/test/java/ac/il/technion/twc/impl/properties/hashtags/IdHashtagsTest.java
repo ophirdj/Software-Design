@@ -26,11 +26,17 @@ public class IdHashtagsTest {
 
 	private final IdHashtagsBuilder $ = new IdHashtagsBuilder();
 
+	/**
+	 * Test method for {@link IdHashtags#getHashtags(ID)}
+	 */
 	@Test
 	public final void noTweetsIdHashtagsShouldReturnEmptyList() {
 		assertTrue($.getResult().getHashtags(new ID("doesn't exist")).isEmpty());
 	}
 
+	/**
+	 * Test method for {@link IdHashtags#getHashtags(ID)}
+	 */
 	@Test
 	public final void baseTweetWithHashtagsIdHashtagsShouldReturnHashtags() {
 		final ID id = new ID("base tweet ID");
@@ -41,6 +47,9 @@ public class IdHashtagsTest {
 		assertEquals(hashtags, $.getResult().getHashtags(id));
 	}
 
+	/**
+	 * Test method for {@link IdHashtags#getHashtags(ID)}
+	 */
 	@Test
 	public final void baseTweetWithoutHashtagsIdHashtagsShouldReturnEmptyList() {
 		final ID id = new ID("base tweet ID");
@@ -49,6 +58,9 @@ public class IdHashtagsTest {
 		assertTrue($.getResult().getHashtags(id).isEmpty());
 	}
 
+	/**
+	 * Test method for {@link IdHashtags#getHashtags(ID)}
+	 */
 	@Test
 	public final void tweetsShouldNotInfluenceHashtagsOfOtherTweets() {
 		final ID id = new ID("base tweet ID");
