@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
 import ac.il.technion.twc.api.tweets.BaseTweet;
@@ -36,11 +35,9 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
    * @param services
    * @param serviceBuilder
    * @param storage
-   * @param threadPool
    */
   public TwitterSystemHandler(final Set<Object> services,
-      final ServiceBuildingManager serviceBuilder, final Storage storage,
-      final ExecutorService threadPool) {
+      final ServiceBuildingManager serviceBuilder, final Storage storage) {
     this.services = services;
     this.serviceBuilder = serviceBuilder;
     this.storage = storage;
