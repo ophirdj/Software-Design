@@ -31,215 +31,208 @@ import ac.il.technion.twc.api.tweets.Tweet;
  */
 public class TwitterSystemHandler implements TwitterServicesCenter {
 
-	private final Map<Class<?>, Object> servicesResult = new HashMap<>();
+  private final Map<Class<?>, Object> servicesResult = new HashMap<>();
 
-	private final List<PropertyBuilder<?>> builders;
-	private final Storage storage;
+  private final List<PropertyBuilder<?>> builders;
+  private final Storage storage;
 
-	private final ExecutorService threadPool;
-	private final Set<Object> services;
+  private final ExecutorService threadPool;
+  private final Set<Object> services;
 
-	private final ServiceBuildingManager serviceBuilder;
+  private final ServiceBuildingManager serviceBuilder;
 
-	/**
-	 * @param builders
-	 * @param services
-	 * @param serviceBuilder
-	 * @param storage
-	 * @param threadPool
-	 */
-	public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
-			final Set<Object> services,
-			final ServiceBuildingManager serviceBuilder, final Storage storage,
-			final ExecutorService threadPool) {
-		this.builders = builders;
-		this.services = services;
-		this.serviceBuilder = serviceBuilder;
-		this.storage = storage;
-		this.threadPool = threadPool;
-	}
+  /**
+   * @param builders
+   * @param services
+   * @param serviceBuilder
+   * @param storage
+   * @param threadPool
+   */
+  public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
+      final Set<Object> services, final ServiceBuildingManager serviceBuilder,
+      final Storage storage, final ExecutorService threadPool) {
+    this.builders = builders;
+    this.services = services;
+    this.serviceBuilder = serviceBuilder;
+    this.storage = storage;
+    this.threadPool = threadPool;
+  }
 
-	@Override
-	public void importData(final Collection<Tweet> importedTweets)
-			throws IOException {
-		final Tweets storedTweets = storage.load(new Tweets());
-		final List<Tweet> tweets = new ArrayList<>();
-		tweets.addAll(importedTweets);
-		tweets.addAll(storedTweets.getBaseTweets());
-		tweets.addAll(storedTweets.getRetweets());
+  @Override
+  public void importData(final Collection<Tweet> importedTweets)
+      throws IOException {
+    final Tweets storedTweets = storage.load(new Tweets());
+    final List<Tweet> tweets = new ArrayList<>();
+    tweets.addAll(importedTweets);
+    tweets.addAll(storedTweets.getBaseTweets());
+    tweets.addAll(storedTweets.getRetweets());
 
-		final List<Callable<Void>> buildingTasks = new ArrayList<>();
-		for (final PropertyBuilder<?> builder : builders)
-			buildingTasks.add(new Callable<Void>() {
+    final List<Callable<Void>> buildingTasks = new ArrayList<>();
+    for (final PropertyBuilder<?> builder : builders)
+      buildingTasks.add(new Callable<Void>() {
 
-				@Override
-				public Void call() throws Exception {
-					builder.clear();
-					for (final Tweet tweet : tweets)
-						tweet.accept(builder);
-					return null;
-				}
-			});
-		try {
-			final List<Future<Void>> barriers = threadPool
-					.invokeAll(buildingTasks);
-			for (final Future<Void> task : barriers)
-				task.get();
-			storage.store(new Tweets(tweets));
-		} catch (final InterruptedException e) {
-			// TODO not sure what to do here
-			e.printStackTrace();
-		} catch (final ExecutionException e) {
-			// TODO not sure what to do here
-			e.printStackTrace();
-		}
-		setup();
+        @Override
+        public Void call() throws Exception {
+          builder.clear();
+          for (final Tweet tweet : tweets)
+            tweet.accept(builder);
+          return null;
+        }
+      });
+    final Tweets newTweets = new Tweets(tweets);
+    try {
+      final List<Future<Void>> barriers = threadPool.invokeAll(buildingTasks);
+      for (final Future<Void> task : barriers)
+        task.get();
+      storage.store(newTweets);
+    } catch (final InterruptedException e) {
+      // TODO not sure what to do here
+      e.printStackTrace();
+    } catch (final ExecutionException e) {
+      // TODO not sure what to do here
+      e.printStackTrace();
+    }
+    setup(newTweets);
 
-	}
+  }
 
-	private void setup() throws IOException {
-		final Map<Class<?>, Object> properties = new HashMap<>();
-		for (final PropertyBuilder<?> builder : builders) {
-			final Object property = builder.getResult();
-			properties.put(property.getClass(), property);
-		}
-		for (final Object service : services)
-			try {
-				storage.store(serviceBuilder.getInstance(service.getClass(),
-						properties));
-			} catch (IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | InstantiationException e) {
-				// Shouldn't happen
-				e.printStackTrace();
-			}
-	}
+  private void setup(final Tweets tweets) throws IOException {
+    serviceBuilder.setProperties(tweets.getBaseTweets(), tweets.getRetweets());
+    for (final Object service : services)
+      try {
+        storage.store(serviceBuilder.getInstance(service.getClass()));
+      } catch (IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | InstantiationException e) {
+        // Shouldn't happen
+        e.printStackTrace();
+      }
+  }
 
-	@Override
-	public void loadServices() {
-		for (final Object service : services)
-			servicesResult.put(service.getClass(), storage.load(service));
-	}
+  @Override
+  public void loadServices() {
+    for (final Object service : services)
+      servicesResult.put(service.getClass(), storage.load(service));
+  }
 
-	@Override
-	public <T> T getService(final Class<T> type) {
-		if (!servicesResult.containsKey(type))
-			return null;
-		return type.cast(servicesResult.get(type));
-	}
+  @Override
+  public <T> T getService(final Class<T> type) {
+    if (!servicesResult.containsKey(type))
+      return null;
+    return type.cast(servicesResult.get(type));
+  }
 
-	@Override
-	public void clearSystem() throws ClearFailedException {
-		for (final PropertyBuilder<?> builder : builders)
-			builder.clear();
-		try {
-			storage.clear();
-		} catch (final IOException e) {
-			throw new ClearFailedException(e);
-		}
-	}
+  @Override
+  public void clearSystem() throws ClearFailedException {
+    for (final PropertyBuilder<?> builder : builders)
+      builder.clear();
+    try {
+      storage.clear();
+    } catch (final IOException e) {
+      throw new ClearFailedException(e);
+    }
+  }
 
-	/**
-	 * Wrap class for list of tweets.
-	 * 
-	 * @author Ziv Ronen
-	 * @date 22.05.2014
-	 * @mail akarks@gmail.com
-	 * 
-	 * @version 2.0
-	 * @since 2.0
-	 */
-	static class Tweets {
-		private List<BaseTweet> baseTweets;
-		private List<Retweet> retweets;
+  /**
+   * Wrap class for list of tweets.
+   * 
+   * @author Ziv Ronen
+   * @date 22.05.2014
+   * @mail akarks@gmail.com
+   * 
+   * @version 2.0
+   * @since 2.0
+   */
+  static class Tweets {
+    private List<BaseTweet> baseTweets;
+    private List<Retweet> retweets;
 
-		/**
-		 * @param tweets
-		 *            get the tweets and split them to base tweets and retweets
-		 */
-		public Tweets(final List<Tweet> tweets) {
-			baseTweets = new ArrayList<>();
-			retweets = new ArrayList<>();
-			for (final Tweet tweet : tweets)
-				if (tweet instanceof BaseTweet)
-					baseTweets.add((BaseTweet) tweet);
-				else
-					retweets.add((Retweet) tweet);
-		}
+    /**
+     * @param tweets
+     *          get the tweets and split them to base tweets and retweets
+     */
+    public Tweets(final List<Tweet> tweets) {
+      baseTweets = new ArrayList<>();
+      retweets = new ArrayList<>();
+      for (final Tweet tweet : tweets)
+        if (tweet instanceof BaseTweet)
+          baseTweets.add((BaseTweet) tweet);
+        else
+          retweets.add((Retweet) tweet);
+    }
 
-		/**
+    /**
      * 
      */
-		public Tweets() {
-			baseTweets = new ArrayList<>();
-			retweets = new ArrayList<>();
-		}
+    public Tweets() {
+      baseTweets = new ArrayList<>();
+      retweets = new ArrayList<>();
+    }
 
-		/**
-		 * @return the base tweets
-		 */
-		public List<BaseTweet> getBaseTweets() {
-			return baseTweets;
-		}
+    /**
+     * @return the base tweets
+     */
+    public List<BaseTweet> getBaseTweets() {
+      return baseTweets;
+    }
 
-		/**
-		 * set the base tweets
-		 * 
-		 * @param baseTweets
-		 *            new value
-		 */
-		public void setBaseTweets(final List<BaseTweet> baseTweets) {
-			this.baseTweets = baseTweets;
-		}
+    /**
+     * set the base tweets
+     * 
+     * @param baseTweets
+     *          new value
+     */
+    public void setBaseTweets(final List<BaseTweet> baseTweets) {
+      this.baseTweets = baseTweets;
+    }
 
-		/**
-		 * @return the retweets
-		 */
-		public List<Retweet> getRetweets() {
-			return retweets;
-		}
+    /**
+     * @return the retweets
+     */
+    public List<Retweet> getRetweets() {
+      return retweets;
+    }
 
-		/**
-		 * set the retweets
-		 * 
-		 * @param retweets
-		 *            new value
-		 */
-		public void setRetweets(final List<Retweet> retweets) {
-			this.retweets = retweets;
-		}
+    /**
+     * set the retweets
+     * 
+     * @param retweets
+     *          new value
+     */
+    public void setRetweets(final List<Retweet> retweets) {
+      this.retweets = retweets;
+    }
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-					+ (baseTweets == null ? 0 : baseTweets.hashCode());
-			result = prime * result
-					+ (retweets == null ? 0 : retweets.hashCode());
-			return result;
-		}
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result =
+          prime * result + (baseTweets == null ? 0 : baseTweets.hashCode());
+      result = prime * result + (retweets == null ? 0 : retweets.hashCode());
+      return result;
+    }
 
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			final Tweets other = (Tweets) obj;
-			if (baseTweets == null) {
-				if (other.baseTweets != null)
-					return false;
-			} else if (!baseTweets.equals(other.baseTweets))
-				return false;
-			if (retweets == null) {
-				if (other.retweets != null)
-					return false;
-			} else if (!retweets.equals(other.retweets))
-				return false;
-			return true;
-		}
-	}
+    @Override
+    public boolean equals(final Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      final Tweets other = (Tweets) obj;
+      if (baseTweets == null) {
+        if (other.baseTweets != null)
+          return false;
+      } else if (!baseTweets.equals(other.baseTweets))
+        return false;
+      if (retweets == null) {
+        if (other.retweets != null)
+          return false;
+      } else if (!retweets.equals(other.retweets))
+        return false;
+      return true;
+    }
+  }
 
 }

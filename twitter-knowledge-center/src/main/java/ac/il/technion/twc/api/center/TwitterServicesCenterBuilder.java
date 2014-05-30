@@ -4,9 +4,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 
 import ac.il.technion.twc.api.center.impl.Serializer;
-import ac.il.technion.twc.api.properties.PropertyBuilder;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Build our main API.
@@ -23,16 +25,14 @@ public interface TwitterServicesCenterBuilder {
 
   /**
    * Register a property builder to the system and return a way two get the
-   * property later on.
+   * property later on. Property is any object that have a constructor that
+   * require ({@link List}<{@link BaseTweet}> , {@link List}<{@link Retweet}>)
    * 
-   * @param type
+   * @param propertyType
    *          The type of the property
-   * @param builder
-   *          A builder of the property
    * @return a reference to this object.
    */
-  <T, S extends T> TwitterServicesCenterBuilder addPropertyBuilder(
-      final Class<T> type, PropertyBuilder<S> builder);
+  <T> TwitterServicesCenterBuilder addProperty(final Class<T> propertyType);
 
   /**
    * Register a property builder to the system and return a way two get the
@@ -136,6 +136,33 @@ public interface TwitterServicesCenterBuilder {
   }
 
   /**
+   * Indicate that the type doesn't have accessible constructor that get (
+   * {@link List}<{@link BaseTweet}> , {@link List}<{@link Retweet}>)
+   * 
+   * @author Ziv Ronen
+   * @date 30.05.2014
+   * @mail akarks@gmail.com
+   * 
+   * @version 2.0
+   * @since 2.0
+   */
+  public static class NotAPropertyException extends RuntimeException {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 7277301716229432516L;
+
+    /**
+     * @param simpleName
+     *          The name of the service
+     */
+    public NotAPropertyException(final String simpleName) {
+      super(simpleName + " is not a property");
+    }
+  }
+
+  /**
    * If a service require a property that is not register
    * 
    * @author Ziv Ronen
@@ -159,7 +186,6 @@ public interface TwitterServicesCenterBuilder {
      * 
      */
     private static final long serialVersionUID = -2955615443853602756L;
-
   }
 
 }

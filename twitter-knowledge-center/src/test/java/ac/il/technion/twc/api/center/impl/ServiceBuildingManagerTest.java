@@ -2,9 +2,11 @@ package ac.il.technion.twc.api.center.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +15,8 @@ import org.junit.rules.ExpectedException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Test for {@link ServiceBuildingManagerTest}
@@ -26,6 +30,8 @@ import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
  */
 public class ServiceBuildingManagerTest {
 
+  private final List<BaseTweet> basesMock;
+  private final List<Retweet> resMock;
   private static final int PREDEFINE_VAL = 5;
   private final ServiceBuildingManager $;
 
@@ -38,7 +44,10 @@ public class ServiceBuildingManagerTest {
   /**
    * c'tor
    */
+  @SuppressWarnings("unchecked")
   public ServiceBuildingManagerTest() {
+    basesMock = mock(List.class);
+    resMock = mock(List.class);
     $ = new ServiceBuildingManager();
     $.addProperty(SupportedProperty.class);
     $.addPredfineValue(PredefineValue.class, new PredefineValue(PREDEFINE_VAL));
@@ -87,8 +96,7 @@ public class ServiceBuildingManagerTest {
       getOneConstructorsAnnotatedMockShouldReturnObjectOfTheClass()
           throws InstantiationException, IllegalAccessException,
           IllegalArgumentException, InvocationTargetException {
-    assertTrue($.getInstance(OneConstructorsAnnotatedMock.class,
-        new HashMap<Class<?>, Object>()) instanceof OneConstructorsAnnotatedMock);
+    assertTrue($.getInstance(OneConstructorsAnnotatedMock.class) instanceof OneConstructorsAnnotatedMock);
   }
 
   /**
@@ -101,8 +109,7 @@ public class ServiceBuildingManagerTest {
   public final void getOneConstructorsMockShouldReturnObjectOfTheClass()
       throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException {
-    assertTrue($.getInstance(OneConstructorsMock.class,
-        new HashMap<Class<?>, Object>()) instanceof OneConstructorsMock);
+    assertTrue($.getInstance(OneConstructorsMock.class) instanceof OneConstructorsMock);
   }
 
   /**
@@ -115,8 +122,8 @@ public class ServiceBuildingManagerTest {
   public final void getClassThatNeededPredefineValueShouldUseDefinedValue()
       throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException {
-    assertEquals(PREDEFINE_VAL, ((NeedPredefineValue) $.getInstance(
-        NeedPredefineValue.class, new HashMap<Class<?>, Object>())).val);
+    assertEquals(PREDEFINE_VAL,
+        ((NeedPredefineValue) $.getInstance(NeedPredefineValue.class)).val);
   }
 
   /**
@@ -135,8 +142,12 @@ public class ServiceBuildingManagerTest {
         new HashMap<Class<?>, Object>();
     properties.put(SupportedProperty.class, new SupportedProperty(
         new PredefineValue(PREDEFINE_VAL)));
-    assertEquals(PREDEFINE_VAL, ((NeedSupportedProperty) $.getInstance(
-        NeedSupportedProperty.class, properties)).value);
+
+    $.setProperties(basesMock, resMock);
+    
+    assertEquals(
+        PREDEFINE_VAL,
+        ((NeedSupportedProperty) $.getInstance(NeedSupportedProperty.class)).value);
   }
 
   /**
@@ -430,6 +441,10 @@ public class ServiceBuildingManagerTest {
     public SupportedProperty() {
       val = new PredefineValue(0);
     }
+    
+    public SupportedProperty(final List<BaseTweet> bases, final List<Retweet> res) {
+      val = new PredefineValue(bases.size() + res.size());
+    }
 
     public SupportedProperty(final PredefineValue val) {
       this.val = val;
@@ -539,5 +554,7 @@ public class ServiceBuildingManagerTest {
         final NotSupportedPropertyService a4) {
     }
   }
+  
+  private class RealProperty
 
 }

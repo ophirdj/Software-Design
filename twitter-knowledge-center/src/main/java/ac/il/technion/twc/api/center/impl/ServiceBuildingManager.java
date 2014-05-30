@@ -3,16 +3,21 @@ package ac.il.technion.twc.api.center.impl;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropertitesException;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
+import ac.il.technion.twc.api.tweets.BaseTweet;
+import ac.il.technion.twc.api.tweets.Retweet;
 
 /**
  * Utils class for checking if a service can be build and for building it
@@ -28,6 +33,7 @@ class ServiceBuildingManager {
 
   private final Set<Class<?>> supportedProperties = new HashSet<>();
   private final Map<Class<?>, Object> predefinedValues = new HashMap<>();
+  private final Map<Class<?>, Object> properties = new HashMap<>();
 
   /**
    * Inform the {@link ServiceBuildingManager} that the given type is supported
@@ -38,6 +44,52 @@ class ServiceBuildingManager {
    */
   public void addProperty(final Class<?> type) {
     supportedProperties.add(type);
+  }
+
+  /**
+   * @param type
+   *          the type of the property
+   * 
+   * @throws NotAPropertyException
+   *           if the type doesn't represent a property
+   */
+  public void checkProperty(final Class<?> type) {
+    try {
+      final Constructor<?> ctor = type.getConstructor(List.class, List.class);
+      final Type[] parameters = ctor.getGenericParameterTypes();
+      if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
+          .getActualTypeArguments()[0])
+          && Retweet.class.equals(((ParameterizedType) parameters[1])
+              .getActualTypeArguments()[1])
+          && isConcrete(type)
+          && ctor.isAccessible())
+        // Succeed
+        return;
+    } catch (NoSuchMethodException | SecurityException e) {
+    }
+    throw new NotAPropertyException(type.getSimpleName());
+  }
+
+  /**
+   * Make all the properties
+   * 
+   * @param base
+   *          List of base tweets
+   * @param re
+   *          List of Retweets
+   */
+  public void setProperties(final List<BaseTweet> base, final List<Retweet> re) {
+    for (final Class<?> supportedType : supportedProperties)
+      try {
+        properties.put(
+            supportedType,
+            supportedType.getConstructor(List.class, List.class).newInstance(
+                base, re));
+      } catch (NoSuchMethodException | SecurityException
+          | InstantiationException | IllegalAccessException
+          | IllegalArgumentException | InvocationTargetException e) {
+        e.printStackTrace();
+      }
   }
 
   /**
@@ -178,8 +230,6 @@ class ServiceBuildingManager {
   /**
    * @param type
    *          the requested service type
-   * @param properties
-   *          A map between a property and object supporting it
    * @return An instance of the given type
    * 
    * 
@@ -189,14 +239,13 @@ class ServiceBuildingManager {
    * @throws IllegalArgumentException
    * @throws InvocationTargetException
    */
-  public Object getInstance(final Class<?> type,
-      final Map<Class<?>, Object> properties) throws InstantiationException,
+  public Object getInstance(final Class<?> type) throws InstantiationException,
       IllegalAccessException, IllegalArgumentException,
       InvocationTargetException {
     if (properties.containsKey(type))
       return properties.get(type);
     final Constructor<?> ctor = getSetupCtor(type);
-    return ctor.newInstance(getCtorValues(properties, ctor));
+    return ctor.newInstance(getCtorValues(ctor));
   }
 
   private Constructor<?> getSetupCtor(final Class<?> type) {
@@ -209,8 +258,7 @@ class ServiceBuildingManager {
     throw new IllegalArgumentException();
   }
 
-  private Object[] getCtorValues(final Map<Class<?>, Object> properties,
-      final Constructor<?> ctor) {
+  private Object[] getCtorValues(final Constructor<?> ctor) {
     final Type[] calledParameters = ctor.getParameterTypes();
     final Object[] values = new Object[calledParameters.length];
     for (int i = 0; i < calledParameters.length; i++) {
@@ -222,8 +270,7 @@ class ServiceBuildingManager {
       else {
         final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
         try {
-          values[i] =
-              innerCtor.newInstance(getCtorValues(properties, innerCtor));
+          values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
         } catch (InstantiationException | IllegalAccessException
             | IllegalArgumentException | InvocationTargetException e) {
           // shouldn't happen
