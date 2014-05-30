@@ -73,10 +73,10 @@ public class TweetToLifeTime {
 	 * @throws UndefinedTimeException
 	 *             if the tweet is not registered or has no retweets
 	 */
-	public long getLifeTimeById(final ID id) throws UndefinedTimeException {
+	public String getLifeTimeById(final ID id) throws UndefinedTimeException {
 		if (!lifeTimeFromId.containsKey(id))
-			throw new UndefinedTimeException();
-		return lifeTimeFromId.get(id).longValue();
+			throw new UndefinedTimeException(id);
+		return lifeTimeFromId.get(id).toString();
 	}
 
 	/**
@@ -89,6 +89,19 @@ public class TweetToLifeTime {
 	 */
 	public static final class UndefinedTimeException extends Exception {
 		private static final long serialVersionUID = -4180968758763049887L;
+		private final ID id;
+
+		/**
+		 * @param id
+		 */
+		public UndefinedTimeException(final ID id) {
+			this.id = id;
+		}
+
+		@Override
+		public String getLocalizedMessage() {
+			return "Life Time is not defined for tweet: " + id.id;
+		}
 	}
 
 	@Override
