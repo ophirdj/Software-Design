@@ -62,9 +62,7 @@ class ServiceBuildingManager {
       if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
           .getActualTypeArguments()[0])
           && Retweet.class.equals(((ParameterizedType) parameters[1])
-              .getActualTypeArguments()[0])
-          && isConcrete(type)
-          && ctor.isAccessible())
+              .getActualTypeArguments()[0]) && isConcrete(type))
         // Succeed
         return;
     } catch (NoSuchMethodException | SecurityException e) {

@@ -355,6 +355,14 @@ public class ServiceBuildingManagerTest {
     $.checkService(MultipuleMissingCausesClass.class);
   }
 
+  /**
+   * 
+   */
+  @Test
+  public final void checkPropertySucceed() {
+    $.checkProperty(SupportedProperty.class);
+  }
+
   private String circleMessage(final Class<?> property, final String path) {
     return propertyPrefix(property) + "cause dependency circle. " + path + "\n";
   }
@@ -444,6 +452,8 @@ public class ServiceBuildingManagerTest {
       val = new PredefineValue(0);
     }
 
+    // read with reflection
+    @SuppressWarnings("unused")
     public SupportedProperty(final List<BaseTweet> bases,
         final List<Retweet> res) {
       val = new PredefineValue(bases.size() + res.size());
