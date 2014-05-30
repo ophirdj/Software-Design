@@ -177,12 +177,6 @@ public class FuntionalityTester {
 	 * before every test, to ensure that all tests are independent.
 	 */
 	public void cleanPersistentData() {
-		try {
-			serviceCenter.clearSystem();
-		} catch (final IOException e) {
-			// TODO Not sure what to do here.
-			throw new RuntimeException(e);
-		}
-
+		serviceCenter.clearSystem();
 	}
 }
