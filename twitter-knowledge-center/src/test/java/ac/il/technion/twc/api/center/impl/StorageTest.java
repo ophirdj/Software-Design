@@ -146,8 +146,7 @@ public class StorageTest {
       throws IOException {
     when(fileHandlingMock.load(fullTestPath.resolve(type.getCanonicalName())))
         .thenThrow(new IOException());
-    final T defualtVal = mock(type);
-    assertEquals(defualtVal, $.load(defualtVal));
+    assertEquals(defaultValue, $.load(defaultValue));
   }
 
   /**
