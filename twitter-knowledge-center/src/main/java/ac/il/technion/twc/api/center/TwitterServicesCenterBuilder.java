@@ -31,8 +31,8 @@ public interface TwitterServicesCenterBuilder {
    *          A builder of the property
    * @return a reference to this object.
    */
-  <T> TwitterServicesCenterBuilder addPropertyBuilder(final Class<T> type,
-      PropertyBuilder<T> builder);
+  <T, S extends T> TwitterServicesCenterBuilder addPropertyBuilder(
+      final Class<T> type, PropertyBuilder<S> builder);
 
   /**
    * Register a property builder to the system and return a way two get the
@@ -126,7 +126,7 @@ public interface TwitterServicesCenterBuilder {
      *          The name of the service
      */
     public NotAServiceException(final String simpleName) {
-      super(simpleName + "is not a service");
+      super(simpleName + " is not a service");
     }
 
     /**

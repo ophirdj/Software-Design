@@ -113,13 +113,13 @@ class ServiceBuildingManager {
   private boolean isMissingProperty(final Class<?> type,
       final HashSet<Type> visited, final StringBuilder missingMessage,
       final StringBuilder currentPath) {
+    currentPath.append("->").append(type.getSimpleName());
     if (!visited.add(type)) {
       missingMessage.append(prefix(type.getSimpleName()))
           .append("cause dependency circle. ").append(currentPath.toString())
           .append("\n");
       return true;
     }
-    currentPath.append("->").append(type.getSimpleName());
     try {
       if (supportedProperties.contains(type))
         return false;

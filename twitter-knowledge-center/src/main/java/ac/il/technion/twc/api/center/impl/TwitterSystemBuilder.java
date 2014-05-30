@@ -30,8 +30,8 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   private final List<Serializer> serializers = new ArrayList<>();
 
   @Override
-  public <T> TwitterServicesCenterBuilder addPropertyBuilder(
-      final Class<T> type, final PropertyBuilder<T> builder) {
+  public <T, S extends T> TwitterServicesCenterBuilder addPropertyBuilder(
+      final Class<T> type, final PropertyBuilder<S> builder) {
     serviceBuilder.addProperty(type);
     builders.add(builder);
     return this;
