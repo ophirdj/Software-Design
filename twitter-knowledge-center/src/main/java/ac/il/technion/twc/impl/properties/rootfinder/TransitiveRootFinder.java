@@ -1,9 +1,13 @@
 package ac.il.technion.twc.impl.properties.rootfinder;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
 
 /**
@@ -24,13 +28,20 @@ public class TransitiveRootFinder {
   private final Map<ID, BaseTweet> baseTweets;
 
   /**
-   * @param relation
-   * @param baseTweets
+   * @param bases
+   * @param res
    */
-  public TransitiveRootFinder(final Map<ID, ID> relation,
-      final Map<ID, BaseTweet> baseTweets) {
-    this.relation = relation;
-    this.baseTweets = baseTweets;
+  public TransitiveRootFinder(final List<BaseTweet> bases,
+      final List<Retweet> res) {
+    relation = new HashMap<>();
+    final Map<ID, BaseTweet> buildingBaseTweetMap =
+        new HashMap<ID, BaseTweet>();
+    for (final BaseTweet baseTweet : bases)
+      buildingBaseTweetMap.put(baseTweet.id(), baseTweet);
+    for (final Retweet retweet : res)
+      relation.put(retweet.id(), retweet.originId);
+    baseTweets = Collections.unmodifiableMap(buildingBaseTweetMap);
+    ;
   }
 
   /**

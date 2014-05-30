@@ -32,6 +32,7 @@ import ac.il.technion.twc.api.tweets.Retweet;
 class ServiceBuildingManager {
 
   private final Set<Class<?>> supportedProperties = new HashSet<>();
+  private final Set<Class<?>> supportedObjects = new HashSet<>();
   private final Map<Class<?>, Object> predefinedValues = new HashMap<>();
   private final Map<Class<?>, Object> properties = new HashMap<>();
 
@@ -44,6 +45,7 @@ class ServiceBuildingManager {
    */
   public void addProperty(final Class<?> type) {
     supportedProperties.add(type);
+    supportedObjects.add(type);
   }
 
   /**
@@ -60,7 +62,7 @@ class ServiceBuildingManager {
       if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
           .getActualTypeArguments()[0])
           && Retweet.class.equals(((ParameterizedType) parameters[1])
-              .getActualTypeArguments()[1])
+              .getActualTypeArguments()[0])
           && isConcrete(type)
           && ctor.isAccessible())
         // Succeed
@@ -103,7 +105,7 @@ class ServiceBuildingManager {
    */
   public <T, ST extends T> void addPredfineValue(final Class<T> type,
       final ST value) {
-    supportedProperties.add(type);
+    supportedObjects.add(type);
     predefinedValues.put(type, value);
   }
 
@@ -121,7 +123,7 @@ class ServiceBuildingManager {
       throws MissingPropertitesException, NotAServiceException {
     if (!hasSingleAnnotatedCtor(type))
       throw new NotAServiceException(type.getSimpleName());
-    if (supportedProperties.contains(type))
+    if (supportedObjects.contains(type))
       return;
     final StringBuilder missingMessageBuilder =
         new StringBuilder("The service ").append(type.getSimpleName()).append(
@@ -173,7 +175,7 @@ class ServiceBuildingManager {
       return true;
     }
     try {
-      if (supportedProperties.contains(type))
+      if (supportedObjects.contains(type))
         return false;
       if (!isConcrete(type)) {
         missingMessage.append(prefix(type.getSimpleName()))

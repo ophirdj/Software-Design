@@ -3,6 +3,7 @@ package ac.il.technion.twc.api.center.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -142,11 +143,12 @@ public class ServiceBuildingManagerTest {
         new HashMap<Class<?>, Object>();
     properties.put(SupportedProperty.class, new SupportedProperty(
         new PredefineValue(PREDEFINE_VAL)));
-
+    when(basesMock.size()).thenReturn(3);
+    when(resMock.size()).thenReturn(2);
     $.setProperties(basesMock, resMock);
 
     assertEquals(
-        PREDEFINE_VAL,
+        5,
         ((NeedSupportedProperty) $.getInstance(NeedSupportedProperty.class)).value);
   }
 

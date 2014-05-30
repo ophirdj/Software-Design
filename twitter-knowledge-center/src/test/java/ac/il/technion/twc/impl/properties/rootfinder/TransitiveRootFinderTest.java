@@ -1,8 +1,9 @@
 package ac.il.technion.twc.impl.properties.rootfinder;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Rule;
@@ -16,7 +17,7 @@ import ac.il.technion.twc.api.tweets.Tweet;
 import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
 
 /**
- * Tests for {@link TransitiveRootFinder} and {@link TransitivityBuilder}
+ * Tests for {@link TransitiveRootFinder}
  * 
  * @author Ziv Ronen
  * @date 07.05.2014
@@ -27,48 +28,17 @@ import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRoot
  */
 public class TransitiveRootFinderTest {
 
+  private static final ArrayList<BaseTweet> EMPTY_BASES =
+      new ArrayList<BaseTweet>();
+
   /**
    * 
    */
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
-  private final TransitivityBuilder $;
 
   /**
-   * C'tor
-   */
-  public TransitiveRootFinderTest() {
-    $ = new TransitivityBuilder();
-  }
-
-  /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)}.
-   */
-  @Test
-  public void addingBaseTweetShouldNotThrowException() {
-    $.visit(new BaseTweet(new Date(1L), new ID("baseId")));
-  }
-
-  /**
-   * Test method for: {@link TransitivityBuilder#visit(Retweet)}.
-   */
-  @Test
-  public void addingRetweetShouldNotThrowException() {
-    $.visit(new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId")));
-  }
-
-  /**
-   * Test method for: {@link TransitivityBuilder#getResult()}.
-   */
-  @Test
-  public void getResultShouldntReturnNull() {
-    assertNotNull($.getResult());
-  }
-
-  /**
-   * Test method for: {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
    * 
    * @throws Exception
    */
@@ -77,18 +47,14 @@ public class TransitiveRootFinderTest {
       void
       findRootOnRetweetAfterAddingOnlyTheRetweetShouldThrowNoRootFoundException()
           throws Exception {
-    final Retweet retweet =
+    final Retweet rt =
         new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId"));
-    $.visit(retweet);
     thrown.expect(NoRootFoundException.class);
-    $.getResult().findRoot(retweet);
+    new TransitiveRootFinder(EMPTY_BASES, Arrays.asList(rt)).findRoot(rt);
   }
 
   /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)},
-   * {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
    * 
    * @throws Exception
    */
@@ -97,20 +63,15 @@ public class TransitiveRootFinderTest {
       void
       findRootOnRetweetAfterAddingFirstTheOriginalTweetShouldReturnTheOriginalTweet()
           throws Exception {
-    final ID baseId = new ID("baseId");
-    final BaseTweet baseTweet = new BaseTweet(new Date(1L), baseId);
-    final Retweet retweet =
-        new Retweet(new Date(1L), new ID("retweetId"), baseId);
-    $.visit(baseTweet);
-    $.visit(retweet);
-    assertSame(baseTweet, $.getResult().findRoot(retweet));
+    final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
+    final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id());
+    assertSame(bt,
+        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt))
+            .findRoot(rt));
   }
 
   /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)},
-   * {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
    * 
    * @throws Exception
    */
@@ -119,20 +80,15 @@ public class TransitiveRootFinderTest {
       void
       findRootOnRetweetAfterAddingFirstTheTheRetweetShouldReturnTheOriginalTweet()
           throws Exception {
-    final ID baseId = new ID("baseId");
-    final BaseTweet baseTweet = new BaseTweet(new Date(1L), baseId);
-    final Retweet retweet =
-        new Retweet(new Date(1L), new ID("retweetId"), baseId);
-    $.visit(retweet);
-    $.visit(baseTweet);
-    assertSame(baseTweet, $.getResult().findRoot(retweet));
+    final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
+    final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id());
+    assertSame(bt,
+        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt))
+            .findRoot(rt));
   }
 
   /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)},
-   * {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
    * 
    * @throws Exception
    */
@@ -140,59 +96,29 @@ public class TransitiveRootFinderTest {
   public void
       findRootOnRetweetWithUnrelatedBaseTweetShouldThrowNoRootFoundException()
           throws Exception {
-    final BaseTweet baseTweet = new BaseTweet(new Date(1L), new ID("otherId"));
-    final Retweet retweet =
+    final BaseTweet bt = new BaseTweet(new Date(1L), new ID("otherId"));
+    final Retweet rt =
         new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId"));
-    $.visit(baseTweet);
-    $.visit(retweet);
     thrown.expect(NoRootFoundException.class);
-    $.getResult().findRoot(retweet);
+    new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt)).findRoot(rt);
   }
 
   /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)},
-   * {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
    * 
    * @throws Exception
    */
   @Test
   public void findRootOnRetweetOfRetweetShouldReturnTheBaseTweet()
       throws Exception {
-    final String baseId = "baseId";
-    final BaseTweet baseTweet = new BaseTweet(new Date(1L), new ID(baseId));
-    final String firstRetweetId = "retweetId1";
-    final Retweet firstRetweet =
-        new Retweet(new Date(1L), new ID(firstRetweetId), new ID(baseId));
-    final Retweet secondRetweet =
-        new Retweet(new Date(1L), new ID("retweetId2"), new ID(firstRetweetId));
-    $.visit(baseTweet);
-    $.visit(firstRetweet);
-    $.visit(secondRetweet);
-    assertSame(baseTweet, $.getResult().findRoot(secondRetweet));
-  }
-
-  /**
-   * Test method for: {@link TransitivityBuilder#visit(BaseTweet)},
-   * {@link TransitivityBuilder#visit(Retweet)},
-   * {@link TransitivityBuilder#getResult()},
-   * {@link TransitivityBuilder#clear()},
-   * {@link TransitiveRootFinder#findRoot(Tweet)}.
-   * 
-   * @throws NoRootFoundException
-   */
-  @Test
-  public void clearShouldRestoreOriginalState() throws NoRootFoundException {
-    final String baseId = "baseId";
-    final String firstRetweetId = "retweetId1";
-    final Retweet firstRetweet =
-        new Retweet(new Date(1L), new ID(firstRetweetId), new ID(baseId));
-    $.visit(new BaseTweet(new Date(1L), new ID(baseId)));
-    $.visit(firstRetweet);
-    $.clear();
-    thrown.expect(NoRootFoundException.class);
-    $.getResult().findRoot(firstRetweet);
+    final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
+    final Retweet rt1 =
+        new Retweet(new Date(1L), new ID("retweetId1"), bt.id());
+    final Retweet rt2 =
+        new Retweet(new Date(1L), new ID("retweetId2"), rt1.id());
+    assertSame(bt,
+        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt1, rt2))
+            .findRoot(rt2));
   }
 
 }
