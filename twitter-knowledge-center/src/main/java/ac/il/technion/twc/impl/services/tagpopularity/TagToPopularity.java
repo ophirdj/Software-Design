@@ -28,6 +28,9 @@ public class TagToPopularity {
   private final Map<String, Integer> popularityFromHashtag =
       new HashMap<String, Integer>();
 
+  /**
+   * Empty TagToPopularity
+   */
   public TagToPopularity() {
 
   }
@@ -61,18 +64,6 @@ public class TagToPopularity {
     return popularityFromHashtag.get(hashtag);
   }
 
-  /**
-   * @return An empty {@link TagToPopularity}
-   */
-  public static TagToPopularity empty() {
-    return new TagToPopularity();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     final int prime = 31;

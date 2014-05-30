@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.storage.impl;
+package ac.il.technion.twc.api.center.impl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.apache.commons.io.FileUtils;
  * @author Ophir De Jager
  * 
  */
-public class FileHandler {
+class FileHandler {
 
   /**
    * @param storePath

@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.storage.impl;
+package ac.il.technion.twc.api.center.impl;
 
 import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
 import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
@@ -112,15 +111,15 @@ public class StorageTest {
       private
       Object[] defualtFromType() {
     return $(
-        $(DayHistogram.class, DayHistogram.empty(new HistogramFormat())),
-        $(TweetToLifeTime.class, TweetToLifeTime.empty()),
-        $(TemporalHistogram.class,
-            TemporalHistogram.empty(new HistogramFormat())),
-        $(TagToPopularity.class, TagToPopularity.empty()));
+        $(DayHistogram.class, new DayHistogram(new HistogramFormat())),
+        $(TweetToLifeTime.class, new TweetToLifeTime()),
+        $(TemporalHistogram.class, new TemporalHistogram(new HistogramFormat())),
+        $(TagToPopularity.class, new TagToPopularity()));
   }
 
   /**
    * @param type
+   * @param defaultValue
    * @throws IOException
    */
   @Parameters(method = "defualtFromType")
@@ -141,11 +140,10 @@ public class StorageTest {
       private
       Object[] loadFromType() {
     return $(
-        $(DayHistogram.class, DayHistogram.empty(new HistogramFormat())),
-        $(TemporalHistogram.class,
-            TemporalHistogram.empty(new HistogramFormat())),
-        $(TweetToLifeTime.class, TweetToLifeTime.empty()),
-        $(TagToPopularity.class, TagToPopularity.empty()));
+        $(DayHistogram.class, new DayHistogram(new HistogramFormat())),
+        $(TemporalHistogram.class, new TemporalHistogram(new HistogramFormat())),
+        $(TweetToLifeTime.class, new TweetToLifeTime()),
+        $(TagToPopularity.class, new TagToPopularity()));
   }
 
   /**
@@ -164,7 +162,7 @@ public class StorageTest {
   }
 
   /**
-   * Test method for: {@link PersistanceStorage#clear()}
+   * Test method for: {@link Storage#clear()}
    * 
    * @throws IOException
    * @throws ExecutionException

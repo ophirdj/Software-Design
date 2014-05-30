@@ -30,6 +30,9 @@ public class TweetToLifeTime {
    */
   Map<ID, Long> lifeTimeFromId;
 
+  /**
+   * Build empty service
+   */
   public TweetToLifeTime() {
     lifeTimeFromId = new HashMap<ID, Long>();
   }
@@ -43,7 +46,9 @@ public class TweetToLifeTime {
 
   /**
    * @param baseTweetFinder
+   *          required property (finder for base tweet)
    * @param tweets
+   *          required property (tweets in system)
    */
   @ServiceSetup
   public TweetToLifeTime(final TransitiveRootFinder baseTweetFinder,
@@ -86,18 +91,6 @@ public class TweetToLifeTime {
     private static final long serialVersionUID = -4180968758763049887L;
   }
 
-  /**
-   * @return An empty {@link TweetToLifeTime}
-   */
-  public static TweetToLifeTime empty() {
-    return new TweetToLifeTime();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -108,11 +101,6 @@ public class TweetToLifeTime {
     return result;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(final Object obj) {
     if (this == obj)

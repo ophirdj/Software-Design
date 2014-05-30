@@ -49,11 +49,11 @@ public class DayHistogramTest {
   }
 
   /**
-   * Test method for {@link DayHistogram#empty(HistogramFormat)}
+   * Test method for {@link DayHistogram#DayHistogram(HistogramFormat)}
    */
   @Test
   public void emptyHistogramShouldReturnAllZeros() {
-    DayHistogram.empty(histogramFormatMock).get();
+    new DayHistogram(histogramFormatMock).get();
     verify(histogramFormatMock).formatHistogram(eq(new int[7]), eq(new int[7]));
   }
 

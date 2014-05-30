@@ -1,20 +1,16 @@
 package ac.il.technion.twc;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder;
-import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.parser.TweetsParser;
 import ac.il.technion.twc.api.parser.impl.MultiFormatsParserBuilder;
-import ac.il.technion.twc.api.storage.impl.FileHandler;
-import ac.il.technion.twc.api.storage.impl.Storage;
 import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.impl.parsers.csFormat.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
@@ -32,8 +28,6 @@ import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTimeSerializer;
 import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
-
-import com.google.gson.GsonBuilder;
 
 /**
  * This class is meant to act as a wrapper to test your functionality. You
@@ -56,11 +50,8 @@ public class FuntionalityTester {
    */
   public FuntionalityTester() {
     final TwitterServicesCenterBuilder systemBuilder =
-        new TwitterSystemBuilder(new Storage(new GsonBuilder()
-            .registerTypeAdapter(TweetToLifeTime.class,
-                new TweetToLifeTimeSerializer()).create(), Paths.get("system"),
-            new FileHandler(), Executors.newFixedThreadPool(5)),
-            Executors.newCachedThreadPool());
+        new TwitterSystemBuilder()
+            .addSerializers(new TweetToLifeTimeSerializer());
     systemBuilder.registerBuilder(DayMapping.class, new DaysMappingBuilder())
         .registerBuilder(TransitiveRootFinder.class, new TransitivityBuilder())
         .registerBuilder(IdHashtags.class, new IdHashtagsBuilder())

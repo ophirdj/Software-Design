@@ -4,12 +4,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
-import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder.MissingPropertitesException;
+import ac.il.technion.twc.api.properties.PropertyBuilder;
 
 /**
  * Utils class for checking if a service can be build and for building it
@@ -23,15 +26,38 @@ import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder.MissingPropertite
  */
 class ServiceBuildingManager {
 
-  private ServiceBuildingManager() {
+  private final Set<Class<?>> supportedProperties = new HashSet<>();
+  private final Map<Class<?>, Object> predefinedValues = new HashMap<>();
 
+  /**
+   * Inform the {@link ServiceBuildingManager} that the given type is supported
+   * by a {@link PropertyBuilder}
+   * 
+   * @param type
+   *          The type supported by a property builder
+   */
+  public void addProperty(final Class<?> type) {
+    supportedProperties.add(type);
+  }
+
+  /**
+   * Inform the {@link ServiceBuildingManager} that the value of the given type
+   * is predefine to the given value
+   * 
+   * @param type
+   *          The type
+   * @param value
+   *          Its new value
+   */
+  public <T, ST extends T> void addPredfineValue(final Class<T> type,
+      final ST value) {
+    supportedProperties.add(type);
+    predefinedValues.put(type, value);
   }
 
   /**
    * @param type
    *          The type of the service
-   * @param supportedProperties
-   *          the properties the system support of
    * @throws MissingPropertitesException
    *           if in the dependencies' path of the service one of the class is
    *           missing and can't be uniquely instantiate
@@ -39,8 +65,7 @@ class ServiceBuildingManager {
    *           if the type do not possess precisely one constructor annotated
    *           with {@link ServiceSetup}
    */
-  public static void checkService(final Class<?> type,
-      final Set<Class<?>> supportedProperties)
+  public void checkService(final Class<?> type)
       throws MissingPropertitesException, NotAServiceException {
     if (!hasSingleAnnotatedCtor(type))
       throw new NotAServiceException(type.getSimpleName());
@@ -61,13 +86,13 @@ class ServiceBuildingManager {
               (Class<?>) parameter,
               missingMessageBuilder,
               new StringBuilder().append(" needed for: ").append(
-                  type.getSimpleName()), supportedProperties);
+                  type.getSimpleName()));
     }
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
   }
 
-  private static boolean hasSingleAnnotatedCtor(final Class<?> type) {
+  private boolean hasSingleAnnotatedCtor(final Class<?> type) {
     int count = 0;
     if (!isConcrete(type))
       return false;
@@ -77,9 +102,8 @@ class ServiceBuildingManager {
     return 1 == count;
   }
 
-  private static boolean isMissingProperty(final Class<?> type,
-      final StringBuilder missingMessage, final StringBuilder currentPath,
-      final Set<Class<?>> supportedProperties) {
+  private boolean isMissingProperty(final Class<?> type,
+      final StringBuilder missingMessage, final StringBuilder currentPath) {
     if (supportedProperties.contains(type))
       return false;
     if (!isConcrete(type)) {
@@ -101,14 +125,13 @@ class ServiceBuildingManager {
             .append(neededPath.toString()).append(" is not a class\n");
         missing = true;
       } else if (isMissingProperty((Class<?>) parameter, missingMessage,
-          neededPath.append(", ").append(type.getSimpleName()),
-          supportedProperties))
+          neededPath.append(", ").append(type.getSimpleName())))
         missing = true;
     }
     return missing;
   }
 
-  private static boolean isConcrete(final Class<?> type) {
+  private boolean isConcrete(final Class<?> type) {
     return !Modifier.isAbstract(type.getModifiers())
         && !Modifier.isInterface(type.getModifiers());
   }
@@ -137,7 +160,7 @@ class ServiceBuildingManager {
    * @throws IllegalArgumentException
    * @throws InvocationTargetException
    */
-  public static Object getInstance(final Class<?> type,
+  public Object getInstance(final Class<?> type,
       final Map<Class<?>, Object> properties) throws InstantiationException,
       IllegalAccessException, IllegalArgumentException,
       InvocationTargetException {
@@ -148,7 +171,7 @@ class ServiceBuildingManager {
 
   }
 
-  private static Constructor<?> getSetupCtor(final Class<?> type) {
+  private Constructor<?> getSetupCtor(final Class<?> type) {
     final Constructor<?>[] constructors = type.getConstructors();
     if (1 == constructors.length)
       return constructors[0];
@@ -158,16 +181,18 @@ class ServiceBuildingManager {
     throw new IllegalArgumentException();
   }
 
-  private static Object[] getCtorValues(final Map<Class<?>, Object> properties,
+  private Object[] getCtorValues(final Map<Class<?>, Object> properties,
       final Constructor<?> ctor) {
     final Type[] calledParameters = ctor.getGenericParameterTypes();
     final Object[] values = new Object[calledParameters.length];
     for (int i = 0; i < calledParameters.length; i++) {
-      final Class<?> neededParameter = (Class<?>) calledParameters[i];
-      if (properties.containsKey(neededParameter))
-        values[i] = properties.get(neededParameter);
+      final Class<?> neededParameterType = (Class<?>) calledParameters[i];
+      if (properties.containsKey(neededParameterType))
+        values[i] = properties.get(neededParameterType);
+      else if (predefinedValues.containsKey(neededParameterType))
+        values[i] = predefinedValues.get(neededParameterType);
       else {
-        final Constructor<?> innerCtor = getSetupCtor(neededParameter);
+        final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
         try {
           values[i] =
               innerCtor.newInstance(getCtorValues(properties, innerCtor));

@@ -24,6 +24,12 @@ public class DayHistogram {
 
   private final String[] answer;
 
+  /**
+   * Create an empty histogram
+   * 
+   * @param format
+   *          the format for the return values
+   */
   public DayHistogram(final HistogramFormat format) {
     answer =
         format.formatHistogram(new int[DayOfWeek.values().length],
@@ -31,18 +37,12 @@ public class DayHistogram {
   }
 
   /**
-   * 
    * @param dayMapProperty
+   *          the property from which the service is builded
    * @param format
+   *          the format for the return values
    */
   @ServiceSetup
-  public DayHistogram(final DayMapping dayMapProperty) {
-    answer =
-        new HistogramFormat().formatHistogram(
-            makeHistogram(dayMapProperty.getAllDaysBase()),
-            makeHistogram(dayMapProperty.getAllDaysRe()));
-  }
-
   public DayHistogram(final DayMapping dayMapProperty,
       final HistogramFormat format) {
     answer =
@@ -63,15 +63,6 @@ public class DayHistogram {
    */
   public String[] get() {
     return answer;
-  }
-
-  /**
-   * @param format
-   *          The format of the answer
-   * @return an empty DayHistogram
-   */
-  public static DayHistogram empty(final HistogramFormat format) {
-    return new DayHistogram(format);
   }
 
   @Override

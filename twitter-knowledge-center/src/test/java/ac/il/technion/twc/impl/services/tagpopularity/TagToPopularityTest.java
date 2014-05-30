@@ -20,14 +20,14 @@ import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime.UndefinedTimeEx
 public class TagToPopularityTest {
 
   /**
-   * Test method for {@link TagToPopularity#empty()}
+   * Test method for {@link TagToPopularity#TagToPopularity()}
    * 
    * @throws UndefinedTimeException
    */
   @Test
   public void emptyLifeTimeShouldReturnAllZeros() throws UndefinedTimeException {
-    assertEquals(new Integer(0), TagToPopularity.empty()
-        .getPopularityByHashtag("a"));
+    assertEquals(new Integer(0),
+        new TagToPopularity().getPopularityByHashtag("a"));
   }
 
   @Test

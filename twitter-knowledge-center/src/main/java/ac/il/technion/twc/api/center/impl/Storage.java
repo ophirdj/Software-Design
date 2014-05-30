@@ -1,4 +1,4 @@
-package ac.il.technion.twc.api.storage.impl;
+package ac.il.technion.twc.api.center.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,12 +10,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import ac.il.technion.twc.api.storage.PersistanceStorage;
-
 import com.google.gson.Gson;
 
 /**
- * Basic implementation of {@link PersistanceStorage}
+ * Basic implementation for storing and retriving data
  * 
  * @author Ziv Ronen
  * @date 23.05.2014
@@ -24,7 +22,7 @@ import com.google.gson.Gson;
  * @version 2.0
  * @since 2.0
  */
-public class Storage implements PersistanceStorage {
+class Storage {
 
   private final Gson serializer;
   private final FileHandler fileHandling;
@@ -47,18 +45,29 @@ public class Storage implements PersistanceStorage {
     this.fileHandling = fileHandling;
     this.threadPool = threadPool;
     retriverByType = new HashMap<Class<?>, Future<Object>>();
-    storePath =
-        Paths.get(getClass().getCanonicalName()).resolve(storageLocation);
+    storePath = storageLocation.resolve(Paths.get(getClass().getSimpleName()));
   }
 
-  @Override
+  /**
+   * Store a given object. Can only store one object from each type.
+   * 
+   * @param service
+   *          The object to store.
+   * @throws IOException
+   */
   public <T> void store(final T service) throws IOException {
     retriverByType.remove(service.getClass());
     fileHandling.store(objectPath(service.getClass()),
         serializer.toJson(service, service.getClass()));
   }
 
-  @Override
+  /**
+   * @param defualt
+   *          default return value.
+   * 
+   * @return The last stored object of the given type or default if no such
+   *         value exists.
+   */
   public <T> T load(final T defualt) {
     @SuppressWarnings("unchecked")
     final Class<T> type = (Class<T>) defualt.getClass();
@@ -80,7 +89,14 @@ public class Storage implements PersistanceStorage {
     }
   }
 
-  @Override
+  /**
+   * Prepare enable the storage to prepare the given types for feature load.
+   * note: Except from performance, The program should behave the same with or
+   * without call to that method.
+   * 
+   * @param types
+   *          The types of the objects we want to load
+   */
   public void prepare(final Class<?>... types) {
     for (final Class<?> type : types)
       try {
@@ -100,7 +116,12 @@ public class Storage implements PersistanceStorage {
     }));
   }
 
-  @Override
+  /**
+   * Remove all data that was stored by instance of the same group. The group is
+   * implementation depended.
+   * 
+   * @throws IOException
+   */
   public void clear() throws IOException {
     fileHandling.clear(storePath);
     retriverByType.clear();

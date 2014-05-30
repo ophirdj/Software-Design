@@ -48,13 +48,13 @@ public class TweetToLifeTimeTest {
   }
 
   /**
-   * Test method for {@link TweetToLifeTime#empty()}
+   * Test method for {@link TweetToLifeTime#TweetToLifeTime()}
    * 
    * @throws UndefinedTimeException
    */
   @Test(expected = UndefinedTimeException.class)
   public void emptyLifeTimeShouldReturnAllZeros() throws UndefinedTimeException {
-    TweetToLifeTime.empty().getLifeTimeById(new ID("a"));
+    new TweetToLifeTime().getLifeTimeById(new ID("a"));
   }
 
   /**

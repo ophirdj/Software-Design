@@ -15,7 +15,6 @@ import java.util.concurrent.Future;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
 import ac.il.technion.twc.api.properties.PropertyBuilder;
-import ac.il.technion.twc.api.storage.PersistanceStorage;
 import ac.il.technion.twc.api.tweets.BaseTweet;
 import ac.il.technion.twc.api.tweets.Retweet;
 import ac.il.technion.twc.api.tweets.Tweet;
@@ -35,24 +34,28 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
   private final Map<Class<?>, Object> servicesResult = new HashMap<>();
 
   private final List<PropertyBuilder<?>> builders;
-  private final PersistanceStorage storage;
+  private final Storage storage;
 
   private final ExecutorService threadPool;
   private final Set<Object> services;
 
+  private final ServiceBuildingManager serviceBuilder;
+
   /**
    * @param builders
    * @param services
+   * @param serviceBuilder
    * @param storage
    * @param threadPool
    */
   public TwitterSystemHandler(final List<PropertyBuilder<?>> builders,
-      final Set<Object> services, final PersistanceStorage storage,
-      final ExecutorService threadPool) {
+      final Set<Object> services, final ServiceBuildingManager serviceBuilder,
+      final Storage storage, final ExecutorService threadPool) {
     this.builders = builders;
+    this.services = services;
+    this.serviceBuilder = serviceBuilder;
     this.storage = storage;
     this.threadPool = threadPool;
-    this.services = services;
   }
 
   @Override
@@ -100,8 +103,8 @@ public class TwitterSystemHandler implements TwitterServicesCenter {
     }
     for (final Object service : services)
       try {
-        storage.store(ServiceBuildingManager.getInstance(service.getClass(),
-            properties));
+        storage
+            .store(serviceBuilder.getInstance(service.getClass(), properties));
       } catch (IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | InstantiationException e) {
         // Shouldn't happen

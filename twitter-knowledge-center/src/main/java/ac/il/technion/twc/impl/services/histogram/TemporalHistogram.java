@@ -42,7 +42,10 @@ public class TemporalHistogram {
   private static final int histogramFrequency = 5;
 
   /**
+   * Create an empty histogram
+   * 
    * @param format
+   *          the format for the return values
    */
   public TemporalHistogram(final HistogramFormat format) {
     timesBase = new long[0];
@@ -60,32 +63,10 @@ public class TemporalHistogram {
 
   /**
    * @param dayMapProperty
+   *          the property from which the service is builded
    * @param format
+   *          the format for the return values
    */
-
-  public TemporalHistogram(final DayMapping dayMapProperty) {
-    format = new HistogramFormat();
-
-    final Set<Entry<Long, Integer>> allDaysBase =
-        dayMapProperty.getAllDaysBase();
-    timesBase = new long[allDaysBase.size()];
-    occuarenceBase = new int[allDaysBase.size()];
-    timesBaseHistograms = new long[1 + allDaysBase.size() / histogramFrequency];
-    occuarenceBaseHistograms =
-        new int[1 + allDaysBase.size() / histogramFrequency][7];
-    initArrays(allDaysBase, timesBase, occuarenceBase, timesBaseHistograms,
-        occuarenceBaseHistograms);
-
-    final Set<Entry<Long, Integer>> allDaysRe = dayMapProperty.getAllDaysRe();
-    timesRe = new long[allDaysRe.size()];
-    occuarenceRe = new int[allDaysRe.size()];
-    timesReHistograms = new long[1 + allDaysRe.size() / histogramFrequency];
-    occuarenceReHistograms =
-        new int[1 + allDaysRe.size() / histogramFrequency][7];
-    initArrays(allDaysRe, timesRe, occuarenceRe, timesReHistograms,
-        occuarenceReHistograms);
-  }
-
   @ServiceSetup
   public TemporalHistogram(final DayMapping dayMapProperty,
       final HistogramFormat format) {
@@ -221,14 +202,6 @@ public class TemporalHistogram {
         first = guess + 1;
     }
     return before ? last : first;
-  }
-
-  /**
-   * @param histogramFormat
-   * @return An empty {@link TemporalHistogram}
-   */
-  public static TemporalHistogram empty(final HistogramFormat histogramFormat) {
-    return new TemporalHistogram(histogramFormat);
   }
 
   @Override
