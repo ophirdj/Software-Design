@@ -67,6 +67,16 @@ public class ServiceBuildingManagerTest {
   }
 
   /**
+   * @throws NotAServiceException
+   * @throws MissingPropertitesException
+   */
+  @Test
+  public final void checkClassWithSupportedClassShouldNotThrowException()
+      throws MissingPropertitesException, NotAServiceException {
+    $.checkService(NeedSupportedProperty.class);
+  }
+
+  /**
    * @throws InvocationTargetException
    * @throws IllegalArgumentException
    * @throws IllegalAccessException
@@ -107,6 +117,26 @@ public class ServiceBuildingManagerTest {
       IllegalArgumentException, InvocationTargetException {
     assertEquals(PREDEFINE_VAL, ((NeedPredefineValue) $.getInstance(
         NeedPredefineValue.class, new HashMap<Class<?>, Object>())).val);
+  }
+
+  /**
+   * @throws NotAServiceException
+   * @throws MissingPropertitesException
+   * @throws InvocationTargetException
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   */
+  @Test
+  public final void getClassWithSupportedValueShouldUseSupportedValue()
+      throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
+    final HashMap<Class<?>, Object> properties =
+        new HashMap<Class<?>, Object>();
+    properties.put(SupportedProperty.class, new SupportedProperty(
+        new PredefineValue(PREDEFINE_VAL)));
+    assertEquals(PREDEFINE_VAL, ((NeedSupportedProperty) $.getInstance(
+        NeedSupportedProperty.class, properties)).value);
   }
 
   /**
@@ -380,12 +410,30 @@ public class ServiceBuildingManagerTest {
 
     @ServiceSetup
     public TwoConstructorsAnnotatedMock(final OneConstructorsMock mock) {
+    }
+  }
 
+  private static class NeedSupportedProperty {
+    public final int value;
+
+    @ServiceSetup
+    public NeedSupportedProperty(final SupportedProperty a) {
+      value = a.val.val;
     }
   }
 
   private static class SupportedProperty {
+    public final PredefineValue val;
 
+    // read with reflection
+    @SuppressWarnings("unused")
+    public SupportedProperty() {
+      val = new PredefineValue(0);
+    }
+
+    public SupportedProperty(final PredefineValue val) {
+      this.val = val;
+    }
   }
 
   private static class NeedPredefineValue {
