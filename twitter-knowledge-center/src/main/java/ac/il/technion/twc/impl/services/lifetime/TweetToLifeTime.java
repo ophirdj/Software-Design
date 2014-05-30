@@ -73,10 +73,10 @@ public class TweetToLifeTime {
 	 * @throws UndefinedTimeException
 	 *             if the tweet is not registered or has no retweets
 	 */
-	public String getLifeTimeById(final ID id) throws UndefinedTimeException {
+	public long getLifeTimeById(final ID id) throws UndefinedTimeException {
 		if (!lifeTimeFromId.containsKey(id))
 			throw new UndefinedTimeException(id);
-		return lifeTimeFromId.get(id).toString();
+		return lifeTimeFromId.get(id).longValue();
 	}
 
 	/**

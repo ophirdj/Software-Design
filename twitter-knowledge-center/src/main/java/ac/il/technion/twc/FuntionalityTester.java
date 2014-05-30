@@ -112,8 +112,8 @@ public class FuntionalityTester {
 	 *             If it is not possible to complete the operation
 	 */
 	public String getLifetimeOfTweets(final String tweetId) throws Exception {
-		return serviceCenter.getService(TweetToLifeTime.class).getLifeTimeById(
-				new ID(tweetId));
+		return Long.toString(serviceCenter.getService(TweetToLifeTime.class)
+				.getLifeTimeById(new ID(tweetId)));
 	}
 
 	/**
