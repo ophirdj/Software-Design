@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropertitesException;
+import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 import ac.il.technion.twc.api.tweets.BaseTweet;
@@ -363,6 +364,17 @@ public class ServiceBuildingManagerTest {
     $.checkProperty(SupportedProperty.class);
   }
 
+  /**
+   * 
+   */
+  @Test
+  public final void checkPropertyFailed() {
+    thrown.expect(NotAPropertyException.class);
+    thrown.expectMessage(TwoConstructorsMock.class.getSimpleName()
+        + " is not a property");
+    $.checkProperty(TwoConstructorsMock.class);
+  }
+
   private String circleMessage(final Class<?> property, final String path) {
     return propertyPrefix(property) + "cause dependency circle. " + path + "\n";
   }
@@ -407,7 +419,8 @@ public class ServiceBuildingManagerTest {
     public TwoConstructorsMock() {
     }
 
-    public TwoConstructorsMock(final OneConstructorsMock mock) {
+    public TwoConstructorsMock(final List<Retweet> res1,
+        final List<Retweet> res2) {
 
     }
   }
