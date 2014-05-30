@@ -34,6 +34,9 @@ import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 /**
  * test for {@link Storage}
@@ -72,8 +75,8 @@ public class StorageTest {
   }
 
   private final Path testPath = Paths.get("test");
-  private final Path fullTestPath = Paths.get(Storage.class.getCanonicalName())
-      .resolve(testPath);
+  private final Path fullTestPath = testPath.resolve(Paths.get(Storage.class
+      .getSimpleName()));
   private final Storage $;
 
   /**
@@ -99,7 +102,22 @@ public class StorageTest {
         new GsonBuilder()
             .setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
             .registerTypeAdapter(TweetToLifeTime.class,
-                new TweetToLifeTimeSerializer()).create();
+                new TypeAdapter<Object>() {
+
+                  @Override
+                  public void write(final JsonWriter out, final Object value)
+                      throws IOException {
+                    out.value(new TweetToLifeTimeSerializer()
+                        .objectToString(value));
+                  }
+
+                  @Override
+                  public Object read(final JsonReader in) throws IOException {
+                    return new TweetToLifeTimeSerializer().stringToObject(in
+                        .nextString());
+                  }
+
+                }).create();
     $ = new Storage(gson, testPath, fileHandlingMock, threadPoolMock);
   }
 

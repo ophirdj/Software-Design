@@ -144,7 +144,7 @@ public class ServiceBuildingManagerTest {
         new PredefineValue(PREDEFINE_VAL)));
 
     $.setProperties(basesMock, resMock);
-    
+
     assertEquals(
         PREDEFINE_VAL,
         ((NeedSupportedProperty) $.getInstance(NeedSupportedProperty.class)).value);
@@ -441,8 +441,9 @@ public class ServiceBuildingManagerTest {
     public SupportedProperty() {
       val = new PredefineValue(0);
     }
-    
-    public SupportedProperty(final List<BaseTweet> bases, final List<Retweet> res) {
+
+    public SupportedProperty(final List<BaseTweet> bases,
+        final List<Retweet> res) {
       val = new PredefineValue(bases.size() + res.size());
     }
 
@@ -554,7 +555,5 @@ public class ServiceBuildingManagerTest {
         final NotSupportedPropertyService a4) {
     }
   }
-  
-  private class RealProperty
 
 }
