@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import ac.il.technion.twc.api.center.TwitterServicesCenter;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder;
@@ -59,8 +58,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   @Override
   public TwitterServicesCenter getResult() {
     return new TwitterSystemHandler(services, serviceBuilder,
-        new StorageFactory(serializers).buildStorage(),
-        Executors.newFixedThreadPool(1 + services.size()));
+        new StorageFactory(serializers).buildStorage());
   }
 
 }
