@@ -119,7 +119,7 @@ public interface TwitterServicesCenterBuilder {
    * @version 2.0
    * @since 2.0
    */
-  public static class NotAServiceException extends Exception {
+  public static class NotAServiceException extends RuntimeException {
 
     /**
      * @param simpleName
@@ -145,7 +145,7 @@ public interface TwitterServicesCenterBuilder {
    * @version 2.0
    * @since 2.0
    */
-  public static class MissingPropertitesException extends Exception {
+  public static class MissingPropertitesException extends RuntimeException {
 
     /**
      * @param string
