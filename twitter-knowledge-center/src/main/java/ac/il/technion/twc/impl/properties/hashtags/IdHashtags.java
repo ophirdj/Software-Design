@@ -7,7 +7,7 @@ import java.util.Map;
 import ac.il.technion.twc.api.tweets.ID;
 
 /**
- * Retrieve the hashtags of a tweet from its id
+ * Retrieve the hashtags of a base tweet from its id
  * 
  * @author Ziv Ronen
  * @date 26.05.2014
@@ -33,7 +33,8 @@ public class IdHashtags {
 	 */
 	public List<String> getHashtags(final ID id) {
 		return HashtagById.containsKey(id) ? Collections
-				.unmodifiableList(HashtagById.get(id)) : Collections.<String>emptyList();
+				.unmodifiableList(HashtagById.get(id)) : Collections
+				.<String> emptyList();
 	}
 
 }
