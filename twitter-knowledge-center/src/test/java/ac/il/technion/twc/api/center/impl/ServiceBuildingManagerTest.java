@@ -14,6 +14,16 @@ import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.MissingPropert
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
 
+/**
+ * Test for {@link ServiceBuildingManagerTest}
+ * 
+ * @author Ziv Ronen
+ * @date 30.05.2014
+ * @mail akarks@gmail.com
+ * 
+ * @version 2.0
+ * @since 2.0
+ */
 public class ServiceBuildingManagerTest {
 
   private static final int PREDEFINE_VAL = 5;
@@ -25,6 +35,9 @@ public class ServiceBuildingManagerTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
+  /**
+   * c'tor
+   */
   public ServiceBuildingManagerTest() {
     $ = new ServiceBuildingManager();
     $.addProperty(SupportedProperty.class);
@@ -284,17 +297,18 @@ public class ServiceBuildingManagerTest {
       checkClassThatHaveMultipleErrorShouldThrowMissingPropertitesExceptionWithMessageOnAll()
           throws MissingPropertitesException, NotAServiceException {
     thrown.expect(MissingPropertitesException.class);
-    thrown.expectMessage(servicePrefix(MultipuleMissingCausesClass.class)
-        + circleMessage(
-            CircleFirstProperty.class,
-            "path: MultipuleMissingCausesClass->CircleFirstProperty->CircleSecondProperty->CircleThirdProperty->CircleFirstProperty")
-        + notConcreteMessage(char.class,
-            "path: MultipuleMissingCausesClass->char")
-        + notConcreteMessage(InterfaceProperty.class,
-            "path: MultipuleMissingCausesClass->InterfaceProperty")
-        + missingMessage(
-            ZeroPublicConstructorsMock.class,
-            "path: MultipuleMissingCausesClass->NotSupportedPropertyService->ZeroPublicConstructorsMock"));
+    thrown
+        .expectMessage(servicePrefix(MultipuleMissingCausesClass.class)
+            + circleMessage(
+                CircleFirstProperty.class,
+                "path: MultipuleMissingCausesClass->CircleFirstProperty->CircleSecondProperty->CircleThirdProperty->CircleFirstProperty")
+            + notConcreteMessage(char.class,
+                "path: MultipuleMissingCausesClass->char")
+            + notConcreteMessage(InterfaceProperty.class,
+                "path: MultipuleMissingCausesClass->InterfaceProperty")
+            + missingMessage(
+                ZeroPublicConstructorsMock.class,
+                "path: MultipuleMissingCausesClass->NotSupportedPropertyService->ZeroPublicConstructorsMock"));
     $.checkService(MultipuleMissingCausesClass.class);
   }
 
