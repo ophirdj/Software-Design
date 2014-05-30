@@ -72,26 +72,32 @@ class ServiceBuildingManager {
     if (supportedProperties.contains(type))
       return;
     final StringBuilder missingMessageBuilder =
-        new StringBuilder("The service can't be register because:\n");
+        new StringBuilder("The service ").append(type.getSimpleName()).append(
+            " can't be register because:\n");
     boolean isMissing = false;
     // c'tor != null due to hasSingleAnnotatedCtor function
     final Constructor<?> ctor = getServiceCtor(type);
     final Type[] values = ctor.getParameterTypes();
     for (final Type parameter : values) {
       if (!(parameter instanceof Class<?>)) {
-        missingMessageBuilder.append("- property ").append(parameter)
-            .append(" needed for service ").append(type.getSimpleName())
-            .append(" is not a class\n");
+        missingMessageBuilder.append(prefix(parameter.toString())).append(
+            "is not a class\n");
         continue;
       }
       final HashSet<Type> visited = new HashSet<>();
-      isMissing =
+      isMissing |=
           isMissingProperty((Class<?>) parameter, visited,
               missingMessageBuilder, new StringBuilder().append("path: ")
                   .append(type.getSimpleName()));
     }
+    missingMessageBuilder.append("\n");
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
+  }
+
+  private String prefix(final String type) {
+    return new StringBuilder("- object of type ").append(type)
+        .append(" can't be created because it ").toString();
   }
 
   private boolean hasSingleAnnotatedCtor(final Class<?> type) {
@@ -108,23 +114,30 @@ class ServiceBuildingManager {
       final HashSet<Type> visited, final StringBuilder missingMessage,
       final StringBuilder currentPath) {
     if (!visited.add(type)) {
-      missingMessage.append("- found circle.  property ")
-          .append(type.getSimpleName()).append(currentPath.toString())
+      missingMessage.append(prefix(type.getSimpleName()))
+          .append("cause dependency circle. ").append(currentPath.toString())
           .append("\n");
       return true;
     }
+    currentPath.append("->").append(type.getSimpleName());
     try {
       if (supportedProperties.contains(type))
         return false;
       if (!isConcrete(type)) {
-        missingMessage.append("- property ").append(type.getSimpleName())
-            .append(currentPath.toString()).append(" is not concrete\n");
+        missingMessage.append(prefix(type.getSimpleName()))
+            .append("is not a concrete class (or it is a primitive). ")
+            .append(currentPath.toString()).append("\n");
         return true;
       }
+
       final Constructor<?> ctor = getServiceCtor(type);
       if (ctor == null) {
-        missingMessage.append("- property ").append(type.getSimpleName())
-            .append(" is missing. ").append(currentPath.toString());
+        missingMessage.append(prefix(type.getSimpleName()))
+            .append("doesn't possess identifible requested constructor. ")
+            .append(currentPath.toString()).append("\n")
+            .append("\t(try to add a ")
+            .append(ServiceSetup.class.getSimpleName())
+            .append(" Annotation to the requested constructor.)");
         return true;
       }
       final Type[] values = ctor.getParameterTypes();
@@ -133,13 +146,12 @@ class ServiceBuildingManager {
         final StringBuilder neededPath =
             new StringBuilder(currentPath.toString());
         if (!(parameter instanceof Class<?>)) {
-          missingMessage.append("- property ").append(parameter)
-              .append(" is not a class. ").append(neededPath.toString())
+          missingMessage.append(prefix(parameter.toString()))
+              .append("is not a class. ").append(neededPath.toString())
               .append("\n");
           missing = true;
         } else if (isMissingProperty((Class<?>) parameter, visited,
-            missingMessage, neededPath.append("->")
-                .append(type.getSimpleName())))
+            missingMessage, neededPath))
           missing = true;
       }
       return missing;
@@ -185,7 +197,6 @@ class ServiceBuildingManager {
       return properties.get(type);
     final Constructor<?> ctor = getSetupCtor(type);
     return ctor.newInstance(getCtorValues(properties, ctor));
-
   }
 
   private Constructor<?> getSetupCtor(final Class<?> type) {
@@ -200,7 +211,7 @@ class ServiceBuildingManager {
 
   private Object[] getCtorValues(final Map<Class<?>, Object> properties,
       final Constructor<?> ctor) {
-    final Type[] calledParameters = ctor.getGenericParameterTypes();
+    final Type[] calledParameters = ctor.getParameterTypes();
     final Object[] values = new Object[calledParameters.length];
     for (int i = 0; i < calledParameters.length; i++) {
       final Class<?> neededParameterType = (Class<?>) calledParameters[i];

@@ -31,7 +31,7 @@ public interface TwitterServicesCenterBuilder {
    *          A builder of the property
    * @return a reference to this object.
    */
-  <T> TwitterServicesCenterBuilder registerBuilder(final Class<T> type,
+  <T> TwitterServicesCenterBuilder addPropertyBuilder(final Class<T> type,
       PropertyBuilder<T> builder);
 
   /**
@@ -44,8 +44,8 @@ public interface TwitterServicesCenterBuilder {
    *          The value to be return
    * @return a reference to this object.
    */
-  <T, ST extends T> TwitterServicesCenterBuilder registerTypeValue(
-      Class<T> type, ST value);
+  <T, S extends T> TwitterServicesCenterBuilder setDefaultValue(Class<T> type,
+      S value);
 
   /**
    * Service can be register if it has precisely one constructor annotated with
@@ -53,7 +53,8 @@ public interface TwitterServicesCenterBuilder {
    * 
    * <br>
    * In addition, any type the constructor required must be createable. That
-   * mean the type must not be a primitive and also be either: <br>
+   * mean the type must not be a primitive and also be either (check in the
+   * following order): <br>
    * - a property for which a property builder was register <br>
    * - Class for which predefine value was register <br>
    * - fulfill All the following: <br>
@@ -83,7 +84,7 @@ public interface TwitterServicesCenterBuilder {
    *          the given serializer.
    * @return a reference to this object.
    */
-  TwitterServicesCenterBuilder addSerializers(Serializer... serialzersToAdd);
+  TwitterServicesCenterBuilder addSerializer(Serializer serialzersToAdd);
 
   /**
    * @return The builded center
@@ -108,8 +109,8 @@ public interface TwitterServicesCenterBuilder {
   }
 
   /**
-   * Indicate that the object doesn't have any method with {@link ServiceSetup}
-   * annotation.
+   * Indicate that the object doesn't have a single construct annotated with
+   * {@link ServiceSetup} .
    * 
    * @author Ziv Ronen
    * @date 29.05.2014

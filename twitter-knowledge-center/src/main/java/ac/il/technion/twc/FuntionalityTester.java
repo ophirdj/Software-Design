@@ -16,6 +16,8 @@ import ac.il.technion.twc.impl.parsers.csFormat.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DaysMappingBuilder;
+import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
+import ac.il.technion.twc.impl.properties.hashtags.IdHashtagsBuilder;
 import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
 import ac.il.technion.twc.impl.properties.rootfinder.TransitivityBuilder;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
@@ -49,10 +51,13 @@ public class FuntionalityTester {
   public FuntionalityTester() {
     final TwitterServicesCenterBuilder systemBuilder =
         new TwitterSystemBuilder()
-            .addSerializers(new TweetToLifeTimeSerializer());
-    systemBuilder.registerBuilder(DayMapping.class, new DaysMappingBuilder())
-        .registerBuilder(TransitiveRootFinder.class, new TransitivityBuilder())
-        .registerBuilder(TweetsRetriever.class, new TweetsRetrieverBuilder());
+            .addSerializer(new TweetToLifeTimeSerializer());
+    systemBuilder
+        .addPropertyBuilder(DayMapping.class, new DaysMappingBuilder())
+        .addPropertyBuilder(TransitiveRootFinder.class,
+            new TransitivityBuilder())
+        .addPropertyBuilder(IdHashtags.class, new IdHashtagsBuilder())
+        .addPropertyBuilder(TweetsRetriever.class, new TweetsRetrieverBuilder());
     try {
       systemBuilder.registerService(new DayHistogram(new HistogramFormat()))
           .registerService(new TemporalHistogram(new HistogramFormat()))

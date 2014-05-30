@@ -14,6 +14,14 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  */
 public class HistogramFormat {
 
+  public HistogramFormat() {
+    // TODO Auto-generated constructor stub
+  }
+
+  public HistogramFormat(final int b) {
+    // TODO Auto-generated constructor stub
+  }
+
   /**
    * @param histogramBase
    *          histogram of base tweets

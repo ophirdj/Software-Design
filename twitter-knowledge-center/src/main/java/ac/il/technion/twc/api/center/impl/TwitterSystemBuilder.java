@@ -1,7 +1,6 @@
 package ac.il.technion.twc.api.center.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,17 +30,17 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   private final List<Serializer> serializers = new ArrayList<>();
 
   @Override
-  public <T> TwitterServicesCenterBuilder registerBuilder(final Class<T> type,
-      final PropertyBuilder<T> builder) {
+  public <T> TwitterServicesCenterBuilder addPropertyBuilder(
+      final Class<T> type, final PropertyBuilder<T> builder) {
     serviceBuilder.addProperty(type);
     builders.add(builder);
     return this;
   }
 
   @Override
-  public TwitterServicesCenterBuilder addSerializers(
-      final Serializer... serialzersToAdd) {
-    serializers.addAll(Arrays.asList(serialzersToAdd));
+  public TwitterServicesCenterBuilder addSerializer(
+      final Serializer serialzerToAdd) {
+    serializers.add(serialzerToAdd);
     return this;
   }
 
@@ -54,7 +53,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   }
 
   @Override
-  public <T, ST extends T> TwitterServicesCenterBuilder registerTypeValue(
+  public <T, ST extends T> TwitterServicesCenterBuilder setDefaultValue(
       final Class<T> type, final ST value) {
     serviceBuilder.addPredfineValue(type, value);
     return this;
@@ -64,7 +63,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   public TwitterServicesCenter getResult() {
     return new TwitterSystemHandler(builders, services, serviceBuilder,
         new StorageFactory(serializers).buildStorage(),
-        Executors.newFixedThreadPool(services.size()));
+        Executors.newFixedThreadPool(1 + services.size()));
   }
 
 }
