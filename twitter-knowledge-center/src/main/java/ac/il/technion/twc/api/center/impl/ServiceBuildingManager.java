@@ -78,15 +78,17 @@ class ServiceBuildingManager {
     final Constructor<?> ctor = getServiceCtor(type);
     final Type[] values = ctor.getParameterTypes();
     for (final Type parameter : values) {
-      missingMessageBuilder.append("- property ").append(parameter)
-          .append(" needed for service ").append(type.getSimpleName())
-          .append(" is not a class\n");
+      if (!(parameter instanceof Class<?>)) {
+        missingMessageBuilder.append("- property ").append(parameter)
+            .append(" needed for service ").append(type.getSimpleName())
+            .append(" is not a class\n");
+        continue;
+      }
+      final HashSet<Type> visited = new HashSet<>();
       isMissing =
-          isMissingProperty(
-              (Class<?>) parameter,
-              missingMessageBuilder,
-              new StringBuilder().append(" needed for: ").append(
-                  type.getSimpleName()));
+          isMissingProperty((Class<?>) parameter, visited,
+              missingMessageBuilder, new StringBuilder().append("path: ")
+                  .append(type.getSimpleName()));
     }
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
@@ -103,32 +105,47 @@ class ServiceBuildingManager {
   }
 
   private boolean isMissingProperty(final Class<?> type,
-      final StringBuilder missingMessage, final StringBuilder currentPath) {
-    if (supportedProperties.contains(type))
-      return false;
-    if (!isConcrete(type)) {
-      missingMessage.append("- property ").append(type.getSimpleName())
-          .append(currentPath.toString()).append(" is not concrete\n");
+      final HashSet<Type> visited, final StringBuilder missingMessage,
+      final StringBuilder currentPath) {
+    if (!visited.add(type)) {
+      missingMessage.append("- found circle.  property ")
+          .append(type.getSimpleName()).append(currentPath.toString())
+          .append("\n");
       return true;
     }
-    final Constructor<?> ctor = getServiceCtor(type);
-    if (ctor == null)
-      missingMessage.append("- property ").append(type.getSimpleName())
-          .append(currentPath.toString()).append(" is missing\n");
-    final Type[] values = ctor.getParameterTypes();
-    boolean missing = false;
-    for (final Type parameter : values) {
-      final StringBuilder neededPath =
-          new StringBuilder(currentPath.toString());
-      if (!(parameter instanceof Class)) {
-        missingMessage.append("- property ").append(parameter)
-            .append(neededPath.toString()).append(" is not a class\n");
-        missing = true;
-      } else if (isMissingProperty((Class<?>) parameter, missingMessage,
-          neededPath.append(", ").append(type.getSimpleName())))
-        missing = true;
+    try {
+      if (supportedProperties.contains(type))
+        return false;
+      if (!isConcrete(type)) {
+        missingMessage.append("- property ").append(type.getSimpleName())
+            .append(currentPath.toString()).append(" is not concrete\n");
+        return true;
+      }
+      final Constructor<?> ctor = getServiceCtor(type);
+      if (ctor == null) {
+        missingMessage.append("- property ").append(type.getSimpleName())
+            .append(" is missing. ").append(currentPath.toString());
+        return true;
+      }
+      final Type[] values = ctor.getParameterTypes();
+      boolean missing = false;
+      for (final Type parameter : values) {
+        final StringBuilder neededPath =
+            new StringBuilder(currentPath.toString());
+        if (!(parameter instanceof Class<?>)) {
+          missingMessage.append("- property ").append(parameter)
+              .append(" is not a class. ").append(neededPath.toString())
+              .append("\n");
+          missing = true;
+        } else if (isMissingProperty((Class<?>) parameter, visited,
+            missingMessage, neededPath.append("->")
+                .append(type.getSimpleName())))
+          missing = true;
+      }
+      return missing;
+    } finally {
+      visited.remove(type);
     }
-    return missing;
   }
 
   private boolean isConcrete(final Class<?> type) {

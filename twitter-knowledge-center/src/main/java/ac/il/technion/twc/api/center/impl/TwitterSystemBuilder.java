@@ -24,7 +24,7 @@ import ac.il.technion.twc.api.properties.PropertyBuilder;
 public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
 
   private final List<PropertyBuilder<?>> builders = new ArrayList<>();
-  private final ServiceBuildingManager serviceBuilding =
+  private final ServiceBuildingManager serviceBuilder =
       new ServiceBuildingManager();
 
   private final Set<Object> services = new HashSet<>();
@@ -33,7 +33,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   @Override
   public <T> TwitterServicesCenterBuilder registerBuilder(final Class<T> type,
       final PropertyBuilder<T> builder) {
-    serviceBuilding.addProperty(type);
+    serviceBuilder.addProperty(type);
     builders.add(builder);
     return this;
   }
@@ -48,7 +48,7 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   @Override
   public <T> TwitterServicesCenterBuilder registerService(final T service)
       throws NotAServiceException, MissingPropertitesException {
-    serviceBuilding.checkService(service.getClass());
+    serviceBuilder.checkService(service.getClass());
     services.add(service);
     return this;
   }
@@ -56,13 +56,13 @@ public class TwitterSystemBuilder implements TwitterServicesCenterBuilder {
   @Override
   public <T, ST extends T> TwitterServicesCenterBuilder registerTypeValue(
       final Class<T> type, final ST value) {
-    serviceBuilding.addPredfineValue(type, value);
+    serviceBuilder.addPredfineValue(type, value);
     return this;
   }
 
   @Override
   public TwitterServicesCenter getResult() {
-    return new TwitterSystemHandler(builders, services, serviceBuilding,
+    return new TwitterSystemHandler(builders, services, serviceBuilder,
         new StorageFactory(serializers).buildStorage(),
         Executors.newFixedThreadPool(services.size()));
   }
