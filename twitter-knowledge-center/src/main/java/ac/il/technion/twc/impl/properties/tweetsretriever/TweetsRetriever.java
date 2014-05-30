@@ -1,5 +1,6 @@
 package ac.il.technion.twc.impl.properties.tweetsretriever;
 
+import java.util.Collections;
 import java.util.List;
 
 import ac.il.technion.twc.api.tweets.BaseTweet;
@@ -17,31 +18,31 @@ import ac.il.technion.twc.api.tweets.Retweet;
  */
 public class TweetsRetriever {
 
-  private final List<BaseTweet> baseTweets;
-  private final List<Retweet> retweets;
+	private final List<BaseTweet> baseTweets;
+	private final List<Retweet> retweets;
 
-  /**
-   * @param baseTweets
-   * @param retweets
-   */
-  public TweetsRetriever(final List<BaseTweet> baseTweets,
-      final List<Retweet> retweets) {
-    this.baseTweets = baseTweets;
-    this.retweets = retweets;
-  }
+	/**
+	 * @param baseTweets
+	 * @param retweets
+	 */
+	public TweetsRetriever(final List<BaseTweet> baseTweets,
+			final List<Retweet> retweets) {
+		this.baseTweets = Collections.unmodifiableList(baseTweets);
+		this.retweets = Collections.unmodifiableList(retweets);
+	}
 
-  /**
-   * @return a collection of all the base tweets
-   */
-  public List<BaseTweet> getBaseTweets() {
-    return baseTweets;
-  }
+	/**
+	 * @return a collection of all the base tweets
+	 */
+	public List<BaseTweet> getBaseTweets() {
+		return baseTweets;
+	}
 
-  /**
-   * @return a collection of all the retweets
-   */
-  public List<Retweet> getRetweets() {
-    return retweets;
-  }
+	/**
+	 * @return a collection of all the retweets
+	 */
+	public List<Retweet> getRetweets() {
+		return retweets;
+	}
 
 }
