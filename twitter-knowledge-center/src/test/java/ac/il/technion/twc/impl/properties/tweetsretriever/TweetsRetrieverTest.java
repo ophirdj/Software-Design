@@ -25,6 +25,9 @@ public class TweetsRetrieverTest {
 
 	private final TweetsRetrieverBuilder $ = new TweetsRetrieverBuilder();
 
+	/**
+	 * Test method for {@link TweetsRetriever#getBaseTweets()}
+	 */
 	@Test
 	public final void getBaseTweetsShouldReturnBaseTweet() {
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID(
@@ -33,6 +36,9 @@ public class TweetsRetrieverTest {
 		assertEquals(bt, $.getResult().getBaseTweets().get(0));
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getRetweets()}
+	 */
 	@Test
 	public final void getRetweetsShouldReturnRetweet() {
 		final Retweet rt = new Retweet(new Date(123456789),
@@ -41,6 +47,9 @@ public class TweetsRetrieverTest {
 		assertEquals(rt, $.getResult().getRetweets().get(0));
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getRetweets()}
+	 */
 	@Test
 	public final void getRetweetsShouldReturnNoRetweets() {
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID(
@@ -49,6 +58,9 @@ public class TweetsRetrieverTest {
 		assertEquals(0, $.getResult().getRetweets().size());
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getBaseTweets()}
+	 */
 	@Test
 	public final void getBaseTweetsShouldReturnNoBaseTweets() {
 		final Retweet rt = new Retweet(new Date(123456789),
@@ -57,6 +69,9 @@ public class TweetsRetrieverTest {
 		assertEquals(0, $.getResult().getBaseTweets().size());
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getBaseTweets()}
+	 */
 	@Test
 	public final void getBaseTweetsShouldReturnBaseTweetsByReceiveOrder() {
 		final BaseTweet bt1 = new BaseTweet(new Date(123456789), new ID(
@@ -70,6 +85,9 @@ public class TweetsRetrieverTest {
 		assertEquals(bt2, tweets.get(1));
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getRetweets()}
+	 */
 	@Test
 	public final void getRetweetsShouldReturnRetweetsByReceiveOrder() {
 		final Retweet rt1 = new Retweet(new Date(123456789), new ID(
@@ -83,6 +101,10 @@ public class TweetsRetrieverTest {
 		assertEquals(rt2, tweets.get(1));
 	}
 
+	/**
+	 * Test method for {@link TweetsRetriever#getBaseTweets()},
+	 * {@link TweetsRetriever#getRetweets()}
+	 */
 	@Test
 	public final void getBaseTweetsShouldReturnBaseTweetAndGetRetweetsShouldReturnRetweet() {
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID(

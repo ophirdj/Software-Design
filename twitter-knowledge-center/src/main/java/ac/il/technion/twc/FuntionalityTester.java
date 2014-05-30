@@ -112,8 +112,8 @@ public class FuntionalityTester {
    *           If it is not possible to complete the operation
    */
   public String getLifetimeOfTweets(final String tweetId) throws Exception {
-    return serviceCenter.getService(TweetToLifeTime.class).getLifeTimeById(
-        new ID(tweetId));
+    return Long.toString(serviceCenter.getService(TweetToLifeTime.class)
+        .getLifeTimeById(new ID(tweetId)));
   }
 
   /**
@@ -137,8 +137,8 @@ public class FuntionalityTester {
    * @return A string, in the format of a number, contain the number of retweets
    */
   public String getHashtagPopularity(final String hashtag) {
-    return serviceCenter.getService(TagToPopularity.class)
-        .getPopularityByHashtag(hashtag).toString();
+    return Integer.toString(serviceCenter.getService(TagToPopularity.class)
+        .getPopularityByHashtag(hashtag));
   }
 
   /**
