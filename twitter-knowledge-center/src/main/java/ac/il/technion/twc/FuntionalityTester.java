@@ -12,7 +12,7 @@ import ac.il.technion.twc.api.tweets.ID;
 import ac.il.technion.twc.impl.parsers.csFormat.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
-import ac.il.technion.twc.impl.properties.daymapping.DaysMappingBuilder;
+import ac.il.technion.twc.impl.properties.daymapping.DayMappingBuilder;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtagsBuilder;
 import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
@@ -48,7 +48,7 @@ public class FuntionalityTester {
 	public FuntionalityTester() {
 		serviceCenter = new TwitterSystemBuilder()
 				.addSerializer(new TweetToLifeTimeSerializer())
-				.addPropertyBuilder(DayMapping.class, new DaysMappingBuilder())
+				.addPropertyBuilder(DayMapping.class, new DayMappingBuilder())
 				.addPropertyBuilder(TransitiveRootFinder.class,
 						new TransitivityBuilder())
 				.addPropertyBuilder(IdHashtags.class, new IdHashtagsBuilder())
