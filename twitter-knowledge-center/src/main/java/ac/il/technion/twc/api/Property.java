@@ -25,4 +25,26 @@ import ac.il.technion.twc.api.tweet.Retweet;
  */
 public interface Property {
 
+  /**
+   * Indicate that the type doesn't have accessible constructor that get (
+   * {@link List}<{@link BaseTweet}> , {@link List}<{@link Retweet}>)
+   * 
+   * @author Ziv Ronen
+   * @date 30.05.2014
+   * @mail akarks@gmail.com
+   * 
+   */
+  public static class NotAPropertyException extends RuntimeException {
+  
+    private static final long serialVersionUID = 7277301716229432516L;
+  
+    /**
+     * @param simpleName
+     *          The name of the service
+     */
+    public NotAPropertyException(final String simpleName) {
+      super(simpleName + " is not a property");
+    }
+  }
+
 }

@@ -83,7 +83,6 @@ class Storage {
     } catch (final InterruptedException e) {
       throw new RuntimeException(e);
     } catch (final ExecutionException e) {
-      // TODO: need to handle differently
       if (e.getCause() instanceof IOException)
         return type.cast(defualt);
       else

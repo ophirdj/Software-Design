@@ -57,7 +57,7 @@ public class TwitterSystemBuilder implements TwitterDataCenterBuilder {
 
   @Override
   public <T extends TwitterQuery> TwitterDataCenterBuilder registerQuery(
-      final Class<T> queryType) throws NotAServiceException,
+      final Class<T> queryType) throws TwitterQuery.NotAQueryException,
       MissingPropertitesException {
     serviceBuilder.addQuery(queryType);
     services.add(queryType);
@@ -68,7 +68,7 @@ public class TwitterSystemBuilder implements TwitterDataCenterBuilder {
   public <T extends TwitterQuery, S extends T> TwitterDataCenterBuilder
       registerQuery(final Class<T> queryType,
           final TwitterQueryFactory<S> queryFactory)
-          throws NotAServiceException, MissingPropertitesException {
+          throws TwitterQuery.NotAQueryException, MissingPropertitesException {
     serviceBuilder.addQuery(queryType, queryFactory);
     services.add(queryType);
     return this;

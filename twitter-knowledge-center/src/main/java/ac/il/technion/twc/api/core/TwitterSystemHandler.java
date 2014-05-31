@@ -1,7 +1,6 @@
 package ac.il.technion.twc.api.core;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,26 +64,14 @@ public class TwitterSystemHandler implements TwitterDataCenter {
   private void buildServices(final Tweets tweets) throws IOException {
     serviceBuilder.setProperties(tweets.getBaseTweets(), tweets.getRetweets());
     for (final Class<? extends TwitterQuery> service : services)
-      try {
-        storage.store(service, serviceBuilder.getInstance(service));
-      } catch (IllegalAccessException | IllegalArgumentException
-          | InvocationTargetException e) {
-        // Shouldn't happen
-        e.printStackTrace();
-      }
+      storage.store(service, serviceBuilder.getInstance(service));
   }
 
   @Override
   public void loadServices() {
     for (final Class<?> service : services)
-      try {
-        servicesResult.put(service,
-            storage.load(service, serviceBuilder.getInstance(service)));
-      } catch (IllegalAccessException | IllegalArgumentException
-          | InvocationTargetException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      servicesResult.put(service,
+          storage.load(service, serviceBuilder.getInstance(service)));
   }
 
   @Override

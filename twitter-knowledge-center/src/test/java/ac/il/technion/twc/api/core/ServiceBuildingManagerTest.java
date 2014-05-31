@@ -20,8 +20,6 @@ import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
-import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
-import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQueryFactory.NotAQueryFactoryException;
@@ -64,34 +62,34 @@ public class ServiceBuildingManagerTest {
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void checkOneConstructorsMockShouldNotThrowException()
-      throws MissingPropertitesException, NotAServiceException {
+      throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     $.addQuery(OneConstructorsMock.class);
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final
       void
       checkClassWithOneAnnotatedConstructorAndOtherNotAnnotatedShouldNotThrowException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     $.addQuery(OneConstructorsAnnotatedMock.class);
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void checkClassWithSupportedClassShouldNotThrowException()
-      throws MissingPropertitesException, NotAServiceException {
+      throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     $.addQuery(NeedSupportedProperty.class);
   }
 
@@ -125,7 +123,7 @@ public class ServiceBuildingManagerTest {
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    * @throws InvocationTargetException
    * @throws IllegalArgumentException
@@ -150,54 +148,54 @@ public class ServiceBuildingManagerTest {
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void checkTwoConstructorsMockShouldThrowNotAServiceException()
-      throws MissingPropertitesException, NotAServiceException {
-    thrown.expect(NotAServiceException.class);
+      throws MissingPropertitesException, TwitterQuery.NotAQueryException {
+    thrown.expect(TwitterQuery.NotAQueryException.class);
     thrown.expectMessage(TwoConstructorsMock.class.getSimpleName()
         + " is not a service");
     $.addQuery(TwoConstructorsMock.class);
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void checkAbstractMockShouldThrowNotAServiceException()
-      throws MissingPropertitesException, NotAServiceException {
-    thrown.expect(NotAServiceException.class);
+      throws MissingPropertitesException, TwitterQuery.NotAQueryException {
+    thrown.expect(TwitterQuery.NotAQueryException.class);
     thrown.expectMessage(AbstractService.class.getSimpleName()
         + " is not a service");
     $.addQuery(AbstractService.class);
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void
       checkClassWithZeroPublicConstructorsShouldThrowNotAServiceException()
-          throws MissingPropertitesException, NotAServiceException {
-    thrown.expect(NotAServiceException.class);
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
+    thrown.expect(TwitterQuery.NotAQueryException.class);
     thrown.expectMessage(ZeroPublicConstructorsMock.class.getSimpleName()
         + " is not a service");
     $.addQuery(ZeroPublicConstructorsMock.class);
   }
 
   /**
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    * @throws MissingPropertitesException
    */
   @Test
   public final void
       checkClassWithTwoAnnotatedConstructorsShouldThrowNotAServiceException()
-          throws MissingPropertitesException, NotAServiceException {
-    thrown.expect(NotAServiceException.class);
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
+    thrown.expect(TwitterQuery.NotAQueryException.class);
     thrown.expectMessage(TwoConstructorsAnnotatedMock.class.getSimpleName()
         + " is not a service");
     $.addQuery(TwoConstructorsAnnotatedMock.class);
@@ -205,13 +203,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassWithConstructorsThatNeedUnsupportedClassShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown.expectMessage(servicePrefix(NotSupportedPropertyService.class)
         + missingMessage(ZeroPublicConstructorsMock.class,
@@ -221,13 +219,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassWithConstructorsThatNeedIntefaceShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown.expectMessage(servicePrefix(NeedInterfacePropertyService.class)
         + notConcreteMessage(InterfaceProperty.class,
@@ -237,13 +235,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassWithConstructorsThatNeedAbstractClassShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown.expectMessage(servicePrefix(NeedAbstractPropertyService.class)
         + notConcreteMessage(AbstractProperty.class,
@@ -253,13 +251,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassWithConstructorsThatNeedPrimitveClassShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown.expectMessage(servicePrefix(NeedPremitivePropertyService.class)
         + notConcreteMessage(byte.class,
@@ -269,13 +267,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassWithCircleTailThenCircleShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown
         .expectMessage(servicePrefix(CircleHeadService.class)
@@ -287,12 +285,12 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final void
       checkClassWithCircleShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown
         .expectMessage(servicePrefix(CircleFirstProperty.class)
@@ -304,12 +302,12 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final void
       checkClassThatNeedItselfShouldThrowMissingPropertitesException()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown.expectMessage(servicePrefix(SelfCircleService.class)
         + circleMessage(SelfCircleService.class,
@@ -319,13 +317,13 @@ public class ServiceBuildingManagerTest {
 
   /**
    * @throws MissingPropertitesException
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    */
   @Test
   public final
       void
       checkClassThatHaveMultipleErrorShouldThrowMissingPropertitesExceptionWithMessageOnAll()
-          throws MissingPropertitesException, NotAServiceException {
+          throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     thrown.expect(MissingPropertitesException.class);
     thrown
         .expectMessage(servicePrefix(MultipuleMissingCausesClass.class)
@@ -355,7 +353,7 @@ public class ServiceBuildingManagerTest {
    */
   @Test
   public final void checkPropertyFailed() {
-    thrown.expect(NotAPropertyException.class);
+    thrown.expect(Property.NotAPropertyException.class);
     thrown.expectMessage(TwoConstructorsMock.class.getSimpleName()
         + " is not a property");
     $.addProperty(TwoConstructorsMock.class);

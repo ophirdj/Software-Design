@@ -1,10 +1,6 @@
 package ac.il.technion.twc.api;
 
-import java.util.List;
-
 import ac.il.technion.twc.api.core.Serializer;
-import ac.il.technion.twc.api.tweet.BaseTweet;
-import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
  * Build our main API.
@@ -16,7 +12,6 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @version 2.0
  * @since 2.0
  */
-// TODO: find Shorter name
 public interface TwitterDataCenterBuilder {
 
   /**
@@ -52,14 +47,14 @@ public interface TwitterDataCenterBuilder {
    *          details.
    * 
    * @return this {@link TwitterDataCenterBuilder}.
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    *           if the object is not a legal service
    * @throws MissingPropertitesException
    *           if any of the property required for the service can't be
    *           obtained.
    */
   <T extends TwitterQuery> TwitterDataCenterBuilder registerQuery(
-      Class<T> queryType) throws NotAServiceException,
+      Class<T> queryType) throws TwitterQuery.NotAQueryException,
       MissingPropertitesException;
 
   /**
@@ -72,7 +67,7 @@ public interface TwitterDataCenterBuilder {
    *          details.
    * 
    * @return this {@link TwitterDataCenterBuilder}.
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    *           if the object is not a legal service
    * @throws MissingPropertitesException
    *           if any of the property required for the service can't be
@@ -80,7 +75,7 @@ public interface TwitterDataCenterBuilder {
    */
   <T extends TwitterQuery, S extends T> TwitterDataCenterBuilder registerQuery(
       Class<T> queryType, TwitterQueryFactory<S> queryFactory)
-      throws NotAServiceException, MissingPropertitesException;
+      throws TwitterQuery.NotAQueryException, MissingPropertitesException;
 
   /**
    * @param serialzersToAdd
@@ -95,54 +90,6 @@ public interface TwitterDataCenterBuilder {
    * @return A {@link TwitterDataCenter}.
    */
   TwitterDataCenter build();
-
-  /**
-   * Indicate that the object doesn't have a single construct annotated with
-   * {@link ServiceSetup} .
-   * 
-   * @author Ziv Ronen
-   * @date 29.05.2014
-   * @mail akarks@gmail.com
-   * 
-   * @version 2.0
-   * @since 2.0
-   */
-  public static class NotAServiceException extends RuntimeException {
-
-    /**
-     * @param simpleName
-     *          The name of the service
-     */
-    public NotAServiceException(final String simpleName) {
-      super(simpleName + " is not a service");
-    }
-
-    private static final long serialVersionUID = 7808573286722982627L;
-  }
-
-  /**
-   * Indicate that the type doesn't have accessible constructor that get (
-   * {@link List}<{@link BaseTweet}> , {@link List}<{@link Retweet}>)
-   * 
-   * @author Ziv Ronen
-   * @date 30.05.2014
-   * @mail akarks@gmail.com
-   * 
-   * @version 2.0
-   * @since 2.0
-   */
-  public static class NotAPropertyException extends RuntimeException {
-
-    private static final long serialVersionUID = 7277301716229432516L;
-
-    /**
-     * @param simpleName
-     *          The name of the service
-     */
-    public NotAPropertyException(final String simpleName) {
-      super(simpleName + " is not a property");
-    }
-  }
 
   /**
    * If a service require a property that is not register

@@ -23,8 +23,6 @@ import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
-import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
-import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQueryFactory.NotAQueryFactoryException;
@@ -56,7 +54,7 @@ class ServiceBuildingManager {
    * @param type
    *          the type of the property
    * 
-   * @throws NotAPropertyException
+   * @throws Property.NotAPropertyException
    *           if the type doesn't represent a property
    */
   public <T extends Property> void addProperty(final Class<T> type) {
@@ -75,8 +73,11 @@ class ServiceBuildingManager {
             try {
               return ctor.newInstance(baseTweets, retweets);
             } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException e) {
+                | IllegalArgumentException e) {
+              // TODO warp with our exception
               throw new RuntimeException(e);
+            } catch (final InvocationTargetException e) {
+              throw new RuntimeException(e.getCause());
             }
           }
         });
@@ -84,7 +85,7 @@ class ServiceBuildingManager {
       }
     } catch (NoSuchMethodException | SecurityException e) {
     }
-    throw new NotAPropertyException(type.getSimpleName());
+    throw new Property.NotAPropertyException(type.getSimpleName());
   }
 
   /**
@@ -95,7 +96,7 @@ class ServiceBuildingManager {
    * @param factory
    *          factory for the property
    * 
-   * @throws NotAPropertyException
+   * @throws Property.NotAPropertyException
    *           if the type doesn't represent a property
    */
   public <T extends Property, S extends T> void addProperty(
@@ -181,14 +182,14 @@ class ServiceBuildingManager {
    * @throws MissingPropertitesException
    *           if in the dependencies' path of the service one of the class is
    *           missing and can't be uniquely instantiate
-   * @throws NotAServiceException
+   * @throws TwitterQuery.NotAQueryException
    *           if the type do not possess precisely one constructor annotated
    *           with {@link ServiceSetup}
    */
   public <T extends TwitterQuery> void addQuery(final Class<T> type)
-      throws MissingPropertitesException, NotAServiceException {
+      throws MissingPropertitesException, TwitterQuery.NotAQueryException {
     if (!hasSingleAnnotatedCtor(type))
-      throw new NotAServiceException(type.getSimpleName());
+      throw new TwitterQuery.NotAQueryException(type.getSimpleName());
     if (supportedObjects.contains(type))
       return;
     final StringBuilder missingMessageBuilder =
@@ -220,15 +221,14 @@ class ServiceBuildingManager {
       public T get() {
         try {
           return ctor.newInstance(getCtorValues(ctor));
-        } catch (InstantiationException | IllegalAccessException
-            | InvocationTargetException e) {
-          // TODO Auto-generated catch block
         } catch (final InterruptedException e) {
           throw new RuntimeException("interrupted while instantiating class");
-        } catch (final ExecutionException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
+          // TODO wrap with our class
           throw new RuntimeException(e);
+        } catch (ExecutionException | InvocationTargetException e) {
+          throw new RuntimeException(e.getCause());
         }
-        return null;
       }
 
     });
@@ -326,17 +326,20 @@ class ServiceBuildingManager {
    * 
    * 
    * 
-   * @throws IllegalAccessException
-   * @throws IllegalArgumentException
-   * @throws InvocationTargetException
    */
-  public Object getInstance(final Class<?> type) throws IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException {
+  public Object getInstance(final Class<?> type) {
     if (supportedQueries.containsKey(type)) {
       final TwitterQueryFactory<?> factory = supportedQueries.get(type);
       for (final Method m : factory.getClass().getMethods())
         if ("get".equals(m.getName()))
-          return m.invoke(factory, getValues(m));
+          try {
+            return m.invoke(factory, getValues(m));
+          } catch (final IllegalAccessException e) {
+            // TODO wrap with our class
+            throw new RuntimeException(e);
+          } catch (final InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+          }
     }
     throw new IllegalArgumentException("service wanted but not register");
   }
@@ -377,9 +380,11 @@ class ServiceBuildingManager {
         final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
         try {
           values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
-        } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
+          // TODO wrap with our class
           throw new RuntimeException(e);
+        } catch (final InvocationTargetException e) {
+          throw new RuntimeException(e.getCause());
         }
       }
     }
