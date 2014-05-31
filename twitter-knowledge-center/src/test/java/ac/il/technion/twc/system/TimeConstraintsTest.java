@@ -144,6 +144,24 @@ public class TimeConstraintsTest {
 	}
 
 	/**
+	 * Test method for {@link FuntionalityTester#getHashtagPopularity(String)}
+	 * 
+	 * @throws Exception
+	 */
+	@Ignore
+	@Test
+	public final void getHashtagPopularityActualTime() throws Exception {
+		final long start = System.currentTimeMillis();
+		for (int i = 0; i < 10; ++i)
+			$.getHashtagPopularity("YOLO");
+		for (int i = 0; i < 10; ++i)
+			$.getHashtagPopularity("SWAG");
+		final long end = System.currentTimeMillis();
+		assertTrue("Took " + (end - start) + " millis instead of 5000", end
+				- start <= 5000);
+	}
+
+	/**
 	 * Test method for {@link FuntionalityTester#importData(String[])}
 	 * 
 	 * @throws Exception
