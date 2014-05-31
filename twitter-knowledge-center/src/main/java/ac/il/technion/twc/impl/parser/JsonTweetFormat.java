@@ -71,12 +71,9 @@ public class JsonTweetFormat implements TweetFormat {
 				return prevId == null ? new BaseTweet(date, id, hashtags)
 						: new Retweet(date, id, prevId);
 			} catch (final ParseException e) {
-				// TODO not sure what to do here
 				throw new JsonParseException(e);
 
 			} catch (final NullPointerException e) {
-				// TODO not sure what to do here
-				// if one of the needed field (id or date) is not defined
 				throw new JsonParseException(e);
 			}
 
