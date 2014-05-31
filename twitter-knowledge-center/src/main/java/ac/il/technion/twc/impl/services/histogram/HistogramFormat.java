@@ -34,6 +34,11 @@ public class HistogramFormat {
 	}
 
 	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	@Override
 	public boolean equals(final Object obj) {
 		return obj != null && obj.getClass() == this.getClass();
 	}
