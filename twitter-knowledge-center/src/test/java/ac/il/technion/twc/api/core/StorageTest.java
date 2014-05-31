@@ -220,6 +220,37 @@ public class StorageTest {
       InterruptedException, ExecutionException {
     $.clear();
     verify(fileHandlingMock).clear(fullTestPath);
+  }
 
+  @SuppressWarnings("unused")
+  // used by JunitParams
+      private
+      Object[] storeType() throws NotFoundException {
+    return $(
+        $(DayHistogram.class, new DayHistogram(new HistogramFormat())),
+        $(TemporalHistogram.class, new TemporalHistogram(new HistogramFormat())),
+        $(TweetToLifeTime.class, new TweetToLifeTime()),
+        $(TagToPopularity.class, new TagToPopularity()));
+
+  }
+
+  /**
+   * Test method for: {@link Storage#clear()}
+   * 
+   * @param type
+   * @param toStore
+   * 
+   * @throws IOException
+   * @throws ExecutionException
+   * @throws InterruptedException
+   */
+  @Parameters(method = "storeType")
+  @Test
+  public <T> void storeShouldCallFileHandlerStoreWithString(
+      final Class<T> type, final T toStore) throws IOException,
+      InterruptedException, ExecutionException {
+    $.store(type, toStore);
+    verify(fileHandlingMock).store(
+        fullTestPath.resolve(type.getCanonicalName()), gson.toJson(toStore));
   }
 }
