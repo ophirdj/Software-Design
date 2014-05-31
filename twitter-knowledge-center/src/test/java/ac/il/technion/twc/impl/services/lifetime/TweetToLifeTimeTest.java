@@ -14,12 +14,12 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import ac.il.technion.twc.api.properties.OriginFinder;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
+import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
-import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime.UndefinedTimeException;
 
 /**

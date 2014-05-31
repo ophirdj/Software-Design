@@ -10,12 +10,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import ac.il.technion.twc.api.properties.OriginFinder;
+import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
 
 /**
  * Tests for {@link OriginFinder}

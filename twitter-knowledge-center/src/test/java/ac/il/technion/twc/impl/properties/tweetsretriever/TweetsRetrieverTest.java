@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
