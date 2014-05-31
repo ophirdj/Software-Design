@@ -41,347 +41,354 @@ import ac.il.technion.twc.api.tweet.Retweet;
  */
 class ServiceBuildingManager {
 
-  private final Map<Class<?>, PropertyFactory<?>> supportedProperties =
-      new HashMap<>();
-  private final Map<Class<?>, TwitterQueryFactory<?>> supportedQueries =
-      new HashMap<>();
+	private final Map<Class<?>, PropertyFactory<?>> supportedProperties = new HashMap<>();
+	private final Map<Class<?>, TwitterQueryFactory<?>> supportedQueries = new HashMap<>();
 
-  private final Set<Class<?>> supportedObjects = new HashSet<>();
-  private final Map<Class<?>, Future<Object>> properties = new HashMap<>();
-  private final ExecutorService pool = Executors.newCachedThreadPool();
+	private final Set<Class<?>> supportedObjects = new HashSet<>();
+	private final Map<Class<?>, Future<Object>> properties = new HashMap<>();
+	private final ExecutorService pool = Executors.newCachedThreadPool();
 
-  /**
-   * Inform the {@link ServiceBuildingManager} that the given type is property
-   * 
-   * @param type
-   *          the type of the property
-   * 
-   * @throws NotAPropertyException
-   *           if the type doesn't represent a property
-   */
-  public <T> void addProperty(final Class<T> type) {
-    try {
-      final Constructor<T> ctor = type.getConstructor(List.class, List.class);
-      final Type[] parameters = ctor.getGenericParameterTypes();
-      if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
-          .getActualTypeArguments()[0])
-          && Retweet.class.equals(((ParameterizedType) parameters[1])
-              .getActualTypeArguments()[0]) && isConcrete(type)) {
-        supportedObjects.add(type);
-        supportedProperties.put(type, new PropertyFactory<T>() {
-          @Override
-          public T get(final List<BaseTweet> baseTweets,
-              final List<Retweet> retweets) {
-            try {
-              return ctor.newInstance(baseTweets, retweets);
-            } catch (InstantiationException | IllegalAccessException
-                | IllegalArgumentException | InvocationTargetException e) {
-              throw new RuntimeException(e);
-            }
-          }
-        });
-        return;
-      }
-    } catch (NoSuchMethodException | SecurityException e) {
-    }
-    throw new NotAPropertyException(type.getSimpleName());
-  }
+	/**
+	 * Inform the {@link ServiceBuildingManager} that the given type is property
+	 * 
+	 * @param type
+	 *            the type of the property
+	 * 
+	 * @throws NotAPropertyException
+	 *             if the type doesn't represent a property
+	 */
+	public <T> void addProperty(final Class<T> type) {
+		try {
+			final Constructor<T> ctor = type.getConstructor(List.class,
+					List.class);
+			final Type[] parameters = ctor.getGenericParameterTypes();
+			if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
+					.getActualTypeArguments()[0])
+					&& Retweet.class.equals(((ParameterizedType) parameters[1])
+							.getActualTypeArguments()[0]) && isConcrete(type)) {
+				supportedObjects.add(type);
+				supportedProperties.put(type, new PropertyFactory<T>() {
+					@Override
+					public T get(final List<BaseTweet> baseTweets,
+							final List<Retweet> retweets) {
+						try {
+							return ctor.newInstance(baseTweets, retweets);
+						} catch (InstantiationException
+								| IllegalAccessException
+								| IllegalArgumentException
+								| InvocationTargetException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				});
+				return;
+			}
+		} catch (NoSuchMethodException | SecurityException e) {
+		}
+		throw new NotAPropertyException(type.getSimpleName());
+	}
 
-  /**
-   * Inform the {@link ServiceBuildingManager} that the given type is property
-   * 
-   * @param type
-   *          the type of the property
-   * @param factory
-   *          factory for the property
-   * 
-   * @throws NotAPropertyException
-   *           if the type doesn't represent a property
-   */
-  public <T extends Property, S extends T> void addProperty(
-      final Class<T> type, final PropertyFactory<S> factory) {
-    supportedProperties.put(type, factory);
-    supportedObjects.add(type);
-  }
+	/**
+	 * Inform the {@link ServiceBuildingManager} that the given type is property
+	 * 
+	 * @param type
+	 *            the type of the property
+	 * @param factory
+	 *            factory for the property
+	 * 
+	 * @throws NotAPropertyException
+	 *             if the type doesn't represent a property
+	 */
+	public <T extends Property, S extends T> void addProperty(
+			final Class<T> type, final PropertyFactory<S> factory) {
+		supportedProperties.put(type, factory);
+		supportedObjects.add(type);
+	}
 
-  /**
-   * Make all the properties
-   * 
-   * @param bases
-   *          List of base tweets
-   * @param res
-   *          List of Retweets
-   */
-  public void
-      setProperties(final List<BaseTweet> bases, final List<Retweet> res) {
-    final List<BaseTweet> unmodifiableBases =
-        Collections.unmodifiableList(bases);
-    final List<Retweet> unmodifiableRes = Collections.unmodifiableList(res);
-    for (final Entry<Class<?>, PropertyFactory<?>> entry : supportedProperties
-        .entrySet())
-      properties.put(entry.getKey(), pool.submit(new Callable<Object>() {
+	/**
+	 * Make all the properties
+	 * 
+	 * @param bases
+	 *            List of base tweets
+	 * @param res
+	 *            List of Retweets
+	 */
+	public void setProperties(final List<BaseTweet> bases,
+			final List<Retweet> res) {
+		final List<BaseTweet> unmodifiableBases = Collections
+				.unmodifiableList(bases);
+		final List<Retweet> unmodifiableRes = Collections.unmodifiableList(res);
+		for (final Entry<Class<?>, PropertyFactory<?>> entry : supportedProperties
+				.entrySet())
+			properties.put(entry.getKey(), pool.submit(new Callable<Object>() {
 
-        @Override
-        public Object call() throws Exception {
-          return entry.getValue().get(unmodifiableBases, unmodifiableRes);
-        }
-      }));
-  }
+				@Override
+				public Object call() throws Exception {
+					return entry.getValue().get(unmodifiableBases,
+							unmodifiableRes);
+				}
+			}));
+	}
 
-  /**
-   * @param type
-   *          The type of the service
-   * @param factory
-   *          a factory for the type
-   */
-  public <T extends TwitterQuery, S extends T> void addQuery(
-      final Class<T> type, final TwitterQueryFactory<S> factory) {
-    Method chosen = null;
-    boolean usableFactory = true;
-    boolean missingProperty = false;
-    final StringBuilder missing = new StringBuilder();
-    final StringBuilder notQueryFactoryCause = new StringBuilder();
-    for (final Method m : factory.getClass().getMethods()) {
-      if (!"get".equals(m.getName()))
-        continue;
-      if (chosen != null)
-        throw new NotAQueryFactory(factory.getClass().getSimpleName(),
-            "have multiple get function.");
-      final Class<?>[] paramters = m.getParameterTypes();
-      chosen = m;
-      for (final Class<?> paramterType : paramters) {
-        if (!Property.class.isAssignableFrom(paramterType)) {
-          notQueryFactoryCause.append("\t-The parameter "
-              + paramterType.getSimpleName() + " is not a property.\n");
-          usableFactory = false;
-        }
-        if (!supportedProperties.containsKey(paramterType)) {
-          missing.append("\t- " + paramterType.getSimpleName() + "\n");
-          missingProperty = true;
-        }
-      }
-    }
-    if (chosen == null)
-      throw new NotAQueryFactory(factory.getClass().getSimpleName(),
-          "have none get function.");
+	/**
+	 * @param type
+	 *            The type of the service
+	 * @param factory
+	 *            a factory for the type
+	 */
+	public <T extends TwitterQuery, S extends T> void addQuery(
+			final Class<T> type, final TwitterQueryFactory<S> factory) {
+		Method chosen = null;
+		boolean usableFactory = true;
+		boolean missingProperty = false;
+		final StringBuilder missing = new StringBuilder();
+		final StringBuilder notQueryFactoryCause = new StringBuilder();
+		for (final Method m : factory.getClass().getMethods()) {
+			if (!"get".equals(m.getName()))
+				continue;
+			if (chosen != null)
+				throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+						"have multiple get function.");
+			final Class<?>[] paramters = m.getParameterTypes();
+			chosen = m;
+			for (final Class<?> paramterType : paramters) {
+				if (!Property.class.isAssignableFrom(paramterType)) {
+					notQueryFactoryCause.append("\t-The parameter "
+							+ paramterType.getSimpleName()
+							+ " is not a property.\n");
+					usableFactory = false;
+				}
+				if (!supportedProperties.containsKey(paramterType)) {
+					missing.append("\t- " + paramterType.getSimpleName() + "\n");
+					missingProperty = true;
+				}
+			}
+		}
+		if (chosen == null)
+			throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+					"have none get function.");
 
-    if (!usableFactory)
-      throw new NotAQueryFactory(factory.getClass().getSimpleName(),
-          notQueryFactoryCause.toString());
-    if (missingProperty)
-      throw new MissingPropertitesException("The factory "
-          + factory.getClass().getSimpleName() + " missing the properties: \n"
-          + notQueryFactoryCause.toString());
-    supportedQueries.put(type, factory);
-  }
+		if (!usableFactory)
+			throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+					notQueryFactoryCause.toString());
+		if (missingProperty)
+			throw new MissingPropertitesException("The factory "
+					+ factory.getClass().getSimpleName()
+					+ " missing the properties: \n"
+					+ notQueryFactoryCause.toString());
+		supportedQueries.put(type, factory);
+	}
 
-  /**
-   * @param type
-   *          The type of the service
-   * @throws MissingPropertitesException
-   *           if in the dependencies' path of the service one of the class is
-   *           missing and can't be uniquely instantiate
-   * @throws NotAServiceException
-   *           if the type do not possess precisely one constructor annotated
-   *           with {@link ServiceSetup}
-   */
-  public <T> void addQuery(final Class<T> type)
-      throws MissingPropertitesException, NotAServiceException {
-    if (!hasSingleAnnotatedCtor(type))
-      throw new NotAServiceException(type.getSimpleName());
-    if (supportedObjects.contains(type))
-      return;
-    final StringBuilder missingMessageBuilder =
-        new StringBuilder("The service ").append(type.getSimpleName()).append(
-            " can't be register because:\n");
-    boolean isMissing = false;
-    // c'tor != null due to hasSingleAnnotatedCtor function
-    final Constructor<T> ctor = getServiceCtor(type);
-    final Type[] values = ctor.getParameterTypes();
-    for (final Type parameter : values) {
-      if (!(parameter instanceof Class<?>)) {
-        missingMessageBuilder.append(prefix(parameter.toString())).append(
-            "is not a class\n");
-        continue;
-      }
-      final HashSet<Type> visited = new HashSet<>();
-      isMissing |=
-          isMissingProperty((Class<?>) parameter, visited,
-              missingMessageBuilder, new StringBuilder().append("path: ")
-                  .append(type.getSimpleName()));
-    }
-    missingMessageBuilder.append("\n");
-    if (isMissing)
-      throw new MissingPropertitesException(missingMessageBuilder.toString());
-    supportedQueries.put(type, new TwitterQueryFactory<T>() {
+	/**
+	 * @param type
+	 *            The type of the service
+	 * @throws MissingPropertitesException
+	 *             if in the dependencies' path of the service one of the class
+	 *             is missing and can't be uniquely instantiate
+	 * @throws NotAServiceException
+	 *             if the type do not possess precisely one constructor
+	 *             annotated with {@link ServiceSetup}
+	 */
+	public <T> void addQuery(final Class<T> type)
+			throws MissingPropertitesException, NotAServiceException {
+		if (!hasSingleAnnotatedCtor(type))
+			throw new NotAServiceException(type.getSimpleName());
+		if (supportedObjects.contains(type))
+			return;
+		final StringBuilder missingMessageBuilder = new StringBuilder(
+				"The service ").append(type.getSimpleName()).append(
+				" can't be register because:\n");
+		boolean isMissing = false;
+		// c'tor != null due to hasSingleAnnotatedCtor function
+		final Constructor<T> ctor = getServiceCtor(type);
+		final Type[] values = ctor.getParameterTypes();
+		for (final Type parameter : values) {
+			if (!(parameter instanceof Class<?>)) {
+				missingMessageBuilder.append(prefix(parameter.toString()))
+						.append("is not a class\n");
+				continue;
+			}
+			final HashSet<Type> visited = new HashSet<>();
+			isMissing |= isMissingProperty((Class<?>) parameter, visited,
+					missingMessageBuilder, new StringBuilder().append("path: ")
+							.append(type.getSimpleName()));
+		}
+		missingMessageBuilder.append("\n");
+		if (isMissing)
+			throw new MissingPropertitesException(
+					missingMessageBuilder.toString());
+		supportedQueries.put(type, new TwitterQueryFactory<T>() {
 
-      // read using reflection
-      @SuppressWarnings("unused")
-      public T get() {
-        try {
-          return ctor.newInstance(getCtorValues(ctor));
-        } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException
-            | InterruptedException | ExecutionException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        return null;
-      }
+			// read using reflection
+			@SuppressWarnings("unused")
+			public T get() {
+				try {
+					return ctor.newInstance(getCtorValues(ctor));
+				} catch (InstantiationException | IllegalAccessException
+						| InvocationTargetException | InterruptedException
+						| ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
 
-    });
-  }
+		});
+	}
 
-  private String prefix(final String type) {
-    return new StringBuilder("- object of type ").append(type)
-        .append(" can't be created because it ").toString();
-  }
+	private String prefix(final String type) {
+		return new StringBuilder("- object of type ").append(type)
+				.append(" can't be created because it ").toString();
+	}
 
-  private boolean hasSingleAnnotatedCtor(final Class<?> type) {
-    if (!isConcrete(type))
-      return false;
-    final Constructor<?>[] constructors = type.getConstructors();
-    if (constructors.length == 1)
-      return true;
-    int count = 0;
-    for (final Constructor<?> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
-        count++;
-    return 1 == count;
-  }
+	private boolean hasSingleAnnotatedCtor(final Class<?> type) {
+		if (!isConcrete(type))
+			return false;
+		final Constructor<?>[] constructors = type.getConstructors();
+		if (constructors.length == 1)
+			return true;
+		int count = 0;
+		for (final Constructor<?> ctor : constructors)
+			if (ctor.isAnnotationPresent(ServiceSetup.class))
+				count++;
+		return 1 == count;
+	}
 
-  private boolean isMissingProperty(final Class<?> type,
-      final HashSet<Type> visited, final StringBuilder missingMessage,
-      final StringBuilder currentPath) {
-    currentPath.append("->").append(type.getSimpleName());
-    if (!visited.add(type)) {
-      missingMessage.append(prefix(type.getSimpleName()))
-          .append("cause dependency circle. ").append(currentPath.toString())
-          .append("\n");
-      return true;
-    }
-    try {
-      if (supportedObjects.contains(type))
-        return false;
-      if (!isConcrete(type)) {
-        missingMessage.append(prefix(type.getSimpleName()))
-            .append("is not a concrete class (or it is a primitive). ")
-            .append(currentPath.toString()).append("\n");
-        return true;
-      }
+	private boolean isMissingProperty(final Class<?> type,
+			final HashSet<Type> visited, final StringBuilder missingMessage,
+			final StringBuilder currentPath) {
+		currentPath.append("->").append(type.getSimpleName());
+		if (!visited.add(type)) {
+			missingMessage.append(prefix(type.getSimpleName()))
+					.append("cause dependency circle. ")
+					.append(currentPath.toString()).append("\n");
+			return true;
+		}
+		try {
+			if (supportedObjects.contains(type))
+				return false;
+			if (!isConcrete(type)) {
+				missingMessage
+						.append(prefix(type.getSimpleName()))
+						.append("is not a concrete class (or it is a primitive). ")
+						.append(currentPath.toString()).append("\n");
+				return true;
+			}
 
-      final Constructor<?> ctor = getServiceCtor(type);
-      if (ctor == null) {
-        missingMessage.append(prefix(type.getSimpleName()))
-            .append("doesn't possess identifible requested constructor. ")
-            .append(currentPath.toString()).append("\n")
-            .append("\t(try to add a ")
-            .append(ServiceSetup.class.getSimpleName())
-            .append(" Annotation to the requested constructor.)");
-        return true;
-      }
-      final Type[] values = ctor.getParameterTypes();
-      boolean missing = false;
-      for (final Type parameter : values) {
-        final StringBuilder neededPath =
-            new StringBuilder(currentPath.toString());
-        if (!(parameter instanceof Class<?>)) {
-          missingMessage.append(prefix(parameter.toString()))
-              .append("is not a class. ").append(neededPath.toString())
-              .append("\n");
-          missing = true;
-        } else if (isMissingProperty((Class<?>) parameter, visited,
-            missingMessage, neededPath))
-          missing = true;
-      }
-      return missing;
-    } finally {
-      visited.remove(type);
-    }
-  }
+			final Constructor<?> ctor = getServiceCtor(type);
+			if (ctor == null) {
+				missingMessage
+						.append(prefix(type.getSimpleName()))
+						.append("doesn't possess identifible requested constructor. ")
+						.append(currentPath.toString()).append("\n")
+						.append("\t(try to add a ")
+						.append(ServiceSetup.class.getSimpleName())
+						.append(" Annotation to the requested constructor.)");
+				return true;
+			}
+			final Type[] values = ctor.getParameterTypes();
+			boolean missing = false;
+			for (final Type parameter : values) {
+				final StringBuilder neededPath = new StringBuilder(
+						currentPath.toString());
+				if (!(parameter instanceof Class<?>)) {
+					missingMessage.append(prefix(parameter.toString()))
+							.append("is not a class. ")
+							.append(neededPath.toString()).append("\n");
+					missing = true;
+				} else if (isMissingProperty((Class<?>) parameter, visited,
+						missingMessage, neededPath))
+					missing = true;
+			}
+			return missing;
+		} finally {
+			visited.remove(type);
+		}
+	}
 
-  private boolean isConcrete(final Class<?> type) {
-    return !Modifier.isAbstract(type.getModifiers())
-        && !Modifier.isInterface(type.getModifiers());
-  }
+	private boolean isConcrete(final Class<?> type) {
+		return !Modifier.isAbstract(type.getModifiers())
+				&& !Modifier.isInterface(type.getModifiers());
+	}
 
-  private static <T> Constructor<T> getServiceCtor(final Class<T> type) {
-    @SuppressWarnings("unchecked")
-    final Constructor<T>[] constructors =
-        (Constructor<T>[]) type.getConstructors();
-    if (1 == constructors.length)
-      return constructors[0];
-    for (final Constructor<T> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
-        return ctor;
-    return null;
-  }
+	private static <T> Constructor<T> getServiceCtor(final Class<T> type) {
+		@SuppressWarnings("unchecked")
+		final Constructor<T>[] constructors = (Constructor<T>[]) type
+				.getConstructors();
+		if (1 == constructors.length)
+			return constructors[0];
+		for (final Constructor<T> ctor : constructors)
+			if (ctor.isAnnotationPresent(ServiceSetup.class))
+				return ctor;
+		return null;
+	}
 
-  /**
-   * @param type
-   *          the requested service type
-   * @return An instance of the given type
-   * 
-   * 
-   * 
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws IllegalArgumentException
-   * @throws InvocationTargetException
-   */
-  public Object getInstance(final Class<?> type) throws InstantiationException,
-      IllegalAccessException, IllegalArgumentException,
-      InvocationTargetException {
-    if (properties.containsKey(type))
-      try {
-        return properties.get(type).get();
-      } catch (final InterruptedException e) {
-        // never going to happen
-        throw new RuntimeException("interrupted while instantiating class");
-      } catch (final ExecutionException e) {
-        throw new RuntimeException(e.getCause());
-      }
-    final Constructor<?> ctor = getSetupCtor(type);
-    try {
-      return ctor.newInstance(getCtorValues(ctor));
-    } catch (final InterruptedException e) {
-      // never going to happen
-      throw new RuntimeException("interrupted while instantiating class");
-    } catch (final ExecutionException e) {
-      throw new RuntimeException(e.getCause());
-    }
-  }
+	/**
+	 * @param type
+	 *            the requested service type
+	 * @return An instance of the given type
+	 * 
+	 * 
+	 * 
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	public Object getInstance(final Class<?> type)
+			throws InstantiationException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		if (properties.containsKey(type))
+			try {
+				return properties.get(type).get();
+			} catch (final InterruptedException e) {
+				// never going to happen
+				throw new RuntimeException(
+						"interrupted while instantiating class");
+			} catch (final ExecutionException e) {
+				throw new RuntimeException(e.getCause());
+			}
+		final Constructor<?> ctor = getSetupCtor(type);
+		try {
+			return ctor.newInstance(getCtorValues(ctor));
+		} catch (final InterruptedException e) {
+			// never going to happen
+			throw new RuntimeException("interrupted while instantiating class");
+		} catch (final ExecutionException e) {
+			throw new RuntimeException(e.getCause());
+		}
+	}
 
-  private Constructor<?> getSetupCtor(final Class<?> type) {
-    final Constructor<?>[] constructors = type.getConstructors();
-    if (1 == constructors.length)
-      return constructors[0];
-    for (final Constructor<?> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
-        return ctor;
-    throw new IllegalArgumentException();
-  }
+	private Constructor<?> getSetupCtor(final Class<?> type) {
+		final Constructor<?>[] constructors = type.getConstructors();
+		if (1 == constructors.length)
+			return constructors[0];
+		for (final Constructor<?> ctor : constructors)
+			if (ctor.isAnnotationPresent(ServiceSetup.class))
+				return ctor;
+		throw new IllegalArgumentException();
+	}
 
-  private Object[] getCtorValues(final Constructor<?> ctor)
-      throws InterruptedException, ExecutionException {
-    final Type[] calledParameters = ctor.getParameterTypes();
-    final Object[] values = new Object[calledParameters.length];
-    for (int i = 0; i < calledParameters.length; i++) {
-      final Class<?> neededParameterType = (Class<?>) calledParameters[i];
-      if (properties.containsKey(neededParameterType))
-        values[i] = properties.get(neededParameterType).get();
-      else {
-        final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
-        try {
-          values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
-        } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException e) {
-          e.printStackTrace();
-          throw new RuntimeException(e);
-        }
-      }
-    }
-    return values;
-  }
+	private Object[] getCtorValues(final Constructor<?> ctor)
+			throws InterruptedException, ExecutionException {
+		final Type[] calledParameters = ctor.getParameterTypes();
+		final Object[] values = new Object[calledParameters.length];
+		for (int i = 0; i < calledParameters.length; i++) {
+			final Class<?> neededParameterType = (Class<?>) calledParameters[i];
+			if (properties.containsKey(neededParameterType))
+				values[i] = properties.get(neededParameterType).get();
+			else {
+				final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
+				try {
+					values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
+				} catch (InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			}
+		}
+		return values;
+	}
 
 }
