@@ -11,13 +11,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import ac.il.technion.twc.api.properties.OriginFinder;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
+import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
-import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 
 /**
  * Test for {@link TagToPopularity}

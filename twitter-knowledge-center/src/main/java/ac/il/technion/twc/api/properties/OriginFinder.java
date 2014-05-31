@@ -1,4 +1,4 @@
-package ac.il.technion.twc.impl.properties.originfinder;
+package ac.il.technion.twc.api.properties;
 
 import java.util.Collections;
 import java.util.HashMap;

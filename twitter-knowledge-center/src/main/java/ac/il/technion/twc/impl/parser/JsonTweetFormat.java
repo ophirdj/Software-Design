@@ -12,7 +12,7 @@ import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.api.tweet.parser.TweetParser;
+import ac.il.technion.twc.api.tweet.parser.TweetFormat;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,7 +32,7 @@ import com.google.gson.JsonParseException;
  * @version 2.0
  * @since 2.0
  */
-public class JsonTweetFormat implements TweetParser {
+public class JsonTweetFormat implements TweetFormat {
 
 	private final Gson gson = new GsonBuilder().registerTypeAdapter(
 			Tweet.class, new TweetDeserializer()).create();

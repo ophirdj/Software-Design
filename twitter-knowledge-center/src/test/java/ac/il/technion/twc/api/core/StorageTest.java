@@ -30,13 +30,13 @@ import org.mockito.stubbing.Answer;
 
 import ac.il.technion.twc.api.core.FileHandler;
 import ac.il.technion.twc.api.core.Storage;
+import ac.il.technion.twc.api.properties.OriginFinder;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
+import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
-import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
 import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogram;

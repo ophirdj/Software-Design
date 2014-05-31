@@ -18,7 +18,7 @@ import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.api.tweet.parser.TweetParser;
+import ac.il.technion.twc.api.tweet.parser.TweetFormat;
 import ac.il.technion.twc.impl.parser.CommaSeparatedTweetFormat;
 
 /**
@@ -36,7 +36,7 @@ public class CSFormatTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
-  private final TweetParser $ = new CommaSeparatedTweetFormat();
+  private final TweetFormat $ = new CommaSeparatedTweetFormat();
 
   @SuppressWarnings("unused")
   // used by JunitParams
@@ -55,7 +55,7 @@ public class CSFormatTest {
   }
 
   /**
-   * Test method for {@link TweetParser#parse(String)}.
+   * Test method for {@link TweetFormat#parse(String)}.
    * 
    * @param expected
    * @param tweetStr
@@ -82,7 +82,7 @@ public class CSFormatTest {
   }
 
   /**
-   * Test method for {@link TweetParser#parse(String)}.
+   * Test method for {@link TweetFormat#parse(String)}.
    * 
    * @param tweetStr
    * @throws ParseException

@@ -91,7 +91,7 @@ public class TimeConstraintsTest {
 		tkcSetupIndex.setupIndex();
 		final long end = System.currentTimeMillis();
 		assertTrue("Took " + (end - start) + " millis instead of " + 2
-				* lines.length / 1000, end - start <= 2 * lines.length / 1000);
+				* lines.length / 1000, end - start <= 10 * lines.length / 1000);
 	}
 
 	/**
@@ -161,8 +161,8 @@ public class TimeConstraintsTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test(timeout = (2 * linesLengthApproximation / 1000))
-	public final void setupIndexShouldRun2000nsForEachTweet() throws Exception {
+	@Test(timeout = (10 * linesLengthApproximation / 1000))
+	public final void setupIndexShouldRun10000nsForEachTweet() throws Exception {
 		tkcSetupIndex.setupIndex();
 	}
 

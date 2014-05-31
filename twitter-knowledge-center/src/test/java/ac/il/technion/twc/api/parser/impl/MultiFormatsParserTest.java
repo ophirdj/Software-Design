@@ -16,11 +16,11 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.api.tweet.parser.MultiFormatsTweetParser;
+import ac.il.technion.twc.api.tweet.parser.TweetFormat;
 import ac.il.technion.twc.api.tweet.parser.TweetParser;
 
 /**
- * Tests for {@link MultiFormatsTweetParser}
+ * Tests for {@link TweetParser}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -37,20 +37,20 @@ public class MultiFormatsParserTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private final TweetParser format1 = mock(TweetParser.class);
-	private final TweetParser format2 = mock(TweetParser.class);
-	private final MultiFormatsTweetParser $;
+	private final TweetFormat format1 = mock(TweetFormat.class);
+	private final TweetFormat format2 = mock(TweetFormat.class);
+	private final TweetParser $;
 
 	/**
    * 
    */
 	public MultiFormatsParserTest() {
-		$ = new MultiFormatsTweetParser(format1, format2);
+		$ = new TweetParser(format1, format2);
 	}
 
 	/**
 	 * Test method for: <br>
-	 * - {@link MultiFormatsTweetParser#MultiFormatsTweetParser(TweetParser...)}
+	 * - {@link TweetParser#TweetParser(TweetFormat...)}
 	 */
 	@Test
 	public final void parserBuildSucceeded() {
@@ -59,7 +59,7 @@ public class MultiFormatsParserTest {
 
 	/**
 	 * Test method for: <br>
-	 * - {@link MultiFormatsTweetParser#parse(String...)}
+	 * - {@link TweetParser#parse(String...)}
 	 * 
 	 * @throws ParseException
 	 */
@@ -78,7 +78,7 @@ public class MultiFormatsParserTest {
 
 	/**
 	 * Test method for: <br>
-	 * - {@link MultiFormatsTweetParser#parse(String...)}
+	 * - {@link TweetParser#parse(String...)}
 	 * 
 	 * @throws ParseException
 	 */
@@ -93,7 +93,7 @@ public class MultiFormatsParserTest {
 
 	/**
 	 * Test method for: <br>
-	 * - {@link MultiFormatsTweetParser#parse(String...)}
+	 * - {@link TweetParser#parse(String...)}
 	 * 
 	 * @throws ParseException
 	 */
@@ -109,7 +109,7 @@ public class MultiFormatsParserTest {
 
 	/**
 	 * Test method for: <br>
-	 * - {@link MultiFormatsTweetParser#parse(String...)}
+	 * - {@link TweetParser#parse(String...)}
 	 * 
 	 * @throws ParseException
 	 */

@@ -6,12 +6,12 @@ import java.util.Map;
 import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterQuery;
+import ac.il.technion.twc.api.properties.OriginFinder;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
+import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
-import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
-import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 
 /**
  * Service that answer {@link FuntionalityTester#getLifetimeOfTweets(String)}
