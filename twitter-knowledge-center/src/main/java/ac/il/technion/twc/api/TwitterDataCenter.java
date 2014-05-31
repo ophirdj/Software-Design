@@ -52,7 +52,8 @@ public interface TwitterDataCenter {
 	 * @throws OperationFailedException
 	 *             If storing system state as failed
 	 */
-	void importData(Collection<Tweet> tweets) throws OperationFailedException;
+	void importData(Collection<? extends Tweet> tweets)
+			throws OperationFailedException;
 
 	/**
 	 * Load all services from persistent storage.
