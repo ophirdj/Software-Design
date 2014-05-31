@@ -7,6 +7,7 @@ import java.util.Set;
 
 import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 
@@ -23,7 +24,7 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  * @version 2.0
  * @since 2.0
  */
-public class TemporalHistogram {
+public class TemporalHistogram implements TwitterQuery {
 
   private final long[] timesBase;
   private final int[] occuarenceBase;

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
@@ -21,7 +22,7 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @version 2.0
  * @since 2.0
  */
-public class DayMapping {
+public class DayMapping implements Property {
 
   private final Map<Long, Integer> dayByDateBase;
   private final Map<Long, Integer> dayByDateRe;
