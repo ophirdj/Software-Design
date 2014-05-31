@@ -14,11 +14,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import ac.il.technion.twc.api.parser.ParserFormat;
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.api.tweets.Tweet;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
+import ac.il.technion.twc.api.tweet.Tweet;
+import ac.il.technion.twc.api.tweet.parser.ParseFormat;
+import ac.il.technion.twc.impl.parser.CommaSeparatedTweetFormat;
 
 /**
  * Tests for comma separated format.
@@ -35,7 +36,7 @@ public class CSFormatTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
-  private final ParserFormat $ = new CommaSeparatedTweetFormat();
+  private final ParseFormat $ = new CommaSeparatedTweetFormat();
 
   @SuppressWarnings("unused")
   // used by JunitParams
@@ -54,7 +55,7 @@ public class CSFormatTest {
   }
 
   /**
-   * Test method for {@link ParserFormat#parse(String)}.
+   * Test method for {@link ParseFormat#parse(String)}.
    * 
    * @param expected
    * @param tweetStr
@@ -81,7 +82,7 @@ public class CSFormatTest {
   }
 
   /**
-   * Test method for {@link ParserFormat#parse(String)}.
+   * Test method for {@link ParseFormat#parse(String)}.
    * 
    * @param tweetStr
    * @throws ParseException

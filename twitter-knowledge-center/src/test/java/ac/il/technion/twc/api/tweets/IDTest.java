@@ -8,6 +8,8 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import ac.il.technion.twc.api.tweet.ID;
+
 /**
  * Tests for {@link ID}
  * 

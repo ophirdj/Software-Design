@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
+import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
 

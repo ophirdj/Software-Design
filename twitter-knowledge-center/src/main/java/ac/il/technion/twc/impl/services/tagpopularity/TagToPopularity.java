@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 
 /**
@@ -40,15 +40,15 @@ public class TagToPopularity {
 	 * @param hashtags
 	 */
 	@ServiceSetup
-	public TagToPopularity(final TransitiveRootFinder baseTweetFinder,
+	public TagToPopularity(final OriginFinder baseTweetFinder,
 			final TweetsRetriever tweets, final IdHashtags hashtags) {
 		for (final Retweet retweet : tweets.getRetweets())
 			try {
-				final BaseTweet base = baseTweetFinder.findRoot(retweet);
+				final BaseTweet base = baseTweetFinder.origin(retweet);
 				for (final String tag : base.hashtags())
 					popularityFromHashtag.put(tag,
 							getPopularityByHashtag(tag) + 1);
-			} catch (final NoRootFoundException e) {
+			} catch (final NotFoundException e) {
 				continue;
 			}
 	}

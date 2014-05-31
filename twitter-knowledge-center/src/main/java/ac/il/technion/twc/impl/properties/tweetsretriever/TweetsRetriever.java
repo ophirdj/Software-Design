@@ -3,11 +3,11 @@ package ac.il.technion.twc.impl.properties.tweetsretriever;
 import java.util.Collections;
 import java.util.List;
 
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
- * Keep all the base tweets and retweets in the system
+ * Keeps all the base tweets and retweets in the system.
  * 
  * @author Ziv Ronen
  * @date 26.05.2014

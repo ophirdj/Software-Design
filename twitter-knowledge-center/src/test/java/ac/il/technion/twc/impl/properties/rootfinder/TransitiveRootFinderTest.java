@@ -10,14 +10,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.api.tweets.Tweet;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
+import ac.il.technion.twc.api.tweet.Tweet;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
 
 /**
- * Tests for {@link TransitiveRootFinder}
+ * Tests for {@link OriginFinder}
  * 
  * @author Ziv Ronen
  * @date 07.05.2014
@@ -38,7 +39,7 @@ public class TransitiveRootFinderTest {
   ExpectedException thrown = ExpectedException.none();
 
   /**
-   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link OriginFinder#origin(Tweet)}.
    * 
    * @throws Exception
    */
@@ -49,12 +50,12 @@ public class TransitiveRootFinderTest {
           throws Exception {
     final Retweet rt =
         new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId"));
-    thrown.expect(NoRootFoundException.class);
-    new TransitiveRootFinder(EMPTY_BASES, Arrays.asList(rt)).findRoot(rt);
+    thrown.expect(NotFoundException.class);
+    new OriginFinder(EMPTY_BASES, Arrays.asList(rt)).origin(rt);
   }
 
   /**
-   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link OriginFinder#origin(Tweet)}.
    * 
    * @throws Exception
    */
@@ -66,12 +67,12 @@ public class TransitiveRootFinderTest {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
     final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id());
     assertSame(bt,
-        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt))
-            .findRoot(rt));
+        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt))
+            .origin(rt));
   }
 
   /**
-   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link OriginFinder#origin(Tweet)}.
    * 
    * @throws Exception
    */
@@ -83,12 +84,12 @@ public class TransitiveRootFinderTest {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
     final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id());
     assertSame(bt,
-        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt))
-            .findRoot(rt));
+        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt))
+            .origin(rt));
   }
 
   /**
-   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link OriginFinder#origin(Tweet)}.
    * 
    * @throws Exception
    */
@@ -99,12 +100,12 @@ public class TransitiveRootFinderTest {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("otherId"));
     final Retweet rt =
         new Retweet(new Date(1L), new ID("retweetId"), new ID("baseId"));
-    thrown.expect(NoRootFoundException.class);
-    new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt)).findRoot(rt);
+    thrown.expect(NotFoundException.class);
+    new OriginFinder(Arrays.asList(bt), Arrays.asList(rt)).origin(rt);
   }
 
   /**
-   * Test method for: {@link TransitiveRootFinder#findRoot(Tweet)}.
+   * Test method for: {@link OriginFinder#origin(Tweet)}.
    * 
    * @throws Exception
    */
@@ -117,8 +118,8 @@ public class TransitiveRootFinderTest {
     final Retweet rt2 =
         new Retweet(new Date(1L), new ID("retweetId2"), rt1.id());
     assertSame(bt,
-        new TransitiveRootFinder(Arrays.asList(bt), Arrays.asList(rt1, rt2))
-            .findRoot(rt2));
+        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt1, rt2))
+            .origin(rt2));
   }
 
 }

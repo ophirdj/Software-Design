@@ -16,12 +16,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ac.il.technion.twc.api.parser.ParserFormat;
-import ac.il.technion.twc.api.parser.TweetsParser;
-import ac.il.technion.twc.api.tweets.Tweet;
+import ac.il.technion.twc.api.tweet.Tweet;
+import ac.il.technion.twc.api.tweet.parser.MultiFormatsParserBuilder;
+import ac.il.technion.twc.api.tweet.parser.MultiFormatsTweetParser;
+import ac.il.technion.twc.api.tweet.parser.ParseFormat;
+import ac.il.technion.twc.api.tweet.parser.TweetParser;
 
 /**
- * Tests for {@link MultiFormatsTweetsParser} and
+ * Tests for {@link MultiFormatsTweetParser} and
  * {@link MultiFormatsParserBuilder}
  * 
  * @author Ziv Ronen
@@ -39,9 +41,9 @@ public class MultiFormatsParserTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private final ParserFormat format1 = mock(ParserFormat.class);
-  private final ParserFormat format2 = mock(ParserFormat.class);
-  private final TweetsParser $;
+  private final ParseFormat format1 = mock(ParseFormat.class);
+  private final ParseFormat format2 = mock(ParseFormat.class);
+  private final TweetParser $;
 
   /**
    * 
@@ -52,7 +54,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsParserBuilder#add(ParserFormat)} <br>
+   * - {@link MultiFormatsParserBuilder#add(ParseFormat)} <br>
    * - {@link MultiFormatsParserBuilder#build()} <br>
    * - {@link MultiFormatsParserBuilder#MultiFormatsParserBuilder()}
    * 
@@ -64,7 +66,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsTweetsParser#parse(String...)}
+   * - {@link MultiFormatsTweetParser#parse(String...)}
    * 
    * @throws ParseException
    */
@@ -84,7 +86,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsTweetsParser#parse(String...)}
+   * - {@link MultiFormatsTweetParser#parse(String...)}
    * 
    * @throws ParseException
    */
@@ -101,7 +103,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsTweetsParser#parse(String...)}
+   * - {@link MultiFormatsTweetParser#parse(String...)}
    * 
    * @throws ParseException
    */
@@ -116,7 +118,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsTweetsParser#parse(String...)}
+   * - {@link MultiFormatsTweetParser#parse(String...)}
    * 
    * @throws ParseException
    */
@@ -135,7 +137,7 @@ public class MultiFormatsParserTest {
 
   /**
    * Test method for: <br>
-   * - {@link MultiFormatsTweetsParser#parse(String...)}
+   * - {@link MultiFormatsTweetParser#parse(String...)}
    * 
    * @throws ParseException
    */

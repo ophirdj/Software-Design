@@ -11,12 +11,12 @@ import java.util.List;
 
 import org.junit.Test;
 
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 
 /**
@@ -31,7 +31,7 @@ import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
  */
 public class TagToPopularityTest {
 
-	private final TransitiveRootFinder trf = mock(TransitiveRootFinder.class);
+	private final OriginFinder trf = mock(OriginFinder.class);
 	private final TweetsRetriever tr = mock(TweetsRetriever.class);
 	private final IdHashtags ih = mock(IdHashtags.class);
 
@@ -56,11 +56,11 @@ public class TagToPopularityTest {
 	/**
 	 * Test method for {@link TagToPopularity#TagToPopularity()}
 	 * 
-	 * @throws NoRootFoundException
+	 * @throws NotFoundException
 	 */
 	@Test
 	public final void popularityOfHashagsOfBaseTweetWithSingleRetweetShouldBe1()
-			throws NoRootFoundException {
+			throws NotFoundException {
 		final List<String> hashtags = Arrays.asList("YOLO", "SWAG",
 				"KILLYOURSELF");
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID("base"),
@@ -68,7 +68,7 @@ public class TagToPopularityTest {
 		final Retweet rt = new Retweet(new Date(987654321), new ID("retweet"),
 				new ID("base"));
 		when(tr.getRetweets()).thenReturn(Arrays.asList(rt));
-		when(trf.findRoot(rt)).thenReturn(bt);
+		when(trf.origin(rt)).thenReturn(bt);
 		final TagToPopularity $ = new TagToPopularity(trf, tr, ih);
 		for (final String hashtag : hashtags)
 			assertEquals(1, $.getPopularityByHashtag(hashtag));
@@ -77,11 +77,11 @@ public class TagToPopularityTest {
 	/**
 	 * Test method for {@link TagToPopularity#TagToPopularity()}
 	 * 
-	 * @throws NoRootFoundException
+	 * @throws NotFoundException
 	 */
 	@Test
 	public final void popularityOfHashagWithNoBaseTweetsShouldBe0EvenIfThereAreOtherHashtagsWithPositivePopularity()
-			throws NoRootFoundException {
+			throws NotFoundException {
 		final List<String> hashtags = Arrays.asList("YOLO", "SWAG",
 				"KILLYOURSELF");
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID("base"),
@@ -89,7 +89,7 @@ public class TagToPopularityTest {
 		final Retweet rt = new Retweet(new Date(987654321), new ID("retweet"),
 				new ID("base"));
 		when(tr.getRetweets()).thenReturn(Arrays.asList(rt));
-		when(trf.findRoot(rt)).thenReturn(bt);
+		when(trf.origin(rt)).thenReturn(bt);
 		final TagToPopularity $ = new TagToPopularity(trf, tr, ih);
 		assertEquals(0, $.getPopularityByHashtag("OMFG"));
 	}
@@ -97,11 +97,11 @@ public class TagToPopularityTest {
 	/**
 	 * Test method for {@link TagToPopularity#TagToPopularity()}
 	 * 
-	 * @throws NoRootFoundException
+	 * @throws NotFoundException
 	 */
 	@Test
 	public final void popularityOfHashagsOfBaseTweetWithRetweetsShouldBeNumberOfRetweets()
-			throws NoRootFoundException {
+			throws NotFoundException {
 		final List<String> hashtags = Arrays.asList("YOLO", "SWAG",
 				"KILLYOURSELF");
 		final BaseTweet bt = new BaseTweet(new Date(123456789), new ID("base"),
@@ -111,8 +111,8 @@ public class TagToPopularityTest {
 		final Retweet rt2 = new Retweet(new Date(987654321),
 				new ID("retweet 2"), new ID("base"));
 		when(tr.getRetweets()).thenReturn(Arrays.asList(rt1, rt2));
-		when(trf.findRoot(rt1)).thenReturn(bt);
-		when(trf.findRoot(rt2)).thenReturn(bt);
+		when(trf.origin(rt1)).thenReturn(bt);
+		when(trf.origin(rt2)).thenReturn(bt);
 		final TagToPopularity $ = new TagToPopularity(trf, tr, ih);
 		for (final String hashtag : hashtags)
 			assertEquals(2, $.getPopularityByHashtag(hashtag));
@@ -121,11 +121,11 @@ public class TagToPopularityTest {
 	/**
 	 * Test method for {@link TagToPopularity#TagToPopularity()}
 	 * 
-	 * @throws NoRootFoundException
+	 * @throws NotFoundException
 	 */
 	@Test
 	public final void popularityOfHashagsOfDifferentBaseTweetsWithSameHashtagsShouldBeNumberOfRetweetsOfBothBaseTweets()
-			throws NoRootFoundException {
+			throws NotFoundException {
 		final List<String> hashtags = Arrays.asList("YOLO", "SWAG",
 				"KILLYOURSELF");
 		final BaseTweet bt1 = new BaseTweet(new Date(123456789), new ID(
@@ -137,8 +137,8 @@ public class TagToPopularityTest {
 		final Retweet rt2 = new Retweet(new Date(987654321),
 				new ID("retweet 2"), new ID("base 2"));
 		when(tr.getRetweets()).thenReturn(Arrays.asList(rt1, rt2));
-		when(trf.findRoot(rt1)).thenReturn(bt1);
-		when(trf.findRoot(rt2)).thenReturn(bt2);
+		when(trf.origin(rt1)).thenReturn(bt1);
+		when(trf.origin(rt2)).thenReturn(bt2);
 		final TagToPopularity $ = new TagToPopularity(trf, tr, ih);
 		for (final String hashtag : hashtags)
 			assertEquals(2, $.getPopularityByHashtag(hashtag));

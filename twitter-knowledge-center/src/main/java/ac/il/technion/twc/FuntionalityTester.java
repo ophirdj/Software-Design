@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import ac.il.technion.twc.api.center.TwitterServicesCenter;
-import ac.il.technion.twc.api.center.impl.TwitterSystemBuilder;
-import ac.il.technion.twc.api.parser.TweetsParser;
-import ac.il.technion.twc.api.parser.impl.MultiFormatsParserBuilder;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.impl.parsers.csFormat.CommaSeparatedTweetFormat;
-import ac.il.technion.twc.impl.parsers.jsonFormat.JsonTweetFormat;
+import ac.il.technion.twc.api.TwitterDataCenter;
+import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.parser.MultiFormatsParserBuilder;
+import ac.il.technion.twc.api.tweet.parser.TweetParser;
+import ac.il.technion.twc.impl.parser.CommaSeparatedTweetFormat;
+import ac.il.technion.twc.impl.parser.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 import ac.il.technion.twc.impl.services.histogram.DayHistogram;
 import ac.il.technion.twc.impl.services.histogram.HistogramFormat;
@@ -32,26 +32,26 @@ import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
  */
 public class FuntionalityTester {
 
-	private final TwitterServicesCenter serviceCenter;
-	private final TweetsParser parser;
+	private final TwitterDataCenter serviceCenter;
+	private final TweetParser parser;
 
 	private static final SimpleDateFormat temporalDateFormat = new SimpleDateFormat(
 			"dd/MM/yyyy HH:mm:ss");
 
 	/**
-   * 
-   */
+	 * 
+	 */
 	public FuntionalityTester() {
 		serviceCenter = new TwitterSystemBuilder()
 				.addSerializer(new TweetToLifeTimeSerializer())
 				.addProperty(DayMapping.class)
-				.addProperty(TransitiveRootFinder.class)
+				.addProperty(OriginFinder.class)
 				.addProperty(IdHashtags.class)
 				.addProperty(TweetsRetriever.class)
 				.registerService(new DayHistogram(new HistogramFormat()))
 				.registerService(new TemporalHistogram(new HistogramFormat()))
 				.registerService(new TweetToLifeTime())
-				.registerService(new TagToPopularity()).getResult();
+				.registerService(new TagToPopularity()).build();
 		parser = new MultiFormatsParserBuilder()
 				.add(new CommaSeparatedTweetFormat())
 				.add(new JsonTweetFormat()).build();
@@ -171,6 +171,6 @@ public class FuntionalityTester {
 	 * before every test, to ensure that all tests are independent.
 	 */
 	public void cleanPersistentData() {
-		serviceCenter.clearSystem();
+		serviceCenter.clear();
 	}
 }

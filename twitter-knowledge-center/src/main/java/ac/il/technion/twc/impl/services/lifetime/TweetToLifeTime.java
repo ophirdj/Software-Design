@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.center.TwitterServicesCenterBuilder.ServiceSetup;
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinder.NoRootFoundException;
+import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder;
+import ac.il.technion.twc.impl.properties.originfinder.OriginFinder.NotFoundException;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetriever;
 
 /**
@@ -51,17 +51,17 @@ public class TweetToLifeTime {
 	 *            required property (tweets in system)
 	 */
 	@ServiceSetup
-	public TweetToLifeTime(final TransitiveRootFinder baseTweetFinder,
+	public TweetToLifeTime(final OriginFinder baseTweetFinder,
 			final TweetsRetriever tweets) {
 		lifeTimeFromId = new HashMap<ID, Long>();
 		for (final Retweet retweet : tweets.getRetweets())
 			try {
-				final BaseTweet base = baseTweetFinder.findRoot(retweet);
+				final BaseTweet base = baseTweetFinder.origin(retweet);
 				lifeTimeFromId.put(base.id(), Math.max(retweet.date().getTime()
 						- base.date().getTime(),
 						!lifeTimeFromId.containsKey(base.id()) ? 0L
 								: lifeTimeFromId.get(base.id())));
-			} catch (final NoRootFoundException e) {
+			} catch (final NotFoundException e) {
 				continue;
 			}
 	}

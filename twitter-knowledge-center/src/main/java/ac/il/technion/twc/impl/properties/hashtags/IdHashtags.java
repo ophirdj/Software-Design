@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
  * Retrieve the hashtags of a base tweet from its id

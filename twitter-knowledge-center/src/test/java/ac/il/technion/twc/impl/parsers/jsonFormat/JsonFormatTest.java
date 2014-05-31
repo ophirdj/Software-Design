@@ -20,11 +20,12 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
 import ac.il.technion.twc.TestDataReader;
-import ac.il.technion.twc.api.parser.ParserFormat;
-import ac.il.technion.twc.api.tweets.BaseTweet;
-import ac.il.technion.twc.api.tweets.ID;
-import ac.il.technion.twc.api.tweets.Retweet;
-import ac.il.technion.twc.api.tweets.Tweet;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.ID;
+import ac.il.technion.twc.api.tweet.Retweet;
+import ac.il.technion.twc.api.tweet.Tweet;
+import ac.il.technion.twc.api.tweet.parser.ParseFormat;
+import ac.il.technion.twc.impl.parser.JsonTweetFormat;
 
 /**
  * Tests for json format.
@@ -41,7 +42,7 @@ public class JsonFormatTest {
   public final @Rule
   ExpectedException thrown = ExpectedException.none();
 
-  private final ParserFormat underTest = new JsonTweetFormat();
+  private final ParseFormat underTest = new JsonTweetFormat();
 
   @SuppressWarnings("unused")
   // used by JunitParams
@@ -59,7 +60,7 @@ public class JsonFormatTest {
   }
 
   /**
-   * Test method for {@link ParserFormat#parse(String)}.
+   * Test method for {@link ParseFormat#parse(String)}.
    * 
    * @param expected
    * @param tweetStr
@@ -88,7 +89,7 @@ public class JsonFormatTest {
   }
 
   /**
-   * Test method for {@link ParserFormat#parse(String)}.
+   * Test method for {@link ParseFormat#parse(String)}.
    * 
    * @param tweetStr
    * @throws ParseException

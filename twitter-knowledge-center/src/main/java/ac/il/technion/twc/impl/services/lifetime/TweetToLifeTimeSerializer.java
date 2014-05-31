@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ac.il.technion.twc.api.center.impl.Serializer;
-import ac.il.technion.twc.api.tweets.ID;
+import ac.il.technion.twc.api.core.Serializer;
+import ac.il.technion.twc.api.tweet.ID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
