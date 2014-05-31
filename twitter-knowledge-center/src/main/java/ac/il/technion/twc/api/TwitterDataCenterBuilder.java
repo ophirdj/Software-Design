@@ -1,7 +1,5 @@
 package ac.il.technion.twc.api;
 
-import ac.il.technion.twc.api.core.Serializer;
-
 /**
  * Build our main API.
  * 
@@ -79,12 +77,13 @@ public interface TwitterDataCenterBuilder {
 
   /**
    * @param serialzersToAdd
-   *          a {@link Serializer} for any class that can't be automatically
-   *          serialize. When an object of the given type is stored, we will use
-   *          the given serializer.
+   *          a {@link TwitterQuerySerializer} for any class that can't be
+   *          automatically serialize. When an object of the given type is
+   *          stored, we will use the given serializer.
    * @return a reference to this object.
    */
-  TwitterDataCenterBuilder addSerializer(Serializer serialzersToAdd);
+  <T> TwitterDataCenterBuilder addSerializer(
+      TwitterQuerySerializer<T> serialzersToAdd);
 
   /**
    * @return A {@link TwitterDataCenter}.

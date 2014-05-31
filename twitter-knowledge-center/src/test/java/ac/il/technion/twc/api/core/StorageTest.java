@@ -112,17 +112,18 @@ public class StorageTest {
         new GsonBuilder()
             .setDateFormat("EEE MMM d HH:mm:ss Z yyyy")
             .registerTypeAdapter(TweetToLifeTime.class,
-                new TypeAdapter<Object>() {
+                new TypeAdapter<TweetToLifeTime>() {
 
                   @Override
-                  public void write(final JsonWriter out, final Object value)
-                      throws IOException {
+                  public void write(final JsonWriter out,
+                      final TweetToLifeTime value) throws IOException {
                     out.value(new TweetToLifeTimeSerializer()
                         .objectToString(value));
                   }
 
                   @Override
-                  public Object read(final JsonReader in) throws IOException {
+                  public TweetToLifeTime read(final JsonReader in)
+                      throws IOException {
                     return new TweetToLifeTimeSerializer().stringToObject(in
                         .nextString());
                   }

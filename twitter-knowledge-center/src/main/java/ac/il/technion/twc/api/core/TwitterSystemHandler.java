@@ -68,7 +68,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
   }
 
   @Override
-  public void loadServices() {
+  public void evaluateQueries() {
     for (final Class<?> service : services)
       servicesResult.put(service,
           storage.load(service, serviceBuilder.getInstance(service)));

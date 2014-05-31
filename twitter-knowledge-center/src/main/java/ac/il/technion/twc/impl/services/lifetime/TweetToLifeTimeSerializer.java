@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ac.il.technion.twc.api.core.Serializer;
+import ac.il.technion.twc.api.TwitterQuerySerializer;
 import ac.il.technion.twc.api.tweet.ID;
 
 import com.google.gson.Gson;
@@ -29,13 +29,14 @@ import com.google.gson.reflect.TypeToken;
  * @version 2.0
  * @since 2.0
  */
-public class TweetToLifeTimeSerializer implements Serializer {
+public class TweetToLifeTimeSerializer implements
+    TwitterQuerySerializer<TweetToLifeTime> {
 
   private final Gson gson = new GsonBuilder().registerTypeAdapter(
       TweetToLifeTime.class, new TweetToLifeTimeJsonSerializer()).create();
 
-  private static class TweetToLifeTimeJsonSerializer implements JsonSerializer<TweetToLifeTime>,
-      JsonDeserializer<TweetToLifeTime> {
+  private static class TweetToLifeTimeJsonSerializer implements
+      JsonSerializer<TweetToLifeTime>, JsonDeserializer<TweetToLifeTime> {
     @Override
     public TweetToLifeTime deserialize(final JsonElement json, final Type type,
         final JsonDeserializationContext context) throws JsonParseException {
@@ -65,17 +66,17 @@ public class TweetToLifeTimeSerializer implements Serializer {
   }
 
   @Override
-  public String objectToString(final Object t) {
+  public String objectToString(final TweetToLifeTime t) {
     return gson.toJson(t);
   }
 
   @Override
-  public Object stringToObject(final String s) {
+  public TweetToLifeTime stringToObject(final String s) {
     return gson.fromJson(s, getType());
   }
 
   @Override
-  public Type getType() {
+  public Class<TweetToLifeTime> getType() {
     return TweetToLifeTime.class;
   }
 }

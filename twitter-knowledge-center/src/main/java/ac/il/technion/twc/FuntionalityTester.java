@@ -1,6 +1,7 @@
 package ac.il.technion.twc;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -41,7 +42,7 @@ public class FuntionalityTester {
 	 */
   public FuntionalityTester() {
     serviceCenter =
-        new TwitterSystemBuilder()
+        new TwitterSystemBuilder(Paths.get("system"))
             .addSerializer(new TweetToLifeTimeSerializer())
             .addProperty(DayMapping.class).addProperty(OriginFinder.class)
             .addProperty(IdHashtags.class).addProperty(TweetsRetriever.class)
@@ -50,8 +51,7 @@ public class FuntionalityTester {
             .registerQuery(TweetToLifeTime.class)
             .registerQuery(TagToPopularity.class).build();
     parser =
-        new TweetParser(new CommaSeparatedTweetFormat(),
-            new JsonTweetFormat());
+        new TweetParser(new CommaSeparatedTweetFormat(), new JsonTweetFormat());
   }
 
   /**
@@ -93,7 +93,7 @@ public class FuntionalityTester {
    *           If for any reason, loading the index failed
    */
   public void setupIndex() throws Exception {
-    serviceCenter.loadServices();
+    serviceCenter.evaluateQueries();
   }
 
   /**

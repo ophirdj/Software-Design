@@ -18,63 +18,63 @@ import ac.il.technion.twc.api.tweet.Tweet;
  */
 public interface TwitterDataCenter {
 
-	/**
-	 * Unchecked wrapper for checked exceptions.
-	 * 
-	 * @author Ophir De Jager
-	 * 
-	 */
-	public static class OperationFailedException extends RuntimeException {
+  /**
+   * Unchecked wrapper for checked exceptions.
+   * 
+   * @author Ophir De Jager
+   * 
+   */
+  public static class OperationFailedException extends RuntimeException {
 
-		private static final long serialVersionUID = 2095741218824580067L;
-		private final Exception cause;
+    private static final long serialVersionUID = 2095741218824580067L;
+    private final Exception cause;
 
-		/**
-		 * @param e
-		 */
-		public OperationFailedException(final Exception e) {
-			cause = e;
-		}
+    /**
+     * @param e
+     */
+    public OperationFailedException(final Exception e) {
+      cause = e;
+    }
 
-		@Override
-		public Exception getCause() {
-			return cause;
-		}
+    @Override
+    public Exception getCause() {
+      return cause;
+    }
 
-	}
+  }
 
-	/**
-	 * Add tweets to the system, compute all properties and services on all the
-	 * tweets so far, then store the services in a persistent storage.
-	 * 
-	 * @param tweets
-	 *            new tweets
-	 * @throws OperationFailedException
-	 *             If storing system state as failed
-	 */
-	void importData(Collection<? extends Tweet> tweets)
-			throws OperationFailedException;
+  /**
+   * Add tweets to the system, compute all properties and services on all the
+   * tweets so far, then store the services in a persistent storage.
+   * 
+   * @param tweets
+   *          new tweets
+   * @throws OperationFailedException
+   *           If storing system state as failed
+   */
+  void importData(Collection<? extends Tweet> tweets)
+      throws OperationFailedException;
 
-	/**
-	 * Load all services from persistent storage.
-	 */
-	void loadServices();
+  /**
+   * evaluate all registered queries
+   */
+  void evaluateQueries();
 
-	/**
-	 * Clear persistent storage.
-	 * 
-	 * @throws OperationFailedException
-	 *             If clearing persistent storage failed.
-	 */
-	void clear() throws OperationFailedException;
+  /**
+   * Clear persistent storage.
+   * 
+   * @throws OperationFailedException
+   *           If clearing persistent storage failed.
+   */
+  void clear() throws OperationFailedException;
 
-	/**
-	 * 
-	 * @param type
-	 * @return The service from the given type
-	 * @throws IllegalArgumentException
-	 *             If a service that isn't registered was requested
-	 */
-	<T> T getService(Class<T> type) throws IllegalArgumentException;
+  /**
+   * 
+   * @param type
+   * @return The service from the given type
+   * @throws IllegalArgumentException
+   *           If a service that isn't registered was requested
+   */
+  <T> T getService(Class<T> type) throws IllegalArgumentException;
 
 }

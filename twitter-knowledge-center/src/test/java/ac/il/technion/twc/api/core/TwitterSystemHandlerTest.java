@@ -117,7 +117,7 @@ public class TwitterSystemHandlerTest {
     when(serviceBuilder.getInstance(c2)).thenReturn(o2);
     when(storageMock.load(c1, o1)).thenReturn(o3);
     when(storageMock.load(c2, o2)).thenReturn(o4);
-    $.loadServices();
+    $.evaluateQueries();
     assertSame(o3, $.getService(c1));
     assertSame(o4, $.getService(c2));
   }
@@ -131,7 +131,7 @@ public class TwitterSystemHandlerTest {
     final Iterator<Class<? extends TwitterQuery>> emptyIterator =
         Collections.emptyIterator();
     when(services.iterator()).thenReturn(emptyIterator);
-    $.loadServices();
+    $.evaluateQueries();
     $.getService(Byte.class);
   }
 

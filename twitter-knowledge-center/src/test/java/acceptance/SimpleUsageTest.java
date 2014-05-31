@@ -3,6 +3,8 @@ package acceptance;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
@@ -97,12 +99,15 @@ public class SimpleUsageTest {
     return numReActual;
   }
 
+  private static final Path dir = Paths.get("AdvancedUsageTest");
+
   /**
    * @throws IOException
    */
   @Before
   public void setup() throws IOException {
-    FileUtils.cleanDirectory(Paths.get("system", "Storage").toFile());
+    if (Files.exists(dir) && Files.isDirectory(dir))
+      FileUtils.deleteDirectory(dir.toFile());
   }
 
   /**
@@ -110,7 +115,8 @@ public class SimpleUsageTest {
    */
   @After
   public void tearDown() throws IOException {
-    FileUtils.cleanDirectory(Paths.get("system", "Storage").toFile());
+    if (Files.exists(dir) && Files.isDirectory(dir))
+      FileUtils.deleteDirectory(dir.toFile());
   }
 
   /**
@@ -120,7 +126,7 @@ public class SimpleUsageTest {
   @Test
   public final void simpleUsageTest() {
     // Create a builder for the data center
-    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder();
+    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder(dir);
     // Add wanted properties and queries
     builder.addProperty(MyProperty.class).registerQuery(MyQuery.class);
     // Create the data center
@@ -133,7 +139,7 @@ public class SimpleUsageTest {
     // Import the tweets
     dataCenter.importData(tweets);
     // Evaluate the queries
-    dataCenter.loadServices();
+    dataCenter.evaluateQueries();
     // Now we can ask the queries
     final MyQuery q = dataCenter.getService(MyQuery.class);
     assertEquals(numReActual, q.numRe);
@@ -151,10 +157,10 @@ public class SimpleUsageTest {
   public final void simpleUsageTestWithoutTweets() {
     // Add wanted properties and queries and create the data center
     final TwitterDataCenter dataCenter =
-        new TwitterSystemBuilder().addProperty(MyProperty.class)
+        new TwitterSystemBuilder(dir).addProperty(MyProperty.class)
             .registerQuery(MyQuery.class).build();
     // Evaluate the queries
-    dataCenter.loadServices();
+    dataCenter.evaluateQueries();
     // Now we can ask the queries
     final MyQuery q = dataCenter.getService(MyQuery.class);
     assertEquals(0, q.numRe);
@@ -168,7 +174,7 @@ public class SimpleUsageTest {
   @Test
   public final void simpleUsageTestWithFactories() {
     // Create a builder for the data center
-    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder();
+    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder(dir);
     // Add wanted properties using factories
     builder.addProperty(MyProperty.class, new PropertyFactory<MyProperty>() {
 
@@ -191,7 +197,7 @@ public class SimpleUsageTest {
     // Import the tweets
     dataCenter.importData(tweets);
     // Evaluate the queries
-    dataCenter.loadServices();
+    dataCenter.evaluateQueries();
     // Now we can ask the queries
     final MyQuery q = dataCenter.getService(MyQuery.class);
     assertEquals(numReActual, q.numRe);
