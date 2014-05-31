@@ -376,6 +376,7 @@ class ServiceBuildingManager {
           values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
         } catch (InstantiationException | IllegalAccessException
             | IllegalArgumentException | InvocationTargetException e) {
+          e.printStackTrace();
           throw new RuntimeException(e);
         }
       }

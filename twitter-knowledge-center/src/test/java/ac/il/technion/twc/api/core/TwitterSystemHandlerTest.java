@@ -2,9 +2,12 @@ package ac.il.technion.twc.api.core;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.junit.Test;
@@ -126,9 +129,11 @@ public class TwitterSystemHandlerTest {
   @Test(expected = IllegalArgumentException.class)
   public final void getServiceShouldThrowIfNoServiceWasRegistered()
       throws IllegalArgumentException {
-    // when(services.iterator()).thenReturn(Collections.emptyIterator());
-    // $.loadServices();
-    // $.getService(Byte.class);
+    final Iterator<Class<? extends TwitterQuery>> emptyIterator =
+        Collections.emptyIterator();
+    when(services.iterator()).thenReturn(emptyIterator);
+    $.loadServices();
+    $.getService(Byte.class);
   }
 
   /**

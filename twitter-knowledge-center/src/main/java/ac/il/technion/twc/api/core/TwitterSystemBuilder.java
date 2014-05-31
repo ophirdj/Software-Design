@@ -1,6 +1,7 @@
 package ac.il.technion.twc.api.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,8 @@ import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
+import ac.il.technion.twc.api.tweet.BaseTweet;
+import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
  * Builder for {@link TwitterSystemHandler}
@@ -73,6 +76,8 @@ public class TwitterSystemBuilder implements TwitterDataCenterBuilder {
 
   @Override
   public TwitterDataCenter build() {
+    serviceBuilder.setProperties(Collections.<BaseTweet> emptyList(),
+        Collections.<Retweet> emptyList());
     return new TwitterSystemHandler(services, serviceBuilder,
         new StorageFactory(serializers).buildStorage());
   }
