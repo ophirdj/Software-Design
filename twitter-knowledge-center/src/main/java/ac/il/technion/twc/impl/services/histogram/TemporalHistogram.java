@@ -1,7 +1,10 @@
 package ac.il.technion.twc.impl.services.histogram;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -21,235 +24,248 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  * @date 26.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class TemporalHistogram implements TwitterQuery {
 
-	private final long[] timesBase;
-	private final int[] occuarenceBase;
+  private static class HistogramRetriver {
+    private final List<Long> times;
+    private final List<Integer> amounts;
+    private final List<Long> timesHistograms;
+    private final List<int[]> amountsHistograms;
 
-	private final long[] timesBaseHistograms;
-	private final int[][] occuarenceBaseHistograms;
+    public HistogramRetriver(final List<Long> timesBase,
+        final List<Integer> occuarenceBase) {
+      times = timesBase;
+      amounts = occuarenceBase;
+      timesHistograms =
+          new ArrayList<>(1 + timesBase.size() / histogramFrequency);
+      amountsHistograms =
+          new ArrayList<>(1 + timesBase.size() / histogramFrequency);
+      initHistogram();
+    }
 
-	private final long[] timesRe;
-	private final int[] occuarenceRe;
+    private void initHistogram() {
+      final int[] histogram = new int[7];
+      timesHistograms.add(0L);
+      amountsHistograms.add(new int[7]);
+      for (int j = 0; j < times.size(); j++) {
+        histogram[DayOfWeek.fromDate(new Date(times.get(j))).ordinal()] +=
+            amounts.get(j);
+        if ((j + 1) % histogramFrequency == 0) {
+          timesHistograms.add(times.get(j));
+          amountsHistograms.add(Arrays.copyOf(histogram, histogram.length));
+        }
+      }
+    }
 
-	private final long[] timesReHistograms;
-	private final int[][] occuarenceReHistograms;
+    public int[] retrive(final Date from, final Date to) {
+      final int[] $ = new int[DayOfWeek.values().length];
+      final int[] toHistogram = findHistogramAtTime(to.getTime());
+      // from.getTime() - 1 so we want remove the value in form
+      final int[] fromHistogram = findHistogramAtTime(from.getTime() - 1);
+      for (int i = 0; i < $.length; i++)
+        $[i] = toHistogram[i] - fromHistogram[i];
+      return $;
+    }
 
-	private final HistogramFormat format;
+    /**
+     * 
+     * @param time
+     * @return the histogram up to the given time (inclusive)
+     */
+    private int[] findHistogramAtTime(final long time) {
+      final int indexPreCalculeted = binarySearch(timesHistograms, time, true);
+      // IncompleteHistogram is the histogram up to
+      // histogramTime[indexPreCalculeted] (inclusive)
+      final int[] incompleteHistogram =
+          amountsHistograms.get(indexPreCalculeted);
+      final int[] $ =
+          Arrays.copyOf(incompleteHistogram, incompleteHistogram.length);
+      // histogramTime[indexPreCalculeted] + 1 so we want count
+      // histogramTime[indexPreCalculeted] twice.
+      final int indexCompletion =
+          binarySearch(times, timesHistograms.get(indexPreCalculeted) + 1,
+              false);
+      for (int i = indexCompletion; i < times.size(); i++) {
+        if (times.get(i) > time)
+          break;
+        $[DayOfWeek.fromDate(new Date(times.get(i))).ordinal()] +=
+            amounts.get(i);
+      }
+      return $;
+    }
 
-	private static final int histogramFrequency = 5;
+    /**
+     * 
+     * @param array
+     * @param search
+     * @return if before is true, the index of last value in array that is
+     *         smaller or equal to searched value. else the index of first value
+     *         in array that is bigger or equal to searched value
+     */
+    private int binarySearch(final List<Long> array, final long search,
+        final boolean before) {
+      int first = 0;
+      int last = array.size() - 1;
+      while (first <= last) {
+        final int guess = (first + last) / 2;
+        if (array.get(guess) == search)
+          return guess;
+        if (array.get(guess) > search)
+          last = guess - 1;
+        else
+          first = guess + 1;
+      }
+      return before ? last : first;
+    }
 
-	/**
-	 * Create an empty histogram
-	 * 
-	 * @param format
-	 *            the format for the return values
-	 */
-	public TemporalHistogram(final HistogramFormat format) {
-		timesBase = new long[0];
-		occuarenceBase = new int[0];
-		timesBaseHistograms = new long[] { 0 };
-		occuarenceBaseHistograms = new int[1][7];
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (amounts == null ? 0 : amounts.hashCode());
+      result =
+          prime * result
+              + (amountsHistograms == null ? 0 : amountsHistograms.hashCode());
+      result = prime * result + (times == null ? 0 : times.hashCode());
+      result =
+          prime * result
+              + (timesHistograms == null ? 0 : timesHistograms.hashCode());
+      return result;
+    }
 
-		timesRe = new long[0];
-		occuarenceRe = new int[0];
-		timesReHistograms = new long[] { 0 };
-		occuarenceReHistograms = new int[1][7];
+    @Override
+    public boolean equals(final Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      final HistogramRetriver other = (HistogramRetriver) obj;
+      if (amounts == null) {
+        if (other.amounts != null)
+          return false;
+      } else if (!amounts.equals(other.amounts))
+        return false;
+      if (amountsHistograms == null) {
+        if (other.amountsHistograms != null)
+          return false;
+      } else if (!amountsHistograms.equals(other.amountsHistograms))
+        return false;
+      if (times == null) {
+        if (other.times != null)
+          return false;
+      } else if (!times.equals(other.times))
+        return false;
+      if (timesHistograms == null) {
+        if (other.timesHistograms != null)
+          return false;
+      } else if (!timesHistograms.equals(other.timesHistograms))
+        return false;
+      return true;
+    }
 
-		this.format = format;
-	}
+  }
 
-	/**
-	 * @param dayMapProperty
-	 *            the property from which the service is builded
-	 * @param format
-	 *            the format for the return values
-	 */
-	@QuerySetup
-	public TemporalHistogram(final DayMapping dayMapProperty,
-			final HistogramFormat format) {
-		this.format = format;
+  private final HistogramRetriver baseHistogram;
+  private final HistogramRetriver reHistogram;
 
-		final Set<Entry<Long, Integer>> allDaysBase = dayMapProperty
-				.getAllDaysBase();
-		timesBase = new long[allDaysBase.size()];
-		occuarenceBase = new int[allDaysBase.size()];
-		timesBaseHistograms = new long[1 + allDaysBase.size()
-				/ histogramFrequency];
-		occuarenceBaseHistograms = new int[1 + allDaysBase.size()
-				/ histogramFrequency][7];
-		initArrays(allDaysBase, timesBase, occuarenceBase, timesBaseHistograms,
-				occuarenceBaseHistograms);
+  private final HistogramFormat format;
 
-		final Set<Entry<Long, Integer>> allDaysRe = dayMapProperty
-				.getAllDaysRe();
-		timesRe = new long[allDaysRe.size()];
-		occuarenceRe = new int[allDaysRe.size()];
-		timesReHistograms = new long[1 + allDaysRe.size() / histogramFrequency];
-		occuarenceReHistograms = new int[1 + allDaysRe.size()
-				/ histogramFrequency][7];
-		initArrays(allDaysRe, timesRe, occuarenceRe, timesReHistograms,
-				occuarenceReHistograms);
-	}
+  private static final int histogramFrequency = 10;
 
-	private void initArrays(final Iterable<Entry<Long, Integer>> data,
-			final long[] times, final int[] amount,
-			final long[] timesHistogram, final int[][] occuarenceHistograms) {
-		int i = 0;
-		final int[] histogram = new int[7];
-		occuarenceHistograms[0] = new int[7];
-		timesHistogram[0] = 0;
-		for (final Entry<Long, Integer> entry : data) {
-			times[i] = entry.getKey();
-			amount[i] = entry.getValue();
-			histogram[DayOfWeek.fromDate(new Date(entry.getKey())).ordinal()] += entry
-					.getValue();
-			i++;
-			if (i % histogramFrequency == 0) {
-				timesHistogram[i / histogramFrequency] = entry.getKey();
-				occuarenceHistograms[i / histogramFrequency] = Arrays.copyOf(
-						histogram, histogram.length);
-			}
-		}
-	}
+  /**
+   * Create an empty histogram
+   * 
+   * @param format
+   *          the format for the return values
+   */
+  public TemporalHistogram(final HistogramFormat format) {
+    baseHistogram =
+        new HistogramRetriver(Collections.<Long> emptyList(),
+            Collections.<Integer> emptyList());
+    reHistogram =
+        new HistogramRetriver(Collections.<Long> emptyList(),
+            Collections.<Integer> emptyList());
+    this.format = format;
+  }
 
-	/**
-	 * @param from
-	 *            The beginning of the time
-	 * @param to
-	 *            The end of the time
-	 * @return histogram of the tweets in the given time
-	 */
-	public String[] get(final Date from, final Date to) {
-		return format.formatHistogram(
-				getHistogramBetween(from, to, timesBase, occuarenceBase,
-						timesBaseHistograms, occuarenceBaseHistograms),
-				getHistogramBetween(from, to, timesRe, occuarenceRe,
-						timesReHistograms, occuarenceReHistograms));
-	}
+  /**
+   * @param dayMapProperty
+   *          the property from which the service is builded
+   * @param format
+   *          the format for the return values
+   */
+  @QuerySetup
+  public TemporalHistogram(final DayMapping dayMapProperty,
+      final HistogramFormat format) {
+    this.format = format;
+    baseHistogram = createHistogram(dayMapProperty.getAllDaysBase());
+    reHistogram = createHistogram(dayMapProperty.getAllDaysRe());
+  }
 
-	/**
-	 * 
-	 * @param from
-	 * @param to
-	 * @param times
-	 * @param occurance
-	 * @param histogramTime
-	 * @param histograms
-	 * @return the histogram between from and to (inclusive)
-	 */
-	private int[] getHistogramBetween(final Date from, final Date to,
-			final long[] times, final int[] occurance,
-			final long[] histogramTime, final int[][] histograms) {
-		final int[] $ = new int[DayOfWeek.values().length];
-		final int[] toHistogram = findHistogramAtTime(to.getTime(), times,
-				occurance, histogramTime, histograms);
-		// from.getTime() - 1 so we want remove the value in form
-		final int[] fromHistogram = findHistogramAtTime(from.getTime() - 1,
-				times, occurance, histogramTime, histograms);
-		for (int i = 0; i < $.length; i++)
-			$[i] = toHistogram[i] - fromHistogram[i];
-		return $;
-	}
+  private HistogramRetriver createHistogram(
+      final Set<Entry<Long, Integer>> allDays) {
+    final ArrayList<Long> times = new ArrayList<>(allDays.size());
+    final ArrayList<Integer> amount = new ArrayList<>(allDays.size());
 
-	/**
-	 * 
-	 * @param time
-	 * @return the histogram up to the given time (inclusive)
-	 */
-	private int[] findHistogramAtTime(final long time, final long[] times,
-			final int[] occurance, final long[] histogramTime,
-			final int[][] histograms) {
-		final int indexPreCalculeted = binarySearch(histogramTime, time, true);
-		// IncompleteHistogram is the histogram up to
-		// histogramTime[indexPreCalculeted] (inclusive)
-		final int[] incompleteHistogram = histograms[indexPreCalculeted];
-		final int[] $ = Arrays.copyOf(incompleteHistogram,
-				incompleteHistogram.length);
-		// histogramTime[indexPreCalculeted] + 1 so we want count
-		// histogramTime[indexPreCalculeted] twice.
-		final int indexCompletion = binarySearch(times,
-				histogramTime[indexPreCalculeted] + 1, false);
-		for (int i = indexCompletion; i < times.length; i++) {
-			if (times[i] > time)
-				break;
-			$[DayOfWeek.fromDate(new Date(times[i])).ordinal()] += occurance[i];
-		}
-		return $;
-	}
+    for (final Entry<Long, Integer> entry : allDays) {
+      times.add(entry.getKey());
+      amount.add(entry.getValue());
+    }
+    return new HistogramRetriver(times, amount);
+  }
 
-	/**
-	 * 
-	 * @param array
-	 * @param search
-	 * @return if before is true, the index of last value in array that is
-	 *         smaller or equal to searched value. else the index of first value
-	 *         in array that is bigger or equal to searched value
-	 */
-	private int binarySearch(final long[] array, final long search,
-			final boolean before) {
-		int first = 0;
-		int last = array.length - 1;
-		while (first <= last) {
-			final int guess = (first + last) / 2;
-			if (array[guess] == search)
-				return guess;
-			if (array[guess] > search)
-				last = guess - 1;
-			else
-				first = guess + 1;
-		}
-		return before ? last : first;
-	}
+  /**
+   * @param from
+   *          The beginning of the time
+   * @param to
+   *          The end of the time
+   * @return histogram of the tweets in the given time
+   */
+  public String[] get(final Date from, final Date to) {
+    return format.formatHistogram(baseHistogram.retrive(from, to),
+        reHistogram.retrive(from, to));
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (format == null ? 0 : format.hashCode());
-		result = prime * result + Arrays.hashCode(occuarenceBase);
-		result = prime * result + Arrays.hashCode(occuarenceRe);
-		result = prime * result + Arrays.hashCode(timesBase);
-		result = prime * result + Arrays.hashCode(timesRe);
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result =
+        prime * result + (baseHistogram == null ? 0 : baseHistogram.hashCode());
+    result = prime * result + (format == null ? 0 : format.hashCode());
+    result =
+        prime * result + (reHistogram == null ? 0 : reHistogram.hashCode());
+    return result;
+  }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final TemporalHistogram other = (TemporalHistogram) obj;
-		if (format == null) {
-			if (other.format != null)
-				return false;
-		} else if (!format.equals(other.format))
-			return false;
-		if (!Arrays.equals(occuarenceBase, other.occuarenceBase))
-			return false;
-		if (!Arrays.deepEquals(occuarenceBaseHistograms,
-				other.occuarenceBaseHistograms))
-			return false;
-		if (!Arrays.equals(occuarenceRe, other.occuarenceRe))
-			return false;
-		if (!Arrays.deepEquals(occuarenceReHistograms,
-				other.occuarenceReHistograms))
-			return false;
-		if (!Arrays.equals(timesBase, other.timesBase))
-			return false;
-		if (!Arrays.equals(timesBaseHistograms, other.timesBaseHistograms))
-			return false;
-		if (!Arrays.equals(timesRe, other.timesRe))
-			return false;
-		if (!Arrays.equals(timesReHistograms, other.timesReHistograms))
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    final TemporalHistogram other = (TemporalHistogram) obj;
+    if (baseHistogram == null) {
+      if (other.baseHistogram != null)
+        return false;
+    } else if (!baseHistogram.equals(other.baseHistogram))
+      return false;
+    if (format == null) {
+      if (other.format != null)
+        return false;
+    } else if (!format.equals(other.format))
+      return false;
+    if (reHistogram == null) {
+      if (other.reHistogram != null)
+        return false;
+    } else if (!reHistogram.equals(other.reHistogram))
+      return false;
+    return true;
+  }
 
 }
