@@ -35,172 +35,176 @@ import ac.il.technion.twc.api.tweet.Tweet;
  */
 public class SimpleUsageTest {
 
-  @SuppressWarnings("javadoc")
-  public static final class MyQueryFactory implements
-      TwitterQueryFactory<MyQuery> {
-    public MyQuery get(final MyProperty p) {
-      return new MyQuery(p, 0);
-    }
-  }
+	private static final Path dir = Paths.get("AdvancedUsageTest");
 
-  @SuppressWarnings("javadoc")
-  public static class MyProperty implements Property {
+	/**
+	 * @throws IOException
+	 */
+	@Before
+	public void setup() throws IOException {
+		if (Files.exists(dir) && Files.isDirectory(dir))
+			FileUtils.deleteDirectory(dir.toFile());
+	}
 
-    public final int numBase;
-    public final int numRe;
+	/**
+	 * @throws IOException
+	 */
+	@After
+	public void tearDown() throws IOException {
+		if (Files.exists(dir) && Files.isDirectory(dir))
+			FileUtils.deleteDirectory(dir.toFile());
+	}
 
-    public MyProperty(final List<BaseTweet> baseTweets,
-        final List<Retweet> retweets) {
-      numBase = baseTweets.size();
-      numRe = retweets.size();
-    }
+	/**
+	 * Test method for {@link TwitterSystemBuilder} and
+	 * {@link TwitterDataCenter}
+	 */
+	@Test
+	public final void simpleUsageTest() {
+		// Create a builder for the data center
+		final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
+		// Add wanted properties and queries
+		builder.addProperty(MyProperty.class).registerQuery(MyQuery.class);
+		// Create the data center
+		final TwitterDataCenter dataCenter = builder.build();
 
-    public MyProperty(final List<BaseTweet> baseTweets,
-        final List<Retweet> retweets, final int n) {
-      numBase = baseTweets.size();
-      numRe = retweets.size();
-    }
+		// Let's get some tweets and count how many are retweets
+		final List<? extends Tweet> tweets = getSomeTweets();
+		final int numReActual = getNumRetweets(tweets);
 
-  }
+		// Import the tweets
+		dataCenter.importData(tweets);
+		// Evaluate the queries
+		dataCenter.evaluateQueries();
+		// Now we can ask the queries
+		final MyQuery q = dataCenter.getService(MyQuery.class);
+		assertEquals(numReActual, q.numRe);
+		assertEquals(tweets.size() - numReActual, q.numBase);
 
-  @SuppressWarnings("javadoc")
-  public static class MyQuery implements TwitterQuery {
+		// cleanup of persistent storage
+		dataCenter.clear();
+	}
 
-    public final int numBase;
-    public final int numRe;
+	/**
+	 * Test method for {@link TwitterSystemBuilder} and
+	 * {@link TwitterDataCenter}
+	 */
+	@Test
+	public final void simpleUsageTestWithoutTweets() {
+		// Add wanted properties and queries and create the data center
+		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
+				.addProperty(MyProperty.class).registerQuery(MyQuery.class)
+				.build();
+		// Evaluate the queries
+		dataCenter.evaluateQueries();
+		// Now we can ask the queries
+		final MyQuery q = dataCenter.getService(MyQuery.class);
+		assertEquals(0, q.numRe);
+		assertEquals(0, q.numBase);
+	}
 
-    @QuerySetup
-    // Need this to tell TwitterDataCenter to use this constructor when
-    // creating the query
-    public MyQuery(final MyProperty p) {
-      numBase = p.numBase;
-      numRe = p.numRe;
-    }
+	/**
+	 * Test method for {@link TwitterSystemBuilder} and
+	 * {@link TwitterDataCenter}
+	 */
+	@Test
+	public final void simpleUsageTestWithFactories() {
+		// Create a builder for the data center
+		final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
+		// Add wanted properties using factories
+		builder.addProperty(MyProperty.class,
+				new PropertyFactory<MyProperty>() {
 
-    public MyQuery(final MyProperty p, final int m) {
-      numBase = p.numBase;
-      numRe = p.numRe;
-    }
+					@Override
+					public MyProperty get(final List<BaseTweet> baseTweets,
+							final List<Retweet> retweets) {
+						return new MyProperty(baseTweets, retweets, 0);
+					}
+				});
+		// Add wanted queries using factories
+		builder.registerQuery(MyQuery.class, new MyQueryFactory());
 
-  }
+		// Create the data center
+		final TwitterDataCenter dataCenter = builder.build();
 
-  private List<? extends Tweet> getSomeTweets() {
-    return Arrays.asList(new BaseTweet(new Date(11111), new ID("base 1")),
-        new BaseTweet(new Date(22222), new ID("base 2")), new Retweet(new Date(
-            33333), new ID("retweet"), new ID("tweet")));
-  }
+		// Let's get some tweets and count how many are retweets
+		final List<? extends Tweet> tweets = getSomeTweets();
+		final int numReActual = getNumRetweets(tweets);
 
-  private int getNumRetweets(final List<? extends Tweet> tweets) {
-    int numReActual = 0;
-    for (final Tweet t : tweets)
-      if (t instanceof Retweet)
-        ++numReActual;
-    return numReActual;
-  }
+		// Import the tweets
+		dataCenter.importData(tweets);
+		// Evaluate the queries
+		dataCenter.evaluateQueries();
+		// Now we can ask the queries
+		final MyQuery q = dataCenter.getService(MyQuery.class);
+		assertEquals(numReActual, q.numRe);
+		assertEquals(tweets.size() - numReActual, q.numBase);
 
-  private static final Path dir = Paths.get("AdvancedUsageTest");
+		// cleanup of persistent storage
+		dataCenter.clear();
+	}
 
-  /**
-   * @throws IOException
-   */
-  @Before
-  public void setup() throws IOException {
-    if (Files.exists(dir) && Files.isDirectory(dir))
-      FileUtils.deleteDirectory(dir.toFile());
-  }
+	@SuppressWarnings("javadoc")
+	public static final class MyQueryFactory implements
+			TwitterQueryFactory<MyQuery> {
+		public MyQuery get(final MyProperty p) {
+			return new MyQuery(p, 0);
+		}
+	}
 
-  /**
-   * @throws IOException
-   */
-  @After
-  public void tearDown() throws IOException {
-    if (Files.exists(dir) && Files.isDirectory(dir))
-      FileUtils.deleteDirectory(dir.toFile());
-  }
+	@SuppressWarnings("javadoc")
+	public static class MyProperty implements Property {
 
-  /**
-   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
-   */
-  @Test
-  public final void simpleUsageTest() {
-    // Create a builder for the data center
-    final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
-    // Add wanted properties and queries
-    builder.addProperty(MyProperty.class).registerQuery(MyQuery.class);
-    // Create the data center
-    final TwitterDataCenter dataCenter = builder.build();
+		public final int numBase;
+		public final int numRe;
 
-    // Let's get some tweets and count how many are retweets
-    final List<? extends Tweet> tweets = getSomeTweets();
-    final int numReActual = getNumRetweets(tweets);
+		public MyProperty(final List<BaseTweet> baseTweets,
+				final List<Retweet> retweets) {
+			numBase = baseTweets.size();
+			numRe = retweets.size();
+		}
 
-    // Import the tweets
-    dataCenter.importData(tweets);
-    // Evaluate the queries
-    dataCenter.evaluateQueries();
-    // Now we can ask the queries
-    final MyQuery q = dataCenter.getService(MyQuery.class);
-    assertEquals(numReActual, q.numRe);
-    assertEquals(tweets.size() - numReActual, q.numBase);
+		public MyProperty(final List<BaseTweet> baseTweets,
+				final List<Retweet> retweets, final int n) {
+			numBase = baseTweets.size();
+			numRe = retweets.size();
+		}
 
-    // cleanup of persistent storage
-    dataCenter.clear();
-  }
+	}
 
-  /**
-   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
-   */
-  @Test
-  public final void simpleUsageTestWithoutTweets() {
-    // Add wanted properties and queries and create the data center
-    final TwitterDataCenter dataCenter =
-        new TwitterSystemBuilder(dir).addProperty(MyProperty.class)
-            .registerQuery(MyQuery.class).build();
-    // Evaluate the queries
-    dataCenter.evaluateQueries();
-    // Now we can ask the queries
-    final MyQuery q = dataCenter.getService(MyQuery.class);
-    assertEquals(0, q.numRe);
-    assertEquals(0, q.numBase);
-  }
+	@SuppressWarnings("javadoc")
+	public static class MyQuery implements TwitterQuery {
 
-  /**
-   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
-   */
-  @Test
-  public final void simpleUsageTestWithFactories() {
-    // Create a builder for the data center
-    final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
-    // Add wanted properties using factories
-    builder.addProperty(MyProperty.class, new PropertyFactory<MyProperty>() {
+		public final int numBase;
+		public final int numRe;
 
-      @Override
-      public MyProperty get(final List<BaseTweet> baseTweets,
-          final List<Retweet> retweets) {
-        return new MyProperty(baseTweets, retweets, 0);
-      }
-    });
-    // Add wanted queries using factories
-    builder.registerQuery(MyQuery.class, new MyQueryFactory());
+		@QuerySetup
+		// Need this to tell TwitterDataCenter to use this constructor when
+		// creating the query
+		public MyQuery(final MyProperty p) {
+			numBase = p.numBase;
+			numRe = p.numRe;
+		}
 
-    // Create the data center
-    final TwitterDataCenter dataCenter = builder.build();
+		public MyQuery(final MyProperty p, final int m) {
+			numBase = p.numBase;
+			numRe = p.numRe;
+		}
 
-    // Let's get some tweets and count how many are retweets
-    final List<? extends Tweet> tweets = getSomeTweets();
-    final int numReActual = getNumRetweets(tweets);
+	}
 
-    // Import the tweets
-    dataCenter.importData(tweets);
-    // Evaluate the queries
-    dataCenter.evaluateQueries();
-    // Now we can ask the queries
-    final MyQuery q = dataCenter.getService(MyQuery.class);
-    assertEquals(numReActual, q.numRe);
-    assertEquals(tweets.size() - numReActual, q.numBase);
+	private List<? extends Tweet> getSomeTweets() {
+		return Arrays.asList(new BaseTweet(new Date(11111), new ID("base 1")),
+				new BaseTweet(new Date(22222), new ID("base 2")), new Retweet(
+						new Date(33333), new ID("retweet"), new ID("tweet")));
+	}
 
-    // cleanup of persistent storage
-    dataCenter.clear();
-  }
+	private int getNumRetweets(final List<? extends Tweet> tweets) {
+		int numReActual = 0;
+		for (final Tweet t : tweets)
+			if (t instanceof Retweet)
+				++numReActual;
+		return numReActual;
+	}
 
 }

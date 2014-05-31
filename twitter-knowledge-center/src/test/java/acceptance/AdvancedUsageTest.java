@@ -48,6 +48,28 @@ public class AdvancedUsageTest {
 			FileUtils.deleteDirectory(dir.toFile());
 	}
 
+	/**
+	 * Test Method for {@link TwitterDataCenter}, {@link TwitterSystemBuilder}.
+	 */
+	@Test
+	public final void sharedPropertyBetweenQueriesShouldBeCalculatedOnlyOnce() {
+		// Add 1 property and 2 queries that use that property
+		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
+				.addProperty(SharedProperty.class,
+						new SharedProperty.UselessPropertyFactory())
+				.registerQuery(Query1.class, new Query1.UselessQueryFactory())
+				.registerQuery(Query2.class).build();
+		// Evaluate both queries (also calculates the property)
+		dataCenter.evaluateQueries();
+		// The property was evaluated only once and is shared between queries
+		assertEquals("query 1, property instance: 1",
+				dataCenter.getService(Query1.class).query());
+		assertEquals("query 2, property instance: 1",
+				dataCenter.getService(Query2.class).query());
+		// cleanup
+		dataCenter.clear();
+	}
+
 	@SuppressWarnings("javadoc")
 	public static class SharedProperty implements Property {
 
@@ -108,28 +130,6 @@ public class AdvancedUsageTest {
 			return "query 2, property instance: " + number;
 		}
 
-	}
-
-	/**
-	 * Test Method for {@link TwitterDataCenter}, {@link TwitterSystemBuilder}.
-	 */
-	@Test
-	public final void sharedPropertyBetweenQueriesShouldBeCalculatedOnlyOnce() {
-		// Add 1 property and 2 queries that use that property
-		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
-				.addProperty(SharedProperty.class,
-						new SharedProperty.UselessPropertyFactory())
-				.registerQuery(Query1.class, new Query1.UselessQueryFactory())
-				.registerQuery(Query2.class).build();
-		// Evaluate both queries (also calculates the property)
-		dataCenter.evaluateQueries();
-		// The property was evaluated only once and is shared between queries
-		assertEquals("query 1, property instance: 1",
-				dataCenter.getService(Query1.class).query());
-		assertEquals("query 2, property instance: 1",
-				dataCenter.getService(Query2.class).query());
-		// cleanup
-		dataCenter.clear();
 	}
 
 }
