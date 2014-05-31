@@ -56,6 +56,8 @@ public class SimpleUsageTest {
 		public final int numRe;
 
 		@ServiceSetup
+		// Need this to tell TwitterDataCenter to use this constructor when
+		// creating the query
 		public MyQuery(final MyProperty p) {
 			numBase = p.numBase;
 			numRe = p.numRe;
