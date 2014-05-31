@@ -85,6 +85,23 @@ public class SimpleUsageTest {
 	 * {@link TwitterDataCenter}
 	 */
 	@Test
+	public final void simpleUsageTestWithoutTweets() {
+		final TwitterDataCenter dataCenter = new TwitterSystemBuilder()
+				.addProperty(MyProperty.class).registerQuery(MyQuery.class)
+				.build();
+		// Evaluate the queries
+		dataCenter.loadServices();
+		// Now we can ask the queries
+		final MyQuery q = dataCenter.getService(MyQuery.class);
+		assertEquals(0, q.numRe);
+		assertEquals(0, q.numBase);
+	}
+
+	/**
+	 * Test method for {@link TwitterDataCenterBuilder} and
+	 * {@link TwitterDataCenter}
+	 */
+	@Test
 	public final void simpleUsageTest() {
 		// Create a builder for the data center
 		final TwitterDataCenterBuilder builder = new TwitterSystemBuilder();
@@ -115,7 +132,7 @@ public class SimpleUsageTest {
 	 * {@link TwitterDataCenter}
 	 */
 	@Test
-	public final void simpleFactoryUsageTest() {
+	public final void simpleUsageTestWithFactories() {
 		// Create a builder for the data center
 		final TwitterDataCenterBuilder builder = new TwitterSystemBuilder();
 		// Add wanted properties using factories
