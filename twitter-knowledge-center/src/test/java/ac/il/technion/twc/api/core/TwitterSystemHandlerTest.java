@@ -17,14 +17,14 @@ import java.util.Set;
 import org.junit.Test;
 
 import ac.il.technion.twc.api.TwitterQuery;
-import ac.il.technion.twc.api.core.TwitterSystemHandler.Tweets;
+import ac.il.technion.twc.api.core.TwitterSystem.Tweets;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
 
 /**
- * Test class for {@link TwitterSystemHandler} and {@link TwitterSystemBuilder}
+ * Test class for {@link TwitterSystem} and {@link TwitterSystemBuilder}
  * 
  * @author Ziv Ronen
  * @date 28.05.2014
@@ -39,7 +39,7 @@ public class TwitterSystemHandlerTest {
   private final Storage storageMock;
   private final ServiceBuildingManager serviceBuilder;
 
-  private final TwitterSystemHandler $;
+  private final TwitterSystem $;
 
   /**
    * 
@@ -49,7 +49,7 @@ public class TwitterSystemHandlerTest {
     storageMock = mock(Storage.class);
     services = mock(Set.class);
     serviceBuilder = mock(ServiceBuildingManager.class);
-    $ = new TwitterSystemHandler(services, serviceBuilder, storageMock);
+    $ = new TwitterSystem(services, serviceBuilder, storageMock);
   }
 
   /**

@@ -19,7 +19,6 @@ import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenter;
-import ac.il.technion.twc.api.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.core.TwitterSystemBuilder;
@@ -120,13 +119,12 @@ public class SimpleUsageTest {
   }
 
   /**
-   * Test method for {@link TwitterDataCenterBuilder} and
-   * {@link TwitterDataCenter}
+   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
    */
   @Test
   public final void simpleUsageTest() {
     // Create a builder for the data center
-    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder(dir);
+    final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
     // Add wanted properties and queries
     builder.addProperty(MyProperty.class).registerQuery(MyQuery.class);
     // Create the data center
@@ -150,8 +148,7 @@ public class SimpleUsageTest {
   }
 
   /**
-   * Test method for {@link TwitterDataCenterBuilder} and
-   * {@link TwitterDataCenter}
+   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
    */
   @Test
   public final void simpleUsageTestWithoutTweets() {
@@ -168,13 +165,12 @@ public class SimpleUsageTest {
   }
 
   /**
-   * Test method for {@link TwitterDataCenterBuilder} and
-   * {@link TwitterDataCenter}
+   * Test method for {@link TwitterSystemBuilder} and {@link TwitterDataCenter}
    */
   @Test
   public final void simpleUsageTestWithFactories() {
     // Create a builder for the data center
-    final TwitterDataCenterBuilder builder = new TwitterSystemBuilder(dir);
+    final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
     // Add wanted properties using factories
     builder.addProperty(MyProperty.class, new PropertyFactory<MyProperty>() {
 
