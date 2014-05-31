@@ -61,8 +61,8 @@ public class FuntionalityTester {
 	 * Loads the data from an array of lines
 	 * 
 	 * @param lines
-	 *            An array of lines, each line formatted as <time (dd/MM/yyyy
-	 *            HH:mm:ss)>,<tweet id>[,original tweet]
+	 *            An array of lines, each line formatted as &lt;time (dd/MM/yyyy
+	 *            HH:mm:ss)&gt;,&lt;tweet id&gt;[,original tweet]
 	 * @throws Exception
 	 *             If for any reason, handling the data failed
 	 */
