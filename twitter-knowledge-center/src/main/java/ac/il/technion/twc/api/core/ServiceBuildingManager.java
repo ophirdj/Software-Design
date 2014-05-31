@@ -339,7 +339,7 @@ class ServiceBuildingManager {
             throw new RuntimeException(e.getCause());
           }
     }
-    throw new IllegalArgumentException("service wanted but not register");
+    throw new IllegalArgumentException("Service wanted but not registered.");
   }
 
   private Object[] getValues(final Method m) {

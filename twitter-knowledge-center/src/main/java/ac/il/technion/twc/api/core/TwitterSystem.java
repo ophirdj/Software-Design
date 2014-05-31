@@ -78,9 +78,13 @@ public class TwitterSystem implements TwitterDataCenter {
 
   @Override
   public <T> T getService(final Class<T> type) throws IllegalArgumentException {
-    if (!servicesResult.containsKey(type))
+    if (!servicesResult.containsKey(type)) {
+      final String evaluated =
+          !servicesResult.isEmpty() ? ""
+              : " Did you forgot to evaluate the queries?";
       throw new IllegalArgumentException("Service: " + type
-          + " wanted but not registered");
+          + " wanted but not registered." + evaluated);
+    }
     return type.cast(servicesResult.get(type));
   }
 
