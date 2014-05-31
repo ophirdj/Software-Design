@@ -24,6 +24,7 @@ import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
+import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -124,6 +125,11 @@ class ServiceBuildingManager {
       }));
   }
 
+  public <T extends TwitterQuery, S extends T> void addQuery(
+      final Class<T> type, final TwitterQueryFactory<S> factory) {
+    // TODO
+  }
+
   /**
    * @param type
    *          The type of the service
@@ -163,10 +169,6 @@ class ServiceBuildingManager {
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
     return;
-  }
-
-  public <T> void addQueryFactory(final TwitterQueryFactory<T> factory) {
-    // TODO
   }
 
   private String prefix(final String type) {
