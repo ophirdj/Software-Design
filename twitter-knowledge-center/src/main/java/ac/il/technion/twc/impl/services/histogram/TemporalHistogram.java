@@ -26,13 +26,21 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  */
 public class TemporalHistogram implements TwitterQuery {
 
+	private final long[] timesBase;
+	private final int[] occuarenceBase;
+
 	private final long[] timesBaseHistograms;
 	private final int[][] occuarenceBaseHistograms;
+
+	private final long[] timesRe;
+	private final int[] occuarenceRe;
 
 	private final long[] timesReHistograms;
 	private final int[][] occuarenceReHistograms;
 
 	private final HistogramFormat format;
+
+	private static final int histogramFrequency = 5;
 
 	/**
 	 * Create an empty histogram
@@ -41,9 +49,13 @@ public class TemporalHistogram implements TwitterQuery {
 	 *            the format for the return values
 	 */
 	public TemporalHistogram(final HistogramFormat format) {
+		timesBase = new long[0];
+		occuarenceBase = new int[0];
 		timesBaseHistograms = new long[] { 0 };
 		occuarenceBaseHistograms = new int[1][7];
 
+		timesRe = new long[0];
+		occuarenceRe = new int[0];
 		timesReHistograms = new long[] { 0 };
 		occuarenceReHistograms = new int[1][7];
 
@@ -63,30 +75,44 @@ public class TemporalHistogram implements TwitterQuery {
 
 		final Set<Entry<Long, Integer>> allDaysBase = dayMapProperty
 				.getAllDaysBase();
-		timesBaseHistograms = new long[1 + allDaysBase.size()];
-		occuarenceBaseHistograms = new int[1 + allDaysBase.size()][7];
-		initArrays(allDaysBase, timesBaseHistograms, occuarenceBaseHistograms);
+		timesBase = new long[allDaysBase.size()];
+		occuarenceBase = new int[allDaysBase.size()];
+		timesBaseHistograms = new long[1 + allDaysBase.size()
+				/ histogramFrequency];
+		occuarenceBaseHistograms = new int[1 + allDaysBase.size()
+				/ histogramFrequency][7];
+		initArrays(allDaysBase, timesBase, occuarenceBase, timesBaseHistograms,
+				occuarenceBaseHistograms);
 
 		final Set<Entry<Long, Integer>> allDaysRe = dayMapProperty
 				.getAllDaysRe();
-		timesReHistograms = new long[1 + allDaysRe.size()];
-		occuarenceReHistograms = new int[1 + allDaysRe.size()][7];
-		initArrays(allDaysRe, timesReHistograms, occuarenceReHistograms);
+		timesRe = new long[allDaysRe.size()];
+		occuarenceRe = new int[allDaysRe.size()];
+		timesReHistograms = new long[1 + allDaysRe.size() / histogramFrequency];
+		occuarenceReHistograms = new int[1 + allDaysRe.size()
+				/ histogramFrequency][7];
+		initArrays(allDaysRe, timesRe, occuarenceRe, timesReHistograms,
+				occuarenceReHistograms);
 	}
 
 	private void initArrays(final Iterable<Entry<Long, Integer>> data,
+			final long[] times, final int[] amount,
 			final long[] timesHistogram, final int[][] occuarenceHistograms) {
 		int i = 0;
 		final int[] histogram = new int[7];
 		occuarenceHistograms[0] = new int[7];
 		timesHistogram[0] = 0;
 		for (final Entry<Long, Integer> entry : data) {
+			times[i] = entry.getKey();
+			amount[i] = entry.getValue();
 			histogram[DayOfWeek.fromDate(new Date(entry.getKey())).ordinal()] += entry
 					.getValue();
 			i++;
-			timesHistogram[i] = entry.getKey();
-			occuarenceHistograms[i] = Arrays
-					.copyOf(histogram, histogram.length);
+			if (i % histogramFrequency == 0) {
+				timesHistogram[i / histogramFrequency] = entry.getKey();
+				occuarenceHistograms[i / histogramFrequency] = Arrays.copyOf(
+						histogram, histogram.length);
+			}
 		}
 	}
 
@@ -99,10 +125,10 @@ public class TemporalHistogram implements TwitterQuery {
 	 */
 	public String[] get(final Date from, final Date to) {
 		return format.formatHistogram(
-				getHistogramBetween(from, to, timesBaseHistograms,
-						occuarenceBaseHistograms),
-				getHistogramBetween(from, to, timesReHistograms,
-						occuarenceReHistograms));
+				getHistogramBetween(from, to, timesBase, occuarenceBase,
+						timesBaseHistograms, occuarenceBaseHistograms),
+				getHistogramBetween(from, to, timesRe, occuarenceRe,
+						timesReHistograms, occuarenceReHistograms));
 	}
 
 	/**
@@ -116,13 +142,14 @@ public class TemporalHistogram implements TwitterQuery {
 	 * @return the histogram between from and to (inclusive)
 	 */
 	private int[] getHistogramBetween(final Date from, final Date to,
+			final long[] times, final int[] occurance,
 			final long[] histogramTime, final int[][] histograms) {
 		final int[] $ = new int[DayOfWeek.values().length];
-		final int[] toHistogram = findHistogramAtTime(to.getTime(),
-				histogramTime, histograms);
+		final int[] toHistogram = findHistogramAtTime(to.getTime(), times,
+				occurance, histogramTime, histograms);
 		// from.getTime() - 1 so we want remove the value in form
 		final int[] fromHistogram = findHistogramAtTime(from.getTime() - 1,
-				histogramTime, histograms);
+				times, occurance, histogramTime, histograms);
 		for (int i = 0; i < $.length; i++)
 			$[i] = toHistogram[i] - fromHistogram[i];
 		return $;
@@ -133,12 +160,24 @@ public class TemporalHistogram implements TwitterQuery {
 	 * @param time
 	 * @return the histogram up to the given time (inclusive)
 	 */
-	private int[] findHistogramAtTime(final long time,
-			final long[] histogramTime, final int[][] histograms) {
+	private int[] findHistogramAtTime(final long time, final long[] times,
+			final int[] occurance, final long[] histogramTime,
+			final int[][] histograms) {
 		final int indexPreCalculeted = binarySearch(histogramTime, time, true);
+		// IncompleteHistogram is the histogram up to
+		// histogramTime[indexPreCalculeted] (inclusive)
 		final int[] incompleteHistogram = histograms[indexPreCalculeted];
 		final int[] $ = Arrays.copyOf(incompleteHistogram,
 				incompleteHistogram.length);
+		// histogramTime[indexPreCalculeted] + 1 so we want count
+		// histogramTime[indexPreCalculeted] twice.
+		final int indexCompletion = binarySearch(times,
+				histogramTime[indexPreCalculeted] + 1, false);
+		for (int i = indexCompletion; i < times.length; i++) {
+			if (times[i] > time)
+				break;
+			$[DayOfWeek.fromDate(new Date(times[i])).ordinal()] += occurance[i];
+		}
 		return $;
 	}
 
@@ -171,10 +210,10 @@ public class TemporalHistogram implements TwitterQuery {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (format == null ? 0 : format.hashCode());
-		result = prime * result + Arrays.hashCode(occuarenceBaseHistograms);
-		result = prime * result + Arrays.hashCode(occuarenceReHistograms);
-		result = prime * result + Arrays.hashCode(timesBaseHistograms);
-		result = prime * result + Arrays.hashCode(timesReHistograms);
+		result = prime * result + Arrays.hashCode(occuarenceBase);
+		result = prime * result + Arrays.hashCode(occuarenceRe);
+		result = prime * result + Arrays.hashCode(timesBase);
+		result = prime * result + Arrays.hashCode(timesRe);
 		return result;
 	}
 
@@ -192,13 +231,21 @@ public class TemporalHistogram implements TwitterQuery {
 				return false;
 		} else if (!format.equals(other.format))
 			return false;
+		if (!Arrays.equals(occuarenceBase, other.occuarenceBase))
+			return false;
 		if (!Arrays.deepEquals(occuarenceBaseHistograms,
 				other.occuarenceBaseHistograms))
+			return false;
+		if (!Arrays.equals(occuarenceRe, other.occuarenceRe))
 			return false;
 		if (!Arrays.deepEquals(occuarenceReHistograms,
 				other.occuarenceReHistograms))
 			return false;
+		if (!Arrays.equals(timesBase, other.timesBase))
+			return false;
 		if (!Arrays.equals(timesBaseHistograms, other.timesBaseHistograms))
+			return false;
+		if (!Arrays.equals(timesRe, other.timesRe))
 			return false;
 		if (!Arrays.equals(timesReHistograms, other.timesReHistograms))
 			return false;
