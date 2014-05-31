@@ -1,7 +1,6 @@
 package ac.il.technion.twc.api.core;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,8 +11,6 @@ import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQuery.NotAQueryException;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQuerySerializer;
-import ac.il.technion.twc.api.tweet.BaseTweet;
-import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
  * Builder for {@link TwitterSystem}
@@ -135,8 +132,6 @@ public class TwitterSystemBuilder {
    * @return A {@link TwitterDataCenter}.
    */
   public TwitterSystem build() {
-    serviceBuilder.setProperties(Collections.<BaseTweet> emptyList(),
-        Collections.<Retweet> emptyList());
     return new TwitterSystem(services, serviceBuilder,
         storageBuilder.buildStorage());
   }
