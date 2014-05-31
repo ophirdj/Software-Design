@@ -35,6 +35,14 @@ import ac.il.technion.twc.api.tweet.Tweet;
 public class SimpleUsageTest {
 
   @SuppressWarnings("javadoc")
+  public static final class MyQueryFactory implements
+      TwitterQueryFactory<MyQuery> {
+    public MyQuery get(final MyProperty p) {
+      return new MyQuery(p, 0);
+    }
+  }
+
+  @SuppressWarnings("javadoc")
   public static class MyProperty implements Property {
 
     public final int numBase;
@@ -89,11 +97,17 @@ public class SimpleUsageTest {
     return numReActual;
   }
 
+  /**
+   * @throws IOException
+   */
   @Before
   public void setup() throws IOException {
     FileUtils.cleanDirectory(Paths.get("system", "Storage").toFile());
   }
 
+  /**
+   * @throws IOException
+   */
   @After
   public void tearDown() throws IOException {
     FileUtils.cleanDirectory(Paths.get("system", "Storage").toFile());
@@ -165,14 +179,7 @@ public class SimpleUsageTest {
       }
     });
     // Add wanted queries using factories
-    builder.registerQuery(MyQuery.class, new TwitterQueryFactory<MyQuery>() {
-
-      @SuppressWarnings("unused")
-      public MyQuery get(final MyProperty p) {
-        return new MyQuery(p, 0);
-      }
-
-    });
+    builder.registerQuery(MyQuery.class, new MyQueryFactory());
 
     // Create the data center
     final TwitterDataCenter dataCenter = builder.build();
