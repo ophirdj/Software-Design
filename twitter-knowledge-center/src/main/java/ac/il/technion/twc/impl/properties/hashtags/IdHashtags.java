@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -19,7 +20,7 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @version 2.0
  * @since 2.0
  */
-public class IdHashtags {
+public class IdHashtags implements Property {
 
   private final Map<ID, List<String>> HashtagById;
 
