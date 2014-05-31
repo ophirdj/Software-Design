@@ -87,6 +87,8 @@ public class TwitterSystem implements TwitterDataCenter {
   @Override
   public void clear() throws SystemOperationFailedException {
     try {
+      serviceBuilder.setProperties(Collections.<BaseTweet> emptyList(),
+          Collections.<Retweet> emptyList());
       storage.clear();
     } catch (final IOException e) {
       throw new SystemOperationFailedException(e);
@@ -100,8 +102,6 @@ public class TwitterSystem implements TwitterDataCenter {
    * @date 22.05.2014
    * @mail akarks@gmail.com
    * 
-   * @version 2.0
-   * @since 2.0
    */
   static class Tweets {
     private List<BaseTweet> baseTweets;
