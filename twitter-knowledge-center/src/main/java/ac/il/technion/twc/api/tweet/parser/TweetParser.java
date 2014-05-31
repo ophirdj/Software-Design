@@ -18,7 +18,6 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @version 2.0
  * @since 2.0
  */
-// TODO: find shorter name
 public class TweetParser {
 
 	private final List<TweetFormat> formats;
