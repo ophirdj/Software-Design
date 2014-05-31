@@ -38,9 +38,9 @@ public class TemporalHistogram implements TwitterQuery {
       times = timesBase;
       amounts = occuarenceBase;
       timesHistograms =
-          new ArrayList<>(1 + timesBase.size() / histogramFrequency);
+          new ArrayList<>(1 + timesBase.size() / datesPerHistogram);
       amountsHistograms =
-          new ArrayList<>(1 + timesBase.size() / histogramFrequency);
+          new ArrayList<>(1 + timesBase.size() / datesPerHistogram);
       initHistogram();
     }
 
@@ -51,7 +51,7 @@ public class TemporalHistogram implements TwitterQuery {
       for (int j = 0; j < times.size(); j++) {
         histogram[DayOfWeek.fromDate(new Date(times.get(j))).ordinal()] +=
             amounts.get(j);
-        if ((j + 1) % histogramFrequency == 0) {
+        if ((j + 1) % datesPerHistogram == 0) {
           timesHistograms.add(times.get(j));
           amountsHistograms.add(Arrays.copyOf(histogram, histogram.length));
         }
@@ -143,6 +143,7 @@ public class TemporalHistogram implements TwitterQuery {
       if (getClass() != obj.getClass())
         return false;
       final HistogramRetriver other = (HistogramRetriver) obj;
+
       if (amounts == null) {
         if (other.amounts != null)
           return false;
@@ -151,8 +152,13 @@ public class TemporalHistogram implements TwitterQuery {
       if (amountsHistograms == null) {
         if (other.amountsHistograms != null)
           return false;
-      } else if (!amountsHistograms.equals(other.amountsHistograms))
+      } else if (amountsHistograms.size() != other.amountsHistograms.size())
         return false;
+      else
+        for (int i = 0; i < amountsHistograms.size(); i++)
+          if (!Arrays.equals(amountsHistograms.get(i),
+              other.amountsHistograms.get(i)))
+            return false;
       if (times == null) {
         if (other.times != null)
           return false;
@@ -173,7 +179,12 @@ public class TemporalHistogram implements TwitterQuery {
 
   private final HistogramFormat format;
 
-  private static final int histogramFrequency = 10;
+  /**
+   * We will create one histogram for every datesPerHistogram dates.
+   * 
+   * Help to reduce time for setup.
+   */
+  private static final int datesPerHistogram = 10;
 
   /**
    * Create an empty histogram

@@ -185,7 +185,7 @@ public class StorageTest {
         new TagToPopularity(trf, tr, ih);
     return $(
         $(DayHistogram.class, new DayHistogram(new HistogramFormat()),
-            new DayHistogram(mock(HistogramFormat.class))),
+            mock(DayHistogram.class)),
         $(TemporalHistogram.class,
             new TemporalHistogram(new HistogramFormat()),
             new TemporalHistogram(mock(HistogramFormat.class))),
