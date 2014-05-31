@@ -161,25 +161,36 @@ public class AdvancedUsageTest {
 	 * @throws ParseException
 	 */
 	@Test
-	public final void usingPreDefinedPropertiesAndCustomSerializerForQuery()
+	public final void usingPredefinedPropertiesAndCustomSerializerForQuery()
 			throws ParseException {
+		// Add predefined properties, register query, and add a custom query
+		// serializer
 		final TwitterDataCenter dataCenter = new TwitterSystemBuilder()
 				.addProperty(TweetsRetriever.class)
 				.addProperty(OriginFinder.class)
 				.registerQuery(RetweetCounter.class)
 				.addSerializer(new RetweetCounterSerializer()).build();
+		// Create a parser for Json format (using JsonTweetFormat from the impl
+		// package)
 		final TweetParser parser = new TweetParser(new JsonTweetFormat());
-		final int numBase = 10;
-		dataCenter.importData(parser.parse(TestUtils.generateTweets(numBase,
-				10, 2, 0)));
+		// Import 10 base tweets, where each tweet has 10 retweets, and each of
+		// them has 10 retweets (so every base tweet has a total of 110
+		// retweets).
+		final int numBaseTweets = 10;
+		dataCenter.importData(parser.parse(TestUtils.generateTweets(
+				numBaseTweets, 10, 2, 0)));
+		// Prepare queries
 		dataCenter.loadServices();
+		// Get our query
 		final RetweetCounter counter = dataCenter
 				.getService(RetweetCounter.class);
 
-		for (int baseTweet = 0; baseTweet < numBase; ++baseTweet)
+		// validate that, indeed, each base tweet has 110 retweets as predicted
+		for (int baseTweet = 0; baseTweet < numBaseTweets; ++baseTweet)
 			assertEquals(10 + 10 * 10,
 					counter.getNumRetweets(new ID("base" + baseTweet)));
 
+		// clear persistent storage
 		dataCenter.clear();
 	}
 }
