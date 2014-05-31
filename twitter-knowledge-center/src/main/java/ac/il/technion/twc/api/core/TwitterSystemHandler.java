@@ -48,14 +48,14 @@ public class TwitterSystemHandler implements TwitterDataCenter {
   @Override
   public void importData(final Collection<? extends Tweet> importedTweets)
       throws OperationFailedException {
-    final Tweets storedTweets = storage.load(new Tweets());
+    final Tweets storedTweets = storage.load(Tweets.class, new Tweets());
     final List<Tweet> tweets = new ArrayList<>();
     tweets.addAll(importedTweets);
     tweets.addAll(storedTweets.getBaseTweets());
     tweets.addAll(storedTweets.getRetweets());
     final Tweets newTweets = new Tweets(tweets);
     try {
-      storage.store(newTweets);
+      storage.store(Tweets.class, newTweets);
       buildServices(newTweets);
     } catch (final IOException e) {
       throw new OperationFailedException(e);
@@ -66,7 +66,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
     serviceBuilder.setProperties(tweets.getBaseTweets(), tweets.getRetweets());
     for (final Class<? extends TwitterQuery> service : services)
       try {
-        storage.store(serviceBuilder.getInstance(service));
+        storage.store(service, serviceBuilder.getInstance(service));
       } catch (IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | InstantiationException e) {
         // Shouldn't happen
@@ -78,8 +78,8 @@ public class TwitterSystemHandler implements TwitterDataCenter {
   public void loadServices() {
     for (final Class<?> service : services)
       try {
-        final Object instance = serviceBuilder.getInstance(service);
-        servicesResult.put(service, storage.load(instance));
+        servicesResult.put(service,
+            storage.load(service, serviceBuilder.getInstance(service)));
       } catch (InstantiationException | IllegalAccessException
           | IllegalArgumentException | InvocationTargetException e) {
         // TODO Auto-generated catch block

@@ -51,26 +51,29 @@ class Storage {
   /**
    * Store a given object. Can only store one object from each type.
    * 
-   * @param service
+   * @param type
+   *          The type of the object
+   * @param object
    *          The object to store.
    * @throws IOException
    */
-  public <T> void store(final T service) throws IOException {
-    retriverByType.remove(service.getClass());
-    fileHandling.store(objectPath(service.getClass()),
-        serializer.toJson(service, service.getClass()));
+  public void store(final Class<?> type, final Object object)
+      throws IOException {
+    retriverByType.remove(type);
+    fileHandling.store(objectPath(type),
+        serializer.toJson(object, object.getClass()));
   }
 
   /**
+   * @param type
+   *          The type to retrive
    * @param defualt
    *          default return value.
    * 
    * @return The last stored object of the given type or default if no such
    *         value exists.
    */
-  public <T> T load(final T defualt) {
-    @SuppressWarnings("unchecked")
-    final Class<T> type = (Class<T>) defualt.getClass();
+  public <T> T load(final Class<T> type, final Object defualt) {
     if (!retriverByType.containsKey(type))
       prepareSingle(type);
     final Future<Object> value = retriverByType.get(type);
@@ -83,7 +86,7 @@ class Storage {
     } catch (final ExecutionException e) {
       // TODO: need to handle differently
       if (e.getCause() instanceof IOException)
-        return defualt;
+        return type.cast(defualt);
       else
         throw new RuntimeException(e.getCause());
     }
