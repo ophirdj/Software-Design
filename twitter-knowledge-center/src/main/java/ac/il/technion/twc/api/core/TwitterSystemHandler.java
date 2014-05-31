@@ -54,13 +54,13 @@ public class TwitterSystemHandler implements TwitterDataCenter {
 		final Tweets newTweets = new Tweets(tweets);
 		try {
 			storage.store(newTweets);
-			setup(newTweets);
+			buildServices(newTweets);
 		} catch (final IOException e) {
 			throw new OperationFailedException(e);
 		}
 	}
 
-	private void setup(final Tweets tweets) throws IOException {
+	private void buildServices(final Tweets tweets) throws IOException {
 		serviceBuilder.setProperties(tweets.getBaseTweets(),
 				tweets.getRetweets());
 		for (final Object service : services)
