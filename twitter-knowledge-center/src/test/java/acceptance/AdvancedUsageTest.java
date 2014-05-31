@@ -49,50 +49,63 @@ public class AdvancedUsageTest {
 	}
 
 	@SuppressWarnings("javadoc")
-	public static class UselessProperty implements Property {
-
-		public static int numInstansiations = 0;
+	public static class SharedProperty implements Property {
 
 		public static class UselessPropertyFactory implements
-				PropertyFactory<UselessProperty> {
+				PropertyFactory<SharedProperty> {
 
 			@Override
-			public UselessProperty get(final List<BaseTweet> baseTweets,
+			public SharedProperty get(final List<BaseTweet> baseTweets,
 					final List<Retweet> retweets) {
-				++numInstansiations;
-				return new UselessProperty();
+				return new SharedProperty(++numInstansiations);
 			}
 
+		}
+
+		public static int numInstansiations = 0;
+		private final int number;
+
+		public SharedProperty(final int number_) {
+			number = number_;
 		}
 
 	}
 
 	@SuppressWarnings("javadoc")
-	public static class UselessQuery implements TwitterQuery {
+	public static class Query1 implements TwitterQuery {
 
 		public static class UselessQueryFactory implements
-				TwitterQueryFactory<UselessQuery> {
+				TwitterQueryFactory<Query1> {
 
-			public UselessQuery get(final UselessProperty p) {
-				return new UselessQuery();
+			public Query1 get(final SharedProperty p) {
+				return new Query1(p.number);
 			}
 
 		}
 
+		private final int number;
+
+		public Query1(final int number_) {
+			number = number_;
+		}
+
 		public String query() {
-			return "useless query";
+			return "query 1, property instance: " + number;
 		}
 
 	}
 
 	@SuppressWarnings("javadoc")
-	public static class UselessQuery2 implements TwitterQuery {
+	public static class Query2 implements TwitterQuery {
 
-		public UselessQuery2(final UselessProperty p) {
+		private final int number;
+
+		public Query2(final SharedProperty p) {
+			number = p.number;
 		}
 
 		public String query() {
-			return "useless query 2";
+			return "query 2, property instance: " + number;
 		}
 
 	}
@@ -104,20 +117,17 @@ public class AdvancedUsageTest {
 	public final void sharedPropertyBetweenQueriesShouldBeCalculatedOnlyOnce() {
 		// Add 1 property and 2 queries that use that property
 		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
-				.addProperty(UselessProperty.class,
-						new UselessProperty.UselessPropertyFactory())
-				.registerQuery(UselessQuery.class,
-						new UselessQuery.UselessQueryFactory())
-				.registerQuery(UselessQuery2.class).build();
+				.addProperty(SharedProperty.class,
+						new SharedProperty.UselessPropertyFactory())
+				.registerQuery(Query1.class, new Query1.UselessQueryFactory())
+				.registerQuery(Query2.class).build();
 		// Evaluate both queries (also calculates the property)
 		dataCenter.evaluateQueries();
-		// See that queries were loaded successfully
-		assertEquals("useless query", dataCenter.getService(UselessQuery.class)
-				.query());
-		assertEquals("useless query 2",
-				dataCenter.getService(UselessQuery2.class).query());
-		// The shared property was evaluated only once
-		assertEquals(1, UselessProperty.numInstansiations);
+		// The property was evaluated only once and is shared between queries
+		assertEquals("query 1, property instance: 1",
+				dataCenter.getService(Query1.class).query());
+		assertEquals("query 2, property instance: 1",
+				dataCenter.getService(Query2.class).query());
 		// cleanup
 		dataCenter.clear();
 	}
