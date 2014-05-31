@@ -134,8 +134,11 @@ public class RealWorldExample {
             .addProperty(TweetsRetriever.class).addProperty(OriginFinder.class)
             .registerQuery(RetweetCounter.class)
             .addSerializer(new RetweetCounterSerializer()).build();
+
+    // upload the rest of the tweet
     simulateShutdown.importData(tweets.subList(6, tweets.size()));
 
+    // evaluate the query
     simulateShutdown.evaluateQueries();
 
     // Get our query
