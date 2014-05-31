@@ -7,8 +7,7 @@ import java.text.SimpleDateFormat;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.core.TwitterSystemBuilder;
 import ac.il.technion.twc.api.tweet.ID;
-import ac.il.technion.twc.api.tweet.parser.MultiFormatsParserBuilder;
-import ac.il.technion.twc.api.tweet.parser.TweetParser;
+import ac.il.technion.twc.api.tweet.parser.MultiFormatsTweetParser;
 import ac.il.technion.twc.impl.parser.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parser.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
@@ -33,7 +32,7 @@ import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
 public class FuntionalityTester {
 
 	private final TwitterDataCenter serviceCenter;
-	private final TweetParser parser;
+	private final MultiFormatsTweetParser parser;
 
 	private static final SimpleDateFormat temporalDateFormat = new SimpleDateFormat(
 			"dd/MM/yyyy HH:mm:ss");
@@ -44,17 +43,15 @@ public class FuntionalityTester {
 	public FuntionalityTester() {
 		serviceCenter = new TwitterSystemBuilder()
 				.addSerializer(new TweetToLifeTimeSerializer())
-				.addProperty(DayMapping.class)
-				.addProperty(OriginFinder.class)
+				.addProperty(DayMapping.class).addProperty(OriginFinder.class)
 				.addProperty(IdHashtags.class)
 				.addProperty(TweetsRetriever.class)
 				.registerService(new DayHistogram(new HistogramFormat()))
 				.registerService(new TemporalHistogram(new HistogramFormat()))
 				.registerService(new TweetToLifeTime())
 				.registerService(new TagToPopularity()).build();
-		parser = new MultiFormatsParserBuilder()
-				.add(new CommaSeparatedTweetFormat())
-				.add(new JsonTweetFormat()).build();
+		parser = new MultiFormatsTweetParser(new CommaSeparatedTweetFormat(),
+				new JsonTweetFormat());
 	}
 
 	/**
