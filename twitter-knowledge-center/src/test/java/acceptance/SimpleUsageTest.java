@@ -72,6 +72,14 @@ public class SimpleUsageTest {
 						new Date(33333), new ID("retweet"), new ID("tweet")));
 	}
 
+	private int getNumRetweets(final List<? extends Tweet> tweets) {
+		int numReActual = 0;
+		for (final Tweet t : tweets)
+			if (t instanceof Retweet)
+				++numReActual;
+		return numReActual;
+	}
+
 	/**
 	 * Test method for {@link TwitterDataCenterBuilder} and
 	 * {@link TwitterDataCenter}
@@ -87,10 +95,7 @@ public class SimpleUsageTest {
 
 		// Let's get some tweets and count how many are retweets
 		final List<? extends Tweet> tweets = getSomeTweets();
-		int numReActual = 0;
-		for (final Tweet t : tweets)
-			if (t instanceof Retweet)
-				++numReActual;
+		final int numReActual = getNumRetweets(tweets);
 
 		// Import the tweets
 		dataCenter.importData(tweets);
@@ -139,10 +144,7 @@ public class SimpleUsageTest {
 
 		// Let's get some tweets and count how many are retweets
 		final List<? extends Tweet> tweets = getSomeTweets();
-		int numReActual = 0;
-		for (final Tweet t : tweets)
-			if (t instanceof Retweet)
-				++numReActual;
+		final int numReActual = getNumRetweets(tweets);
 
 		// Import the tweets
 		dataCenter.importData(tweets);
@@ -156,4 +158,5 @@ public class SimpleUsageTest {
 		// cleanup of persistent storage
 		dataCenter.clear();
 	}
+
 }
