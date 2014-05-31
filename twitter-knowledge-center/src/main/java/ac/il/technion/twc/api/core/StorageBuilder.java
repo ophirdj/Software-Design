@@ -19,8 +19,6 @@ import com.google.gson.stream.JsonWriter;
  * @date 30.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 class StorageBuilder {
 
@@ -51,14 +49,13 @@ class StorageBuilder {
       public T read(final JsonReader in) throws IOException {
         return serializer.stringToObject(in.nextString());
       }
-
     });
   }
 
   /**
    * @return Storage for {@link TwitterSystem}
    */
-  Storage buildStorage() {
+  public Storage buildStorage() {
     return new Storage(gsonBuilder.create(), path, new FileHandler(),
         Executors.newCachedThreadPool());
 

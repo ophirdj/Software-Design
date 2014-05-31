@@ -3,6 +3,7 @@ package ac.il.technion.twc.api.core;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,10 @@ public class TwitterSystem implements TwitterDataCenter {
    * @param serviceBuilder
    * @param storage
    */
-  public TwitterSystem(
-      final Set<Class<? extends TwitterQuery>> services,
+  public TwitterSystem(final Set<Class<? extends TwitterQuery>> services,
       final ServiceBuildingManager serviceBuilder, final Storage storage) {
+    serviceBuilder.setProperties(Collections.<BaseTweet> emptyList(),
+        Collections.<Retweet> emptyList());
     this.services = services;
     this.serviceBuilder = serviceBuilder;
     this.storage = storage;

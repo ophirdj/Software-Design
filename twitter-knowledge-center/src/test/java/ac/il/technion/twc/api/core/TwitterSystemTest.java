@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -33,7 +34,7 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @version 2.0
  * @since 2.0
  */
-public class TwitterSystemHandlerTest {
+public class TwitterSystemTest {
 
   private final Set<Class<? extends TwitterQuery>> services;
   private final Storage storageMock;
@@ -45,11 +46,22 @@ public class TwitterSystemHandlerTest {
    * 
    */
   @SuppressWarnings("unchecked")
-  public TwitterSystemHandlerTest() {
+  public TwitterSystemTest() {
     storageMock = mock(Storage.class);
     services = mock(Set.class);
     serviceBuilder = mock(ServiceBuildingManager.class);
     $ = new TwitterSystem(services, serviceBuilder, storageMock);
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public final void ctorShouldSetPropertiesWithEmptyLists() {
+    final ServiceBuildingManager mock = mock(ServiceBuildingManager.class);
+    new TwitterSystem(services, mock, storageMock);
+    verify(mock).setProperties(new ArrayList<BaseTweet>(),
+        new ArrayList<Retweet>());
   }
 
   /**
