@@ -63,7 +63,7 @@ public class ServiceBuildingManagerTest {
   @Test
   public final void checkOneConstructorsMockShouldNotThrowException()
       throws MissingPropertitesException, NotAServiceException {
-    $.checkService(OneConstructorsMock.class);
+    $.addQuery(OneConstructorsMock.class);
   }
 
   /**
@@ -75,7 +75,7 @@ public class ServiceBuildingManagerTest {
       void
       checkClassWithOneAnnotatedConstructorAndOtherNotAnnotatedShouldNotThrowException()
           throws MissingPropertitesException, NotAServiceException {
-    $.checkService(OneConstructorsAnnotatedMock.class);
+    $.addQuery(OneConstructorsAnnotatedMock.class);
   }
 
   /**
@@ -85,7 +85,7 @@ public class ServiceBuildingManagerTest {
   @Test
   public final void checkClassWithSupportedClassShouldNotThrowException()
       throws MissingPropertitesException, NotAServiceException {
-    $.checkService(NeedSupportedProperty.class);
+    $.addQuery(NeedSupportedProperty.class);
   }
 
   /**
@@ -161,7 +161,7 @@ public class ServiceBuildingManagerTest {
   @Test
   public final void checkClassThatNeededPredefineValueShouldnotThrowException()
       throws MissingPropertitesException, NotAServiceException {
-    $.checkService(NeedPredefineValue.class);
+    $.addQuery(NeedPredefineValue.class);
   }
 
   /**
@@ -174,7 +174,7 @@ public class ServiceBuildingManagerTest {
     thrown.expect(NotAServiceException.class);
     thrown.expectMessage(TwoConstructorsMock.class.getSimpleName()
         + " is not a service");
-    $.checkService(TwoConstructorsMock.class);
+    $.addQuery(TwoConstructorsMock.class);
   }
 
   /**
@@ -187,7 +187,7 @@ public class ServiceBuildingManagerTest {
     thrown.expect(NotAServiceException.class);
     thrown.expectMessage(AbstractService.class.getSimpleName()
         + " is not a service");
-    $.checkService(AbstractService.class);
+    $.addQuery(AbstractService.class);
   }
 
   /**
@@ -201,7 +201,7 @@ public class ServiceBuildingManagerTest {
     thrown.expect(NotAServiceException.class);
     thrown.expectMessage(ZeroPublicConstructorsMock.class.getSimpleName()
         + " is not a service");
-    $.checkService(ZeroPublicConstructorsMock.class);
+    $.addQuery(ZeroPublicConstructorsMock.class);
   }
 
   /**
@@ -215,7 +215,7 @@ public class ServiceBuildingManagerTest {
     thrown.expect(NotAServiceException.class);
     thrown.expectMessage(TwoConstructorsAnnotatedMock.class.getSimpleName()
         + " is not a service");
-    $.checkService(TwoConstructorsAnnotatedMock.class);
+    $.addQuery(TwoConstructorsAnnotatedMock.class);
   }
 
   /**
@@ -231,7 +231,7 @@ public class ServiceBuildingManagerTest {
     thrown.expectMessage(servicePrefix(NotSupportedPropertyService.class)
         + missingMessage(ZeroPublicConstructorsMock.class,
             "path: NotSupportedPropertyService->ZeroPublicConstructorsMock"));
-    $.checkService(NotSupportedPropertyService.class);
+    $.addQuery(NotSupportedPropertyService.class);
   }
 
   /**
@@ -247,7 +247,7 @@ public class ServiceBuildingManagerTest {
     thrown.expectMessage(servicePrefix(NeedInterfacePropertyService.class)
         + notConcreteMessage(InterfaceProperty.class,
             "path: NeedInterfacePropertyService->InterfaceProperty"));
-    $.checkService(NeedInterfacePropertyService.class);
+    $.addQuery(NeedInterfacePropertyService.class);
   }
 
   /**
@@ -263,7 +263,7 @@ public class ServiceBuildingManagerTest {
     thrown.expectMessage(servicePrefix(NeedAbstractPropertyService.class)
         + notConcreteMessage(AbstractProperty.class,
             "path: NeedAbstractPropertyService->AbstractProperty"));
-    $.checkService(NeedAbstractPropertyService.class);
+    $.addQuery(NeedAbstractPropertyService.class);
   }
 
   /**
@@ -279,7 +279,7 @@ public class ServiceBuildingManagerTest {
     thrown.expectMessage(servicePrefix(NeedPremitivePropertyService.class)
         + notConcreteMessage(byte.class,
             "path: NeedPremitivePropertyService->byte"));
-    $.checkService(NeedPremitivePropertyService.class);
+    $.addQuery(NeedPremitivePropertyService.class);
   }
 
   /**
@@ -297,7 +297,7 @@ public class ServiceBuildingManagerTest {
             + circleMessage(
                 CircleFirstProperty.class,
                 "path: CircleHeadService->CircleFirstProperty->CircleSecondProperty->CircleThirdProperty->CircleFirstProperty"));
-    $.checkService(CircleHeadService.class);
+    $.addQuery(CircleHeadService.class);
   }
 
   /**
@@ -314,7 +314,7 @@ public class ServiceBuildingManagerTest {
             + circleMessage(
                 CircleSecondProperty.class,
                 "path: CircleFirstProperty->CircleSecondProperty->CircleThirdProperty->CircleFirstProperty->CircleSecondProperty"));
-    $.checkService(CircleFirstProperty.class);
+    $.addQuery(CircleFirstProperty.class);
   }
 
   /**
@@ -329,7 +329,7 @@ public class ServiceBuildingManagerTest {
     thrown.expectMessage(servicePrefix(SelfCircleService.class)
         + circleMessage(SelfCircleService.class,
             "path: SelfCircleService->SelfCircleService->SelfCircleService"));
-    $.checkService(SelfCircleService.class);
+    $.addQuery(SelfCircleService.class);
   }
 
   /**
@@ -354,7 +354,7 @@ public class ServiceBuildingManagerTest {
             + missingMessage(
                 ZeroPublicConstructorsMock.class,
                 "path: MultipuleMissingCausesClass->NotSupportedPropertyService->ZeroPublicConstructorsMock"));
-    $.checkService(MultipuleMissingCausesClass.class);
+    $.addQuery(MultipuleMissingCausesClass.class);
   }
 
   /**

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -17,10 +18,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import ac.il.technion.twc.api.Property;
+import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
+import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
@@ -36,9 +40,9 @@ import ac.il.technion.twc.api.tweet.Retweet;
  */
 class ServiceBuildingManager {
 
-  private final Set<Class<?>> supportedProperties = new HashSet<>();
+  private final Map<Class<?>, PropertyFactory<?>> supportedProperties =
+      new HashMap<>();
   private final Set<Class<?>> supportedObjects = new HashSet<>();
-  private final Map<Class<?>, Object> predefinedValues = new HashMap<>();
   private final Map<Class<?>, Future<Object>> properties = new HashMap<>();
   private final ExecutorService pool = Executors.newCachedThreadPool();
 
@@ -46,33 +50,54 @@ class ServiceBuildingManager {
    * Inform the {@link ServiceBuildingManager} that the given type is property
    * 
    * @param type
-   *          The type supported by a property builder
-   */
-  public void addProperty(final Class<?> type) {
-    supportedProperties.add(type);
-    supportedObjects.add(type);
-  }
-
-  /**
-   * @param type
    *          the type of the property
    * 
    * @throws NotAPropertyException
    *           if the type doesn't represent a property
    */
-  public void checkProperty(final Class<?> type) {
+  public <T> void addProperty(final Class<T> type) {
     try {
-      final Constructor<?> ctor = type.getConstructor(List.class, List.class);
+      final Constructor<T> ctor = type.getConstructor(List.class, List.class);
       final Type[] parameters = ctor.getGenericParameterTypes();
       if (BaseTweet.class.equals(((ParameterizedType) parameters[0])
           .getActualTypeArguments()[0])
           && Retweet.class.equals(((ParameterizedType) parameters[1])
-              .getActualTypeArguments()[0]) && isConcrete(type))
-        // Succeed
+              .getActualTypeArguments()[0]) && isConcrete(type)) {
+        supportedObjects.add(type);
+        supportedProperties.put(type, new PropertyFactory<T>() {
+          @Override
+          public T get(final List<BaseTweet> baseTweets,
+              final List<Retweet> retweets) {
+            try {
+              return ctor.newInstance(baseTweets, retweets);
+            } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException e) {
+              throw new RuntimeException(e);
+            }
+          }
+        });
         return;
+      }
     } catch (NoSuchMethodException | SecurityException e) {
     }
     throw new NotAPropertyException(type.getSimpleName());
+  }
+
+  /**
+   * Inform the {@link ServiceBuildingManager} that the given type is property
+   * 
+   * @param type
+   *          the type of the property
+   * @param factory
+   *          factory for the property
+   * 
+   * @throws NotAPropertyException
+   *           if the type doesn't represent a property
+   */
+  public <T extends Property, S extends T> void addProperty(
+      final Class<T> type, final PropertyFactory<S> factory) {
+    supportedProperties.put(type, factory);
+    supportedObjects.add(type);
   }
 
   /**
@@ -88,30 +113,15 @@ class ServiceBuildingManager {
     final List<BaseTweet> unmodifiableBases =
         Collections.unmodifiableList(bases);
     final List<Retweet> unmodifiableRes = Collections.unmodifiableList(res);
-    for (final Class<?> supportedType : supportedProperties)
-      properties.put(supportedType, pool.submit(new Callable<Object>() {
+    for (final Entry<Class<?>, PropertyFactory<?>> entry : supportedProperties
+        .entrySet())
+      properties.put(entry.getKey(), pool.submit(new Callable<Object>() {
 
         @Override
         public Object call() throws Exception {
-          return supportedType.getConstructor(List.class, List.class)
-              .newInstance(unmodifiableBases, unmodifiableRes);
+          return entry.getValue().get(unmodifiableBases, unmodifiableRes);
         }
       }));
-  }
-
-  /**
-   * Inform the {@link ServiceBuildingManager} that the value of the given type
-   * is predefine to the given value
-   * 
-   * @param type
-   *          The type
-   * @param value
-   *          Its new value
-   */
-  public <T, ST extends T> void addPredfineValue(final Class<T> type,
-      final ST value) {
-    supportedObjects.add(type);
-    predefinedValues.put(type, value);
   }
 
   /**
@@ -124,7 +134,7 @@ class ServiceBuildingManager {
    *           if the type do not possess precisely one constructor annotated
    *           with {@link ServiceSetup}
    */
-  public void checkService(final Class<?> type)
+  public <T> void addQuery(final Class<T> type)
       throws MissingPropertitesException, NotAServiceException {
     if (!hasSingleAnnotatedCtor(type))
       throw new NotAServiceException(type.getSimpleName());
@@ -152,6 +162,11 @@ class ServiceBuildingManager {
     missingMessageBuilder.append("\n");
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
+    return;
+  }
+
+  public <T> void addQueryFactory(final TwitterQueryFactory<T> factory) {
+    // TODO
   }
 
   private String prefix(final String type) {
@@ -287,8 +302,6 @@ class ServiceBuildingManager {
       final Class<?> neededParameterType = (Class<?>) calledParameters[i];
       if (properties.containsKey(neededParameterType))
         values[i] = properties.get(neededParameterType).get();
-      else if (predefinedValues.containsKey(neededParameterType))
-        values[i] = predefinedValues.get(neededParameterType);
       else {
         final Constructor<?> innerCtor = getSetupCtor(neededParameterType);
         try {
