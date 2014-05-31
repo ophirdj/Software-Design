@@ -1,11 +1,13 @@
 package ac.il.technion.twc.api;
 
+import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+
 /**
- * A query for {@link TwitterDataCenterBuilder#registerQuery(Class)}.
+ * A query for {@link TwitterSystemBuilder#registerQuery(Class)}.
  * 
  * 
- * {@link TwitterQuery} must have only one constructor or a constructor annotated
- * with {@link QuerySetup}.
+ * {@link TwitterQuery} must have only one constructor or a constructor
+ * annotated with {@link QuerySetup}.
  * 
  * <br>
  * In addition, any type the constructor required must be createable. That mean
@@ -39,7 +41,7 @@ public interface TwitterQuery {
    * 
    */
   public static class NotAQueryException extends RuntimeException {
-  
+
     /**
      * @param simpleName
      *          The name of the service
@@ -47,7 +49,7 @@ public interface TwitterQuery {
     public NotAQueryException(final String simpleName) {
       super(simpleName + " is not a service");
     }
-  
+
     private static final long serialVersionUID = 7808573286722982627L;
   }
 

@@ -56,7 +56,7 @@ class StorageBuilder {
   }
 
   /**
-   * @return Storage for {@link TwitterSystemHandler}
+   * @return Storage for {@link TwitterSystem}
    */
   Storage buildStorage() {
     return new Storage(gsonBuilder.create(), path, new FileHandler(),

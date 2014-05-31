@@ -15,7 +15,7 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ac.il.technion.twc.api.core.TwitterSystemHandler.Tweets;
+import ac.il.technion.twc.api.core.TwitterSystem.Tweets;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;

@@ -24,7 +24,7 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @version 2.0
  * @since 2.0
  */
-public class TwitterSystemHandler implements TwitterDataCenter {
+public class TwitterSystem implements TwitterDataCenter {
 
   private final Map<Class<?>, Object> servicesResult = new HashMap<>();
   private final Storage storage;
@@ -36,7 +36,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
    * @param serviceBuilder
    * @param storage
    */
-  public TwitterSystemHandler(
+  public TwitterSystem(
       final Set<Class<? extends TwitterQuery>> services,
       final ServiceBuildingManager serviceBuilder, final Storage storage) {
     this.services = services;

@@ -2,12 +2,13 @@ package ac.il.technion.twc.api;
 
 import java.util.List;
 
+import ac.il.technion.twc.api.core.TwitterSystemBuilder;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
- * A property for {@link TwitterDataCenterBuilder#addProperty(Class)} and
- * {@link TwitterDataCenterBuilder#addProperty(Class, PropertyFactory)}. <br>
+ * A property for {@link TwitterSystemBuilder#addProperty(Class)} and
+ * {@link TwitterSystemBuilder#addProperty(Class, PropertyFactory)}. <br>
  * <br>
  * 
  * A property is either: <br>
@@ -35,9 +36,9 @@ public interface Property {
    * 
    */
   public static class NotAPropertyException extends RuntimeException {
-  
+
     private static final long serialVersionUID = 7277301716229432516L;
-  
+
     /**
      * @param simpleName
      *          The name of the service
