@@ -2,6 +2,7 @@ package ac.il.technion.twc.api.core;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -26,6 +27,7 @@ import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
+import ac.il.technion.twc.api.TwitterQueryFactory.NotAQueryFactory;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
@@ -36,13 +38,14 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @date 30.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 class ServiceBuildingManager {
 
   private final Map<Class<?>, PropertyFactory<?>> supportedProperties =
       new HashMap<>();
+  private final Map<Class<?>, TwitterQueryFactory<?>> supportedQueries =
+      new HashMap<>();
+
   private final Set<Class<?>> supportedObjects = new HashSet<>();
   private final Map<Class<?>, Future<Object>> properties = new HashMap<>();
   private final ExecutorService pool = Executors.newCachedThreadPool();
@@ -125,9 +128,51 @@ class ServiceBuildingManager {
       }));
   }
 
+  /**
+   * @param type
+   *          The type of the service
+   * @param factory
+   *          a factory for the type
+   */
   public <T extends TwitterQuery, S extends T> void addQuery(
       final Class<T> type, final TwitterQueryFactory<S> factory) {
-    // TODO
+    Method chosen = null;
+    boolean usableFactory = true;
+    boolean missingProperty = false;
+    final StringBuilder missing = new StringBuilder();
+    final StringBuilder notQueryFactoryCause = new StringBuilder();
+    for (final Method m : factory.getClass().getMethods()) {
+      if (!"get".equals(m.getName()))
+        continue;
+      if (chosen != null)
+        throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+            "have multiple get function.");
+      final Class<?>[] paramters = m.getParameterTypes();
+      chosen = m;
+      for (final Class<?> paramterType : paramters) {
+        if (!Property.class.isAssignableFrom(paramterType)) {
+          notQueryFactoryCause.append("\t-The parameter "
+              + paramterType.getSimpleName() + " is not a property.\n");
+          usableFactory = false;
+        }
+        if (!supportedProperties.containsKey(paramterType)) {
+          missing.append("\t- " + paramterType.getSimpleName() + "\n");
+          missingProperty = true;
+        }
+      }
+    }
+    if (chosen == null)
+      throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+          "have none get function.");
+
+    if (!usableFactory)
+      throw new NotAQueryFactory(factory.getClass().getSimpleName(),
+          notQueryFactoryCause.toString());
+    if (missingProperty)
+      throw new MissingPropertitesException("The factory "
+          + factory.getClass().getSimpleName() + " missing the properties: \n"
+          + notQueryFactoryCause.toString());
+    supportedQueries.put(type, factory);
   }
 
   /**
@@ -151,7 +196,7 @@ class ServiceBuildingManager {
             " can't be register because:\n");
     boolean isMissing = false;
     // c'tor != null due to hasSingleAnnotatedCtor function
-    final Constructor<?> ctor = getServiceCtor(type);
+    final Constructor<T> ctor = getServiceCtor(type);
     final Type[] values = ctor.getParameterTypes();
     for (final Type parameter : values) {
       if (!(parameter instanceof Class<?>)) {
@@ -168,7 +213,23 @@ class ServiceBuildingManager {
     missingMessageBuilder.append("\n");
     if (isMissing)
       throw new MissingPropertitesException(missingMessageBuilder.toString());
-    return;
+    supportedQueries.put(type, new TwitterQueryFactory<T>() {
+
+      // read using reflection
+      @SuppressWarnings("unused")
+      public T get() {
+        try {
+          return ctor.newInstance(getCtorValues(ctor));
+        } catch (InstantiationException | IllegalAccessException
+            | IllegalArgumentException | InvocationTargetException
+            | InterruptedException | ExecutionException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        return null;
+      }
+
+    });
   }
 
   private String prefix(final String type) {
@@ -177,10 +238,13 @@ class ServiceBuildingManager {
   }
 
   private boolean hasSingleAnnotatedCtor(final Class<?> type) {
-    int count = 0;
     if (!isConcrete(type))
       return false;
-    for (final Constructor<?> ctor : type.getConstructors())
+    final Constructor<?>[] constructors = type.getConstructors();
+    if (constructors.length == 1)
+      return true;
+    int count = 0;
+    for (final Constructor<?> ctor : constructors)
       if (ctor.isAnnotationPresent(ServiceSetup.class))
         count++;
     return 1 == count;
@@ -241,11 +305,13 @@ class ServiceBuildingManager {
         && !Modifier.isInterface(type.getModifiers());
   }
 
-  private static Constructor<?> getServiceCtor(final Class<?> type) {
-    final Constructor<?>[] constructors = type.getConstructors();
+  private static <T> Constructor<T> getServiceCtor(final Class<T> type) {
+    @SuppressWarnings("unchecked")
+    final Constructor<T>[] constructors =
+        (Constructor<T>[]) type.getConstructors();
     if (1 == constructors.length)
       return constructors[0];
-    for (final Constructor<?> ctor : constructors)
+    for (final Constructor<T> ctor : constructors)
       if (ctor.isAnnotationPresent(ServiceSetup.class))
         return ctor;
     return null;
