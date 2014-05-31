@@ -33,7 +33,7 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @author Ophir De Jager
  * 
  */
-public class SimpleUsageTest {
+public class SimpleExample {
 
 	private static final Path dir = Paths.get("AdvancedUsageTest");
 

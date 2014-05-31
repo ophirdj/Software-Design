@@ -49,7 +49,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Ophir De Jager
  * 
  */
-public class RealWorldUsageTest {
+public class RealWorldExample {
 
 	private static final Path dir = Paths.get("RealWorldUsageTest");
 

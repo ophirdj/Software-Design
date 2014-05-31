@@ -32,7 +32,7 @@ import ac.il.technion.twc.api.tweet.parser.TweetParser;
  * @author Ophir De Jager
  * 
  */
-public class AdvancedUsageTest {
+public class AdvancedExample {
 
 	private static final Path dir = Paths.get("AdvancedUsageTest");
 
