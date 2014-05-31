@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.core.TwitterSystemBuilder;
 import ac.il.technion.twc.api.tweet.ID;
-import ac.il.technion.twc.api.tweet.parser.MultiFormatsTweetParser;
+import ac.il.technion.twc.api.tweet.parser.TweetParser;
 import ac.il.technion.twc.impl.parser.CommaSeparatedTweetFormat;
 import ac.il.technion.twc.impl.parser.JsonTweetFormat;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
@@ -31,7 +31,7 @@ import ac.il.technion.twc.impl.services.tagpopularity.TagToPopularity;
 public class FuntionalityTester {
 
   private final TwitterDataCenter serviceCenter;
-  private final MultiFormatsTweetParser parser;
+  private final TweetParser parser;
 
   private static final SimpleDateFormat temporalDateFormat =
       new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -50,7 +50,7 @@ public class FuntionalityTester {
             .registerQuery(TweetToLifeTime.class)
             .registerQuery(TagToPopularity.class).build();
     parser =
-        new MultiFormatsTweetParser(new CommaSeparatedTweetFormat(),
+        new TweetParser(new CommaSeparatedTweetFormat(),
             new JsonTweetFormat());
   }
 

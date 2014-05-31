@@ -8,7 +8,7 @@ import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.api.tweet.parser.TweetParser;
+import ac.il.technion.twc.api.tweet.parser.TweetFormat;
 
 /**
  * @author Ziv Ronen
@@ -18,7 +18,7 @@ import ac.il.technion.twc.api.tweet.parser.TweetParser;
  * @version 2.0
  * @since 2.0
  */
-public class CommaSeparatedTweetFormat implements TweetParser {
+public class CommaSeparatedTweetFormat implements TweetFormat {
 
 	private static final SimpleDateFormat csTweetDateFormat = new SimpleDateFormat(
 			"dd/MM/yyyy HH:mm:ss");
