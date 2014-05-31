@@ -2,6 +2,7 @@ package ac.il.technion.twc.api.tweet.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,18 +19,24 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @since 2.0
  */
 // TODO: find shorter name
-public class MultiFormatsTweetParser implements TweetParser {
+public class MultiFormatsTweetParser {
 
-	private final List<ParseFormat> formats;
+	private final List<TweetParser> formats;
 
 	/**
 	 * @param formats
 	 */
-	public MultiFormatsTweetParser(final List<ParseFormat> formats) {
-		this.formats = formats;
+	public MultiFormatsTweetParser(final TweetParser... formats) {
+		this.formats = Arrays.asList(formats);
 	}
 
-	@Override
+	/**
+	 * @param tweets
+	 *            a string representation of tweets
+	 * @return a collection of tweets objects corresponding to those tweets.
+	 * @throws ParseException
+	 *             if the parser can't parse all the given tweets
+	 */
 	public List<Tweet> parse(final String... tweets) throws ParseException {
 		final RunningFormat possibleFormats = new RunningFormat(formats);
 		for (final String tweet : tweets)
@@ -39,11 +46,11 @@ public class MultiFormatsTweetParser implements TweetParser {
 
 	private static class RunningFormat {
 
-		private final List<Pair<ParseFormat, List<Tweet>>> formats = new ArrayList<>();
+		private final List<Pair<TweetParser, List<Tweet>>> formats = new ArrayList<>();
 
-		public RunningFormat(final List<ParseFormat> formats) {
-			for (final ParseFormat parserFormat : formats)
-				this.formats.add(new Pair<ParseFormat, List<Tweet>>(
+		public RunningFormat(final List<TweetParser> formats) {
+			for (final TweetParser parserFormat : formats)
+				this.formats.add(new Pair<TweetParser, List<Tweet>>(
 						parserFormat, new ArrayList<Tweet>()));
 		}
 
@@ -57,18 +64,15 @@ public class MultiFormatsTweetParser implements TweetParser {
 		}
 
 		public void parse(final String tweet) {
-			for (final Iterator<Pair<ParseFormat, List<Tweet>>> iterator = formats
+			for (final Iterator<Pair<TweetParser, List<Tweet>>> iterator = formats
 					.iterator(); iterator.hasNext();) {
-				final Pair<ParseFormat, List<Tweet>> parserFormat = iterator
+				final Pair<TweetParser, List<Tweet>> parserFormat = iterator
 						.next();
-				if (!parserFormat.first.isFromFormat(tweet)) {
-					iterator.remove();
-					continue;
-				}
 				try {
 					parserFormat.second.add(parserFormat.first.parse(tweet));
 				} catch (final ParseException e) {
-					// Unreachable, Hopefully :P
+					iterator.remove();
+					continue;
 				}
 			}
 		}
