@@ -14,7 +14,7 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @since 2.0
  * @param <T>
  */
-public interface PropertyFactory<T> {
+public interface PropertyFactory<T extends Property> {
 
   /**
    * @param baseTweets

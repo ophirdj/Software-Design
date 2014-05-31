@@ -68,7 +68,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
       try {
         storage.store(service, serviceBuilder.getInstance(service));
       } catch (IllegalAccessException | IllegalArgumentException
-          | InvocationTargetException | InstantiationException e) {
+          | InvocationTargetException e) {
         // Shouldn't happen
         e.printStackTrace();
       }
@@ -80,8 +80,8 @@ public class TwitterSystemHandler implements TwitterDataCenter {
       try {
         servicesResult.put(service,
             storage.load(service, serviceBuilder.getInstance(service)));
-      } catch (InstantiationException | IllegalAccessException
-          | IllegalArgumentException | InvocationTargetException e) {
+      } catch (IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }

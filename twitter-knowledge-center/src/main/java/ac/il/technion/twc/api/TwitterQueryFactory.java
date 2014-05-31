@@ -11,7 +11,7 @@ package ac.il.technion.twc.api;
  * @param <T>
  * 
  */
-public interface TwitterQueryFactory<T> {
+public interface TwitterQueryFactory<T extends TwitterQuery> {
 
   /**
    * Indicate that the {@link TwitterQueryFactory} doesn't have a single get
@@ -21,13 +21,13 @@ public interface TwitterQueryFactory<T> {
    * @date 31.05.2014
    * @mail akarks@gmail.com
    */
-  public class NotAQueryFactory extends RuntimeException {
+  public class NotAQueryFactoryException extends RuntimeException {
 
     /**
      * @param simpleName
      *          The name of the factory type
      */
-    public NotAQueryFactory(final String simpleName) {
+    public NotAQueryFactoryException(final String simpleName) {
       super(simpleName + " is not a legal "
           + TwitterQueryFactory.class.getSimpleName());
     }
@@ -38,7 +38,7 @@ public interface TwitterQueryFactory<T> {
      * @param cause
      *          The reason it is not a legal query factory
      */
-    public NotAQueryFactory(final String simpleName, final String cause) {
+    public NotAQueryFactoryException(final String simpleName, final String cause) {
       super(simpleName + " is not a legal "
           + TwitterQueryFactory.class.getSimpleName() + " because " + cause);
     }
