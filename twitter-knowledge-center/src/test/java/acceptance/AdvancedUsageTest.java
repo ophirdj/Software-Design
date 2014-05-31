@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import org.junit.Test;
 
 import ac.il.technion.twc.TestUtils;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.core.Serializer;
@@ -58,7 +58,7 @@ public class AdvancedUsageTest {
 		 * @param retriever
 		 * @param finder
 		 */
-		@ServiceSetup
+		@QuerySetup
 		public RetweetCounter(final TweetsRetriever retriever,
 				final OriginFinder finder) {
 			followersFromID = new HashMap<ID, Integer>();

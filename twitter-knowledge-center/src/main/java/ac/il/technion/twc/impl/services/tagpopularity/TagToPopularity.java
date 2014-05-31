@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.properties.OriginFinder;
 import ac.il.technion.twc.api.properties.TweetsRetriever;
@@ -41,7 +41,7 @@ public class TagToPopularity implements TwitterQuery {
    * @param tweets
    * @param hashtags
    */
-  @ServiceSetup
+  @QuerySetup
   public TagToPopularity(final OriginFinder baseTweetFinder,
       final TweetsRetriever tweets, final IdHashtags hashtags) {
     for (final Retweet retweet : tweets.getRetweets())

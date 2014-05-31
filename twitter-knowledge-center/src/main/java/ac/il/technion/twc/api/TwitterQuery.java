@@ -5,7 +5,7 @@ package ac.il.technion.twc.api;
  * 
  * 
  * {@link TwitterQuery} must have only one constructor or a constructor annotated
- * with {@link ServiceSetup}.
+ * with {@link QuerySetup}.
  * 
  * <br>
  * In addition, any type the constructor required must be createable. That mean
@@ -16,7 +16,7 @@ package ac.il.technion.twc.api;
  * - fulfill All the following: <br>
  * (1) be a concrete class <br>
  * (2) have either a single public constructor or one public constructor
- * annotated with {@link ServiceSetup} <br>
+ * annotated with {@link QuerySetup} <br>
  * (3) any type required by the constructor in (2) should also be createable
  * 
  * 
@@ -31,7 +31,7 @@ public interface TwitterQuery {
 
   /**
    * Indicate that the object doesn't have a single construct annotated with
-   * {@link ServiceSetup} .
+   * {@link QuerySetup} .
    * 
    * @author Ziv Ronen
    * @date 29.05.2014

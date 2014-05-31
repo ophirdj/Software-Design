@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
@@ -184,7 +184,7 @@ class ServiceBuildingManager {
    *           missing and can't be uniquely instantiate
    * @throws TwitterQuery.NotAQueryException
    *           if the type do not possess precisely one constructor annotated
-   *           with {@link ServiceSetup}
+   *           with {@link QuerySetup}
    */
   public <T extends TwitterQuery> void addQuery(final Class<T> type)
       throws MissingPropertitesException, TwitterQuery.NotAQueryException {
@@ -247,7 +247,7 @@ class ServiceBuildingManager {
       return true;
     int count = 0;
     for (final Constructor<?> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
+      if (ctor.isAnnotationPresent(QuerySetup.class))
         count++;
     return 1 == count;
   }
@@ -278,7 +278,7 @@ class ServiceBuildingManager {
             .append("doesn't possess identifible requested constructor. ")
             .append(currentPath.toString()).append("\n")
             .append("\t(try to add a ")
-            .append(ServiceSetup.class.getSimpleName())
+            .append(QuerySetup.class.getSimpleName())
             .append(" Annotation to the requested constructor.)");
         return true;
       }
@@ -314,7 +314,7 @@ class ServiceBuildingManager {
     if (1 == constructors.length)
       return constructors[0];
     for (final Constructor<T> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
+      if (ctor.isAnnotationPresent(QuerySetup.class))
         return ctor;
     return null;
   }
@@ -363,7 +363,7 @@ class ServiceBuildingManager {
     if (1 == constructors.length)
       return constructors[0];
     for (final Constructor<?> ctor : constructors)
-      if (ctor.isAnnotationPresent(ServiceSetup.class))
+      if (ctor.isAnnotationPresent(QuerySetup.class))
         return ctor;
     throw new IllegalArgumentException();
   }

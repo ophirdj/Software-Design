@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.properties.OriginFinder;
 import ac.il.technion.twc.api.properties.TweetsRetriever;
@@ -51,7 +51,7 @@ public class TweetToLifeTime implements TwitterQuery {
    * @param tweets
    *          required property (tweets in system)
    */
-  @ServiceSetup
+  @QuerySetup
   public TweetToLifeTime(final OriginFinder baseTweetFinder,
       final TweetsRetriever tweets) {
     lifeTimeFromId = new HashMap<ID, Long>();

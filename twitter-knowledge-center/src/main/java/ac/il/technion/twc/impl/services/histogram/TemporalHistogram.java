@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import ac.il.technion.twc.FuntionalityTester;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.impl.properties.daymapping.DayMapping;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
@@ -56,7 +56,7 @@ public class TemporalHistogram implements TwitterQuery {
 	 * @param format
 	 *            the format for the return values
 	 */
-	@ServiceSetup
+	@QuerySetup
 	public TemporalHistogram(final DayMapping dayMapProperty,
 			final HistogramFormat format) {
 		this.format = format;

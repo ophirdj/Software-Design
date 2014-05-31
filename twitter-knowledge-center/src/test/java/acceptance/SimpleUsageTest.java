@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.TwitterQuery;
@@ -68,7 +68,7 @@ public class SimpleUsageTest {
     public final int numBase;
     public final int numRe;
 
-    @ServiceSetup
+    @QuerySetup
     // Need this to tell TwitterDataCenter to use this constructor when
     // creating the query
     public MyQuery(final MyProperty p) {

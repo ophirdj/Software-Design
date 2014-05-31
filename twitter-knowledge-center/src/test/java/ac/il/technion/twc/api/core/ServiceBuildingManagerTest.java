@@ -18,7 +18,7 @@ import org.junit.rules.ExpectedException;
 
 import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
-import ac.il.technion.twc.api.ServiceSetup;
+import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
@@ -508,7 +508,7 @@ public class ServiceBuildingManagerTest {
   private String missingMessage(final Class<?> property, final String path) {
     return propertyPrefix(property)
         + "doesn't possess identifible requested constructor. " + path
-        + "\n\t(try to add a " + ServiceSetup.class.getSimpleName()
+        + "\n\t(try to add a " + QuerySetup.class.getSimpleName()
         + " Annotation to the requested constructor.)\n";
   }
 
@@ -529,7 +529,7 @@ public class ServiceBuildingManagerTest {
   }
 
   private static class OneConstructorsMock implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public OneConstructorsMock() {
     }
   }
@@ -552,18 +552,18 @@ public class ServiceBuildingManagerTest {
     public OneConstructorsAnnotatedMock() {
     }
 
-    @ServiceSetup
+    @QuerySetup
     public OneConstructorsAnnotatedMock(final OneConstructorsMock mock) {
 
     }
   }
 
   private static class TwoConstructorsAnnotatedMock implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public TwoConstructorsAnnotatedMock() {
     }
 
-    @ServiceSetup
+    @QuerySetup
     public TwoConstructorsAnnotatedMock(final OneConstructorsMock mock) {
     }
   }
@@ -571,7 +571,7 @@ public class ServiceBuildingManagerTest {
   private static class NeedSupportedProperty implements TwitterQuery {
     public final int value;
 
-    @ServiceSetup
+    @QuerySetup
     public NeedSupportedProperty(final SupportedProperty a) {
       value = a.val.val;
     }
@@ -613,20 +613,20 @@ public class ServiceBuildingManagerTest {
   }
 
   private static class NotSupportedPropertyService implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public NotSupportedPropertyService(final ZeroPublicConstructorsMock mock) {
 
     }
   }
 
   private static class NeedAbstractPropertyService implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public NeedAbstractPropertyService(final AbstractProperty a) {
     }
   }
 
   private static class NeedInterfacePropertyService implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public NeedInterfacePropertyService(final InterfaceProperty a) {
     }
   }
@@ -642,7 +642,7 @@ public class ServiceBuildingManagerTest {
 
   private static abstract class AbstractService implements TwitterQuery {
 
-    @ServiceSetup
+    @QuerySetup
     public AbstractService() {
     }
   }
@@ -651,19 +651,19 @@ public class ServiceBuildingManagerTest {
   }
 
   private static class SelfCircleService implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public SelfCircleService(final SelfCircleService a) {
     }
   }
 
   private static class CircleHeadService implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public CircleHeadService(final CircleFirstProperty a) {
     }
   }
 
   private static class CircleFirstProperty implements TwitterQuery {
-    @ServiceSetup
+    @QuerySetup
     public CircleFirstProperty(final CircleSecondProperty a) {
     }
   }
@@ -684,7 +684,7 @@ public class ServiceBuildingManagerTest {
 
   private static class MultipuleMissingCausesClass implements TwitterQuery {
     // read with reflection
-    @ServiceSetup
+    @QuerySetup
     public MultipuleMissingCausesClass(final CircleFirstProperty a1,
         final char a2, final InterfaceProperty a3,
         final NotSupportedPropertyService a4) {
