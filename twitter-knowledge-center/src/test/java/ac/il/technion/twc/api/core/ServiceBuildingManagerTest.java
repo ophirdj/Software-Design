@@ -17,7 +17,6 @@ import ac.il.technion.twc.api.ServiceSetup;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAPropertyException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.NotAServiceException;
-import ac.il.technion.twc.api.core.ServiceBuildingManager;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
@@ -53,7 +52,6 @@ public class ServiceBuildingManagerTest {
     resMock = mock(List.class);
     $ = new ServiceBuildingManager();
     $.addProperty(SupportedProperty.class);
-    $.addPredfineValue(PredefineValue.class, new PredefineValue(PREDEFINE_VAL));
   }
 
   /**
@@ -116,20 +114,6 @@ public class ServiceBuildingManagerTest {
   }
 
   /**
-   * @throws InvocationTargetException
-   * @throws IllegalArgumentException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   */
-  @Test
-  public final void getClassThatNeededPredefineValueShouldUseDefinedValue()
-      throws InstantiationException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException {
-    assertEquals(PREDEFINE_VAL,
-        ((NeedPredefineValue) $.getInstance(NeedPredefineValue.class)).val);
-  }
-
-  /**
    * @throws NotAServiceException
    * @throws MissingPropertitesException
    * @throws InvocationTargetException
@@ -152,16 +136,6 @@ public class ServiceBuildingManagerTest {
     assertEquals(
         5,
         ((NeedSupportedProperty) $.getInstance(NeedSupportedProperty.class)).value);
-  }
-
-  /**
-   * @throws NotAServiceException
-   * @throws MissingPropertitesException
-   */
-  @Test
-  public final void checkClassThatNeededPredefineValueShouldnotThrowException()
-      throws MissingPropertitesException, NotAServiceException {
-    $.addQuery(NeedPredefineValue.class);
   }
 
   /**
@@ -362,7 +336,7 @@ public class ServiceBuildingManagerTest {
    */
   @Test
   public final void checkPropertySucceed() {
-    $.checkProperty(SupportedProperty.class);
+    $.addProperty(SupportedProperty.class);
   }
 
   /**
@@ -373,7 +347,7 @@ public class ServiceBuildingManagerTest {
     thrown.expect(NotAPropertyException.class);
     thrown.expectMessage(TwoConstructorsMock.class.getSimpleName()
         + " is not a property");
-    $.checkProperty(TwoConstructorsMock.class);
+    $.addProperty(TwoConstructorsMock.class);
   }
 
   private String circleMessage(final Class<?> property, final String path) {
@@ -476,17 +450,6 @@ public class ServiceBuildingManagerTest {
     public SupportedProperty(final PredefineValue val) {
       this.val = val;
     }
-  }
-
-  private static class NeedPredefineValue {
-
-    public final int val;
-
-    @ServiceSetup
-    public NeedPredefineValue(final PredefineValue predefineVal) {
-      val = predefineVal.val;
-    }
-
   }
 
   private static class PredefineValue {
