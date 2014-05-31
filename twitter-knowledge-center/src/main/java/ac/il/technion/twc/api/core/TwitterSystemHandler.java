@@ -83,8 +83,8 @@ public class TwitterSystemHandler implements TwitterDataCenter {
 	public <T> T getService(final Class<T> type)
 			throws IllegalArgumentException {
 		if (!servicesResult.containsKey(type))
-			throw new IllegalArgumentException("No service of type: " + type
-					+ " is registered");
+			throw new IllegalArgumentException("Service: " + type
+					+ " wanted but not registered");
 		return type.cast(servicesResult.get(type));
 	}
 
