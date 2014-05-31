@@ -16,8 +16,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import ac.il.technion.twc.api.tweet.Tweet;
-import ac.il.technion.twc.api.tweet.parser.TweetParser;
 import ac.il.technion.twc.api.tweet.parser.TweetFormat;
+import ac.il.technion.twc.api.tweet.parser.TweetParser;
 
 /**
  * Tests for {@link TweetParser}
@@ -50,7 +50,7 @@ public class MultiFormatsParserTest {
 
 	/**
 	 * Test method for: <br>
-	 * - {@link TweetParser#MultiFormatsTweetParser(TweetFormat...)}
+	 * - {@link TweetParser#TweetParser(TweetFormat...)}
 	 */
 	@Test
 	public final void parserBuildSucceeded() {
