@@ -132,6 +132,10 @@ public class TwitterSystemBuilder {
    * @return A {@link TwitterDataCenter}.
    */
   public TwitterSystem build() {
+    // XXX force the user to register at least one query?
+
+    // if (services.isEmpty())
+    // throw new NoRegisterQueryException();
     return new TwitterSystem(services, serviceBuilder,
         storageBuilder.buildStorage());
   }
@@ -155,6 +159,23 @@ public class TwitterSystemBuilder {
     }
 
     private static final long serialVersionUID = -2955615443853602756L;
+  }
+
+  /**
+   * If a no query was register
+   * 
+   * @author Ziv Ronen
+   * @date 29.05.2014
+   * @mail akarks@gmail.com
+   * 
+   */
+  public static class NoRegisterQueryException extends RuntimeException {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4840175866315170447L;
+
   }
 
 }

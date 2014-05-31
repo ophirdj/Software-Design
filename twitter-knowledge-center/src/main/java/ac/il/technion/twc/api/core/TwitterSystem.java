@@ -55,6 +55,11 @@ public class TwitterSystem implements TwitterDataCenter {
     tweets.addAll(storedTweets.getBaseTweets());
     tweets.addAll(storedTweets.getRetweets());
     final Tweets newTweets = new Tweets(tweets);
+
+    // XXX clear servicesResult since it is not valid any more?
+
+    // servicesResult.clear();
+
     try {
       storage.store(Tweets.class, newTweets);
       buildServices(newTweets);
@@ -78,9 +83,16 @@ public class TwitterSystem implements TwitterDataCenter {
 
   @Override
   public <T> T getService(final Class<T> type) throws IllegalArgumentException {
+
     if (!servicesResult.containsKey(type)) {
+      // XXX load when services.contains(type)?
+
+      // if (services.contains(type)) {
+      // storage.load(type, serviceBuilder.getInstance(type));
+      // }
+
       final String evaluated =
-          !servicesResult.isEmpty() ? ""
+          !services.contains(type) ? "Did you forgot to register the query?"
               : " Did you forgot to evaluate the queries?";
       throw new IllegalArgumentException("Service: " + type
           + " wanted but not registered." + evaluated);
