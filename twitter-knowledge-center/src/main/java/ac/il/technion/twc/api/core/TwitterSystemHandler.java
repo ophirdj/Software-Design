@@ -46,7 +46,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
 
   @Override
   public void importData(final Collection<? extends Tweet> importedTweets)
-      throws OperationFailedException {
+      throws SystemOperationFailedException {
     final Tweets storedTweets = storage.load(Tweets.class, new Tweets());
     final List<Tweet> tweets = new ArrayList<>();
     tweets.addAll(importedTweets);
@@ -57,7 +57,7 @@ public class TwitterSystemHandler implements TwitterDataCenter {
       storage.store(Tweets.class, newTweets);
       buildServices(newTweets);
     } catch (final IOException e) {
-      throw new OperationFailedException(e);
+      throw new SystemOperationFailedException(e);
     }
   }
 
@@ -83,11 +83,11 @@ public class TwitterSystemHandler implements TwitterDataCenter {
   }
 
   @Override
-  public void clear() throws OperationFailedException {
+  public void clear() throws SystemOperationFailedException {
     try {
       storage.clear();
     } catch (final IOException e) {
-      throw new OperationFailedException(e);
+      throw new SystemOperationFailedException(e);
     }
   }
 

@@ -1,5 +1,7 @@
 package ac.il.technion.twc.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import ac.il.technion.twc.api.tweet.Tweet;
@@ -19,28 +21,66 @@ import ac.il.technion.twc.api.tweet.Tweet;
 public interface TwitterDataCenter {
 
   /**
-   * Unchecked wrapper for checked exceptions.
+   * Unchecked wrapper for checked exceptions. Wrap exceptions that was caused
+   * by failure in the underlying system java run upon.
+   * 
+   * For instance, {@link IOException}
    * 
    * @author Ophir De Jager
    * 
    */
-  public static class OperationFailedException extends RuntimeException {
+  public static class SystemOperationFailedException extends RuntimeException {
 
     private static final long serialVersionUID = 2095741218824580067L;
-    private final Exception cause;
 
     /**
      * @param e
+     *          the cause of the exception
      */
-    public OperationFailedException(final Exception e) {
-      cause = e;
+    public SystemOperationFailedException(final Exception e) {
+      super(e);
+    }
+  }
+
+  /**
+   * Unchecked wrapper for checked exceptions. Wrap exceptions that was caused
+   * by failure in our creating process. Usually, they can be solved by making
+   * your properties and queries pojos.
+   * 
+   * 
+   * For instance, {@link IllegalAccessError}
+   * 
+   * @author Ophir De Jager
+   * 
+   */
+  public static class CreatingOperationFailedException extends RuntimeException {
+
+    private static final long serialVersionUID = 2095741218824580067L;
+    private final Type type;
+
+    /**
+     * @param e
+     *          the cause of the exception
+     * @param type
+     *          the type that cause the exception
+     */
+    public CreatingOperationFailedException(final Exception e, final Type type) {
+      super(e);
+      this.type = type;
+    }
+
+    /**
+     * @return The type that cause the exception
+     */
+    public Type getCausingType() {
+      return type;
     }
 
     @Override
-    public Exception getCause() {
-      return cause;
+    public String toString() {
+      return "Caused in type :" + type.toString() + ". Exception detail: "
+          + getCause().toString();
     }
-
   }
 
   /**
@@ -49,11 +89,11 @@ public interface TwitterDataCenter {
    * 
    * @param tweets
    *          new tweets
-   * @throws OperationFailedException
+   * @throws SystemOperationFailedException
    *           If storing system state as failed
    */
   void importData(Collection<? extends Tweet> tweets)
-      throws OperationFailedException;
+      throws SystemOperationFailedException;
 
   /**
    * evaluate all registered queries
@@ -63,10 +103,10 @@ public interface TwitterDataCenter {
   /**
    * Clear persistent storage.
    * 
-   * @throws OperationFailedException
+   * @throws SystemOperationFailedException
    *           If clearing persistent storage failed.
    */
-  void clear() throws OperationFailedException;
+  void clear() throws SystemOperationFailedException;
 
   /**
    * 

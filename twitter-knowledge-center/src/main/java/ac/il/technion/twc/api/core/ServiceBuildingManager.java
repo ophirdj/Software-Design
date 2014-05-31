@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import ac.il.technion.twc.api.Property;
 import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.QuerySetup;
+import ac.il.technion.twc.api.TwitterDataCenter.CreatingOperationFailedException;
 import ac.il.technion.twc.api.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
@@ -74,8 +75,7 @@ class ServiceBuildingManager {
               return ctor.newInstance(baseTweets, retweets);
             } catch (InstantiationException | IllegalAccessException
                 | IllegalArgumentException e) {
-              // TODO warp with our exception
-              throw new RuntimeException(e);
+              throw new CreatingOperationFailedException(e, type);
             } catch (final InvocationTargetException e) {
               throw new RuntimeException(e.getCause());
             }
@@ -224,8 +224,7 @@ class ServiceBuildingManager {
         } catch (final InterruptedException e) {
           throw new RuntimeException("interrupted while instantiating class");
         } catch (InstantiationException | IllegalAccessException e) {
-          // TODO wrap with our class
-          throw new RuntimeException(e);
+          throw new CreatingOperationFailedException(e, type);
         } catch (ExecutionException | InvocationTargetException e) {
           throw new RuntimeException(e.getCause());
         }
@@ -335,8 +334,7 @@ class ServiceBuildingManager {
           try {
             return m.invoke(factory, getValues(m));
           } catch (final IllegalAccessException e) {
-            // TODO wrap with our class
-            throw new RuntimeException(e);
+            throw new CreatingOperationFailedException(e, type);
           } catch (final InvocationTargetException e) {
             throw new RuntimeException(e.getCause());
           }
@@ -381,8 +379,8 @@ class ServiceBuildingManager {
         try {
           values[i] = innerCtor.newInstance(getCtorValues(innerCtor));
         } catch (InstantiationException | IllegalAccessException e) {
-          // TODO wrap with our class
-          throw new RuntimeException(e);
+          throw new CreatingOperationFailedException(e,
+              innerCtor.getDeclaringClass());
         } catch (final InvocationTargetException e) {
           throw new RuntimeException(e.getCause());
         }
