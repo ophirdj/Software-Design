@@ -1,13 +1,16 @@
 package ac.il.technion.twc.api.core;
 
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -89,38 +92,30 @@ public class TwitterSystemHandlerTest {
   }
 
   /**
-	 * 
-	 */
+   * @throws InvocationTargetException
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   */
   @Test
-  public final void loadServicesShouldCallStorageLoadWithEachService() {
-    // final Object o1 = mock(Object.class);
-    // final Object o2 = mock(Object.class);
-    // final Object o3 = mock(Object.class);
-    // when(services.iterator()).thenReturn(Arrays.asList(o1, o2,
-    // o3).iterator());
-    // $.loadServices();
-    // verify(storageMock).load(o1);
-    // verify(storageMock).load(o2);
-    // verify(storageMock).load(o3);
-  }
-
-  /**
-	 */
-  @Test
-  public final void getServiceShouldReturnLoadedValue() {
-    // final Integer o1 = new Integer(1);
-    // final Long o2 = new Long(1L);
-    // final List<Object> os = new ArrayList<>();
-    // final Integer defaultInteger = new Integer(0);
-    // final Long defaultLong = new Long(0);
-    // os.add(defaultInteger);
-    // os.add(defaultLong);
-    // when(services.iterator()).thenReturn(os.iterator());
-    // when(storageMock.load(defaultInteger)).thenReturn(o1);
-    // when(storageMock.load(defaultLong)).thenReturn(o2);
-    // $.loadServices();
-    // assertSame(o1, $.getService(Integer.class));
-    // assertSame(o2, $.getService(Long.class));
+  public final void getServiceShouldReturnLoadedValue()
+      throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException {
+    final ServiceOne o1 = new ServiceOne();
+    final ServiceTwo o2 = new ServiceTwo();
+    final ServiceOne o3 = new ServiceOne();
+    final ServiceTwo o4 = new ServiceTwo();
+    final Class<ServiceOne> c1 = ServiceOne.class;
+    final Class<ServiceTwo> c2 = ServiceTwo.class;
+    final List<Class<? extends TwitterQuery>> os = Arrays.asList(c1, c2);
+    when(services.iterator()).thenReturn(os.iterator());
+    when(serviceBuilder.getInstance(c1)).thenReturn(o1);
+    when(serviceBuilder.getInstance(c2)).thenReturn(o2);
+    when(storageMock.load(c1, o1)).thenReturn(o3);
+    when(storageMock.load(c2, o2)).thenReturn(o4);
+    $.loadServices();
+    assertSame(o3, $.getService(c1));
+    assertSame(o4, $.getService(c2));
   }
 
   /**
@@ -143,6 +138,12 @@ public class TwitterSystemHandlerTest {
   public final void clearSystemShouldCallStorageClear() throws IOException {
     $.clear();
     verify(storageMock).clear();
+  }
+
+  private static class ServiceOne implements TwitterQuery {
+  }
+
+  private static class ServiceTwo implements TwitterQuery {
   }
 
 }
