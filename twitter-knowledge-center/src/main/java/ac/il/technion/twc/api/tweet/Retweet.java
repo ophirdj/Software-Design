@@ -59,11 +59,6 @@ public class Retweet extends Tweet {
   }
 
   @Override
-  public <T> T accept(final TweetVisitor<T> visitor) {
-    return visitor.visit(this);
-  }
-
-  @Override
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();

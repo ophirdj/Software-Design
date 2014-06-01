@@ -13,16 +13,14 @@ import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQuerySerializer;
 
 /**
- * Builder for {@link TwitterSystem}
+ * Builder for {@link TwitterDataCenterimpl}
  * 
  * @author Ziv Ronen
  * @date 22.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
-public class TwitterSystemBuilder {
+public class TwitterDataCenterBuilder {
 
   private final ServiceBuildingManager serviceBuilder =
       new ServiceBuildingManager();
@@ -33,7 +31,7 @@ public class TwitterSystemBuilder {
    * @param path
    *          The path for storing
    */
-  public TwitterSystemBuilder(final Path path) {
+  public TwitterDataCenterBuilder(final Path path) {
     storageBuilder = new StorageBuilder(path);
   }
 
@@ -44,9 +42,9 @@ public class TwitterSystemBuilder {
    * 
    * @param propertyType
    *          The type of the property. see {@link Property} for details.
-   * @return this {@link TwitterSystemBuilder}.
+   * @return this {@link TwitterDataCenterBuilder}.
    */
-  public <T extends Property> TwitterSystemBuilder addProperty(
+  public <T extends Property> TwitterDataCenterBuilder addProperty(
       final Class<T> propertyType) {
     serviceBuilder.addProperty(propertyType);
     return this;
@@ -61,10 +59,11 @@ public class TwitterSystemBuilder {
    *          The type of the property. see {@link Property} for details.
    * @param propertyFactory
    *          factory for the given property
-   * @return this {@link TwitterSystemBuilder}.
+   * @return this {@link TwitterDataCenterBuilder}.
    */
-  public <T extends Property, S extends T> TwitterSystemBuilder addProperty(
-      final Class<T> propertyType, final PropertyFactory<S> propertyFactory) {
+  public <T extends Property, S extends T> TwitterDataCenterBuilder
+      addProperty(final Class<T> propertyType,
+          final PropertyFactory<S> propertyFactory) {
     serviceBuilder.addProperty(propertyType, propertyFactory);
     return this;
   }
@@ -76,7 +75,7 @@ public class TwitterSystemBuilder {
    *          stored, we will use the given serializer.
    * @return a reference to this object.
    */
-  public <T> TwitterSystemBuilder addSerializer(
+  public <T> TwitterDataCenterBuilder addSerializer(
       final TwitterQuerySerializer<T> serialzerToAdd) {
     storageBuilder.addSerializer(serialzerToAdd);
     return this;
@@ -88,14 +87,14 @@ public class TwitterSystemBuilder {
    *          The type of the query to be register. see {@link TwitterQuery} for
    *          details.
    * 
-   * @return this {@link TwitterSystemBuilder}.
+   * @return this {@link TwitterDataCenterBuilder}.
    * @throws TwitterQuery.NotAQueryException
    *           if the object is not a legal service
    * @throws MissingPropertitesException
    *           if any of the property required for the service can't be
    *           obtained.
    */
-  public <T extends TwitterQuery> TwitterSystemBuilder registerQuery(
+  public <T extends TwitterQuery> TwitterDataCenterBuilder registerQuery(
       final Class<T> queryType) throws NotAQueryException,
       MissingPropertitesException {
     serviceBuilder.addQuery(queryType);
@@ -112,14 +111,14 @@ public class TwitterSystemBuilder {
    *          factory for the given query. see {@link TwitterQueryFactory} for
    *          details.
    * 
-   * @return this {@link TwitterSystemBuilder}.
+   * @return this {@link TwitterDataCenterBuilder}.
    * @throws TwitterQuery.NotAQueryException
    *           if the object is not a legal service
    * @throws MissingPropertitesException
    *           if any of the property required for the service can't be
    *           obtained.
    */
-  public <T extends TwitterQuery, S extends T> TwitterSystemBuilder
+  public <T extends TwitterQuery, S extends T> TwitterDataCenterBuilder
       registerQuery(final Class<T> queryType,
           final TwitterQueryFactory<S> queryFactory)
           throws TwitterQuery.NotAQueryException, MissingPropertitesException {
@@ -131,8 +130,8 @@ public class TwitterSystemBuilder {
   /**
    * @return A {@link TwitterDataCenter}.
    */
-  public TwitterSystem build() {
-    return new TwitterSystem(services, serviceBuilder,
+  public TwitterDataCenterimpl build() {
+    return new TwitterDataCenterimpl(services, serviceBuilder,
         storageBuilder.buildStorage());
   }
 

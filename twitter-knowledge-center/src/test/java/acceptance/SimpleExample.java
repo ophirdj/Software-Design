@@ -21,7 +21,7 @@ import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -56,13 +56,13 @@ public class SimpleExample {
 	}
 
 	/**
-	 * Test method for {@link TwitterSystemBuilder} and
+	 * Test method for {@link TwitterDataCenterBuilder} and
 	 * {@link TwitterDataCenter}
 	 */
 	@Test
 	public final void simpleUsageTest() {
 		// Create a builder for the data center
-		final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
+		final TwitterDataCenterBuilder builder = new TwitterDataCenterBuilder(dir);
 		// Add wanted properties and queries
 		builder.addProperty(MyProperty.class).registerQuery(MyQuery.class);
 		// Create the data center
@@ -77,7 +77,7 @@ public class SimpleExample {
 		// Evaluate the queries
 		dataCenter.evaluateQueries();
 		// Now we can ask the queries
-		final MyQuery q = dataCenter.getService(MyQuery.class);
+		final MyQuery q = dataCenter.getQuery(MyQuery.class);
 		assertEquals(numReActual, q.numRe);
 		assertEquals(tweets.size() - numReActual, q.numBase);
 
@@ -86,31 +86,31 @@ public class SimpleExample {
 	}
 
 	/**
-	 * Test method for {@link TwitterSystemBuilder} and
+	 * Test method for {@link TwitterDataCenterBuilder} and
 	 * {@link TwitterDataCenter}
 	 */
 	@Test
 	public final void simpleUsageTestWithoutTweets() {
 		// Add wanted properties and queries and create the data center
-		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
+		final TwitterDataCenter dataCenter = new TwitterDataCenterBuilder(dir)
 				.addProperty(MyProperty.class).registerQuery(MyQuery.class)
 				.build();
 		// Evaluate the queries
 		dataCenter.evaluateQueries();
 		// Now we can ask the queries
-		final MyQuery q = dataCenter.getService(MyQuery.class);
+		final MyQuery q = dataCenter.getQuery(MyQuery.class);
 		assertEquals(0, q.numRe);
 		assertEquals(0, q.numBase);
 	}
 
 	/**
-	 * Test method for {@link TwitterSystemBuilder} and
+	 * Test method for {@link TwitterDataCenterBuilder} and
 	 * {@link TwitterDataCenter}
 	 */
 	@Test
 	public final void simpleUsageTestWithFactories() {
 		// Create a builder for the data center
-		final TwitterSystemBuilder builder = new TwitterSystemBuilder(dir);
+		final TwitterDataCenterBuilder builder = new TwitterDataCenterBuilder(dir);
 		// Add wanted properties using factories
 		builder.addProperty(MyProperty.class,
 				new PropertyFactory<MyProperty>() {
@@ -136,7 +136,7 @@ public class SimpleExample {
 		// Evaluate the queries
 		dataCenter.evaluateQueries();
 		// Now we can ask the queries
-		final MyQuery q = dataCenter.getService(MyQuery.class);
+		final MyQuery q = dataCenter.getQuery(MyQuery.class);
 		assertEquals(numReActual, q.numRe);
 		assertEquals(tweets.size() - numReActual, q.numBase);
 

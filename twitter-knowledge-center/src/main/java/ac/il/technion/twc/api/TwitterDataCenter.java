@@ -115,6 +115,6 @@ public interface TwitterDataCenter {
    * @throws IllegalArgumentException
    *           If a service that isn't registered was requested
    */
-  <T> T getService(Class<T> type) throws IllegalArgumentException;
+  <T> T getQuery(Class<T> type) throws IllegalArgumentException;
 
 }

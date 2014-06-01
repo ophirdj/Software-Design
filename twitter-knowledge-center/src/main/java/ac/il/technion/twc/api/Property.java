@@ -2,13 +2,13 @@ package ac.il.technion.twc.api;
 
 import java.util.List;
 
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
- * A property for {@link TwitterSystemBuilder#addProperty(Class)} and
- * {@link TwitterSystemBuilder#addProperty(Class, PropertyFactory)}. <br>
+ * A property for {@link TwitterDataCenterBuilder#addProperty(Class)} and
+ * {@link TwitterDataCenterBuilder#addProperty(Class, PropertyFactory)}. <br>
  * <br>
  * 
  * A property is either: <br>

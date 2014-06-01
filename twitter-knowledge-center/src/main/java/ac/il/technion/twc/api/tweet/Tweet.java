@@ -45,15 +45,6 @@ public abstract class Tweet {
   }
 
   /**
-   * For visitor design pattern. Implementing classes should call
-   * <code>visitor.visit(this)</code>.
-   * 
-   * @param visitor
-   * @return Return value of visitor for this message.
-   */
-  public abstract <T> T accept(TweetVisitor<T> visitor);
-
-  /**
    * @return Time when tweet was published.
    */
   public Date date() {

@@ -53,7 +53,7 @@ class StorageBuilder {
   }
 
   /**
-   * @return Storage for {@link TwitterSystem}
+   * @return Storage for {@link TwitterDataCenterimpl}
    */
   public Storage buildStorage() {
     return new Storage(gsonBuilder.create(), path, new FileHandler(),

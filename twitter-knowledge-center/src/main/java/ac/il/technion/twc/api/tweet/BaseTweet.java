@@ -28,9 +28,4 @@ public class BaseTweet extends Tweet {
     super(date, id, hashtags);
   }
 
-  @Override
-  public <T> T accept(final TweetVisitor<T> visitor) {
-    return visitor.visit(this);
-  }
-
 }

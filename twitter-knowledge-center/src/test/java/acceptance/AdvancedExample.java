@@ -20,7 +20,7 @@ import ac.il.technion.twc.api.PropertyFactory;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -55,12 +55,12 @@ public class AdvancedExample {
 	}
 
 	/**
-	 * Test Method for {@link TwitterDataCenter}, {@link TwitterSystemBuilder}.
+	 * Test Method for {@link TwitterDataCenter}, {@link TwitterDataCenterBuilder}.
 	 */
 	@Test
 	public final void sharedPropertyBetweenQueriesShouldBeCalculatedOnlyOnce() {
 		// Add 1 property and 2 queries that use that property
-		final TwitterDataCenter dataCenter = new TwitterSystemBuilder(dir)
+		final TwitterDataCenter dataCenter = new TwitterDataCenterBuilder(dir)
 				.addProperty(SharedProperty.class,
 						new SharedProperty.UselessPropertyFactory())
 				.registerQuery(Query1.class, new Query1.UselessQueryFactory())
@@ -69,9 +69,9 @@ public class AdvancedExample {
 		dataCenter.evaluateQueries();
 		// The property was evaluated only once and is shared between queries
 		assertEquals("query 1, property instance: 1",
-				dataCenter.getService(Query1.class).query());
+				dataCenter.getQuery(Query1.class).query());
 		assertEquals("query 2, property instance: 1",
-				dataCenter.getService(Query2.class).query());
+				dataCenter.getQuery(Query2.class).query());
 		// cleanup
 		dataCenter.clear();
 	}

@@ -1,9 +1,9 @@
 package ac.il.technion.twc.api;
 
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 
 /**
- * A query for {@link TwitterSystemBuilder#registerQuery(Class)}.
+ * A query for {@link TwitterDataCenterBuilder#registerQuery(Class)}.
  * 
  * 
  * {@link TwitterQuery} must have only one constructor or a constructor

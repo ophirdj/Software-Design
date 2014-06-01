@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 import ac.il.technion.twc.api.TwitterDataCenter;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.properties.OriginFinder;
 import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.tweet.ID;
@@ -44,7 +44,7 @@ public class FuntionalityTester {
   public FuntionalityTester() {
     temporalDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     serviceCenter =
-        new TwitterSystemBuilder(Paths.get("system"))
+        new TwitterDataCenterBuilder(Paths.get("system"))
             .addSerializer(new TweetToLifeTimeSerializer())
             .addProperty(DayMapping.class).addProperty(OriginFinder.class)
             .addProperty(IdHashtags.class).addProperty(TweetsRetriever.class)
@@ -111,7 +111,7 @@ public class FuntionalityTester {
    *           If it is not possible to complete the operation
    */
   public String getLifetimeOfTweets(final String tweetId) throws Exception {
-    return Long.toString(serviceCenter.getService(TweetToLifeTime.class)
+    return Long.toString(serviceCenter.getQuery(TweetToLifeTime.class)
         .getLifeTimeById(new ID(tweetId)));
   }
 
@@ -124,7 +124,7 @@ public class FuntionalityTester {
    *         the array is Sunday.
    */
   public String[] getDailyHistogram() {
-    return serviceCenter.getService(DayHistogram.class).get();
+    return serviceCenter.getQuery(DayHistogram.class).get();
   }
 
   /**
@@ -136,7 +136,7 @@ public class FuntionalityTester {
    * @return A string, in the format of a number, contain the number of retweets
    */
   public String getHashtagPopularity(final String hashtag) {
-    return Integer.toString(serviceCenter.getService(TagToPopularity.class)
+    return Integer.toString(serviceCenter.getQuery(TagToPopularity.class)
         .getPopularityByHashtag(hashtag));
   }
 
@@ -160,7 +160,7 @@ public class FuntionalityTester {
    */
   public String[] getTemporalHistogram(final String t1, final String t2)
       throws Exception {
-    return serviceCenter.getService(TemporalHistogram.class).get(
+    return serviceCenter.getQuery(TemporalHistogram.class).get(
         temporalDateFormat.parse(t1), temporalDateFormat.parse(t2));
   }
 

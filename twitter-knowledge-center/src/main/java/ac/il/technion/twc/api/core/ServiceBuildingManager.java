@@ -26,7 +26,7 @@ import ac.il.technion.twc.api.TwitterDataCenter.CreatingOperationFailedException
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQueryFactory.NotAQueryFactoryException;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder.MissingPropertitesException;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
@@ -77,7 +77,7 @@ class ServiceBuildingManager {
                 | IllegalArgumentException e) {
               throw new CreatingOperationFailedException(e, type);
             } catch (final InvocationTargetException e) {
-              throw new InvokingUserMethodFailedException(e.getCause());
+              throw new UserMethodInvokationException(e.getCause());
             }
           }
         });
@@ -226,7 +226,7 @@ class ServiceBuildingManager {
         } catch (InstantiationException | IllegalAccessException e) {
           throw new CreatingOperationFailedException(e, type);
         } catch (ExecutionException | InvocationTargetException e) {
-          throw new InvokingUserMethodFailedException(e.getCause());
+          throw new UserMethodInvokationException(e.getCause());
         }
       }
 
@@ -322,11 +322,11 @@ class ServiceBuildingManager {
    * @param type
    *          the requested service type
    * @return An instance of the given type
-   * @throws InvokingUserMethodFailedException
+   * @throws UserMethodInvokationException
    *           if calling a method of user class have failed
    */
   public Object getInstance(final Class<?> type)
-      throws InvokingUserMethodFailedException {
+      throws UserMethodInvokationException {
     if (supportedQueries.containsKey(type)) {
       final TwitterQueryFactory<?> factory = supportedQueries.get(type);
       for (final Method m : factory.getClass().getMethods())
@@ -336,7 +336,7 @@ class ServiceBuildingManager {
           } catch (final IllegalAccessException e) {
             throw new CreatingOperationFailedException(e, type);
           } catch (final InvocationTargetException e) {
-            throw new InvokingUserMethodFailedException(e.getCause());
+            throw new UserMethodInvokationException(e.getCause());
           }
     }
     throw new IllegalArgumentException("Service wanted but not registered.");
@@ -351,7 +351,7 @@ class ServiceBuildingManager {
       } catch (final InterruptedException e) {
         throw new RuntimeException("interrupted while instantiating class");
       } catch (final ExecutionException e) {
-        throw new InvokingUserMethodFailedException(e);
+        throw new UserMethodInvokationException(e);
       }
     return $;
   }
@@ -382,7 +382,7 @@ class ServiceBuildingManager {
           throw new CreatingOperationFailedException(e,
               innerCtor.getDeclaringClass());
         } catch (final InvocationTargetException e) {
-          throw new InvokingUserMethodFailedException(e.getCause());
+          throw new UserMethodInvokationException(e.getCause());
         }
       }
     }
@@ -394,7 +394,7 @@ class ServiceBuildingManager {
    * @date 01.06.2014
    * @mail akarks@gmail.com
    */
-  static class InvokingUserMethodFailedException extends RuntimeException {
+  static class UserMethodInvokationException extends RuntimeException {
     /**
      * 
      */
@@ -404,7 +404,7 @@ class ServiceBuildingManager {
      * @param e
      *          the cause
      */
-    public InvokingUserMethodFailedException(final Throwable e) {
+    public UserMethodInvokationException(final Throwable e) {
       super(e);
     }
   }

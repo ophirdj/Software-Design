@@ -22,7 +22,7 @@ import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQueryFactory;
 import ac.il.technion.twc.api.TwitterQueryFactory.NotAQueryFactoryException;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder.MissingPropertitesException;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder.MissingPropertitesException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;

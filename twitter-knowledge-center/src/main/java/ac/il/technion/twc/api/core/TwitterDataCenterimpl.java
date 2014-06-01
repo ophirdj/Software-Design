@@ -12,7 +12,7 @@ import java.util.Set;
 
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
-import ac.il.technion.twc.api.core.ServiceBuildingManager.InvokingUserMethodFailedException;
+import ac.il.technion.twc.api.core.ServiceBuildingManager.UserMethodInvokationException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
@@ -25,7 +25,7 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @mail akarks@gmail.com
  * 
  */
-public class TwitterSystem implements TwitterDataCenter {
+public class TwitterDataCenterimpl implements TwitterDataCenter {
 
   private final Map<Class<?>, Object> servicesResult = new HashMap<>();
   private final Storage storage;
@@ -37,7 +37,8 @@ public class TwitterSystem implements TwitterDataCenter {
    * @param serviceBuilder
    * @param storage
    */
-  public TwitterSystem(final Set<Class<? extends TwitterQuery>> services,
+  public TwitterDataCenterimpl(
+      final Set<Class<? extends TwitterQuery>> services,
       final ServiceBuildingManager serviceBuilder, final Storage storage) {
     serviceBuilder.setProperties(Collections.<BaseTweet> emptyList(),
         Collections.<Retweet> emptyList());
@@ -60,24 +61,25 @@ public class TwitterSystem implements TwitterDataCenter {
 
     try {
       storage.store(Tweets.class, newTweets);
-      buildServices(newTweets);
+      buildQueries(newTweets);
     } catch (final IOException e) {
       throw new SystemOperationFailedException(e);
     }
   }
 
-  private void buildServices(final Tweets tweets) throws IOException {
+  private void buildQueries(final Tweets tweets) throws IOException {
     serviceBuilder.setProperties(tweets.getBaseTweets(), tweets.getRetweets());
     final Map<Class<?>, Throwable> failingCauses = new HashMap<>();
     for (final Class<? extends TwitterQuery> service : services)
       try {
+
         storage.store(service, serviceBuilder.getInstance(service));
-      } catch (final InvokingUserMethodFailedException e) {
+      } catch (final UserMethodInvokationException e) {
         failingCauses.put(service, e.getCause());
       }
     // TODO test
     if (!failingCauses.isEmpty())
-      throw new FailedToBuildException("Storing the following queries failed:",
+      throw new BuildFailedException("Storing the following queries failed:",
           failingCauses);
   }
 
@@ -88,7 +90,7 @@ public class TwitterSystem implements TwitterDataCenter {
       try {
         servicesResult.put(service,
             storage.load(service, serviceBuilder.getInstance(service)));
-      } catch (final InvokingUserMethodFailedException e) {
+      } catch (final UserMethodInvokationException e) {
         final Object loadedValue = storage.load(service, null);
         if (null == loadedValue)
           failingCauses.put(service, e.getCause());
@@ -97,12 +99,12 @@ public class TwitterSystem implements TwitterDataCenter {
       }
     // TODO test
     if (!failingCauses.isEmpty())
-      throw new FailedToBuildException(
+      throw new BuildFailedException(
           "Failed to load and couldn't build default", failingCauses);
   }
 
   @Override
-  public <T> T getService(final Class<T> type) throws IllegalArgumentException {
+  public <T> T getQuery(final Class<T> type) throws IllegalArgumentException {
 
     if (!servicesResult.containsKey(type)) {
       // TODO test
@@ -110,8 +112,9 @@ public class TwitterSystem implements TwitterDataCenter {
         throw new IllegalArgumentException("Service: " + type
             + " wanted but not registered.");
       try {
-        storage.load(type, serviceBuilder.getInstance(type));
-      } catch (final InvokingUserMethodFailedException e) {
+        servicesResult.put(type,
+            storage.load(type, serviceBuilder.getInstance(type)));
+      } catch (final UserMethodInvokationException e) {
 
         final Object loadedValue = storage.load(type, null);
         if (null != loadedValue)
@@ -119,7 +122,7 @@ public class TwitterSystem implements TwitterDataCenter {
         else {
           final Map<Class<?>, Throwable> failingCauses = new HashMap<>();
           failingCauses.put(type, e.getCause());
-          throw new FailedToBuildException(
+          throw new BuildFailedException(
               "Failed to load and couldn't build default", failingCauses);
         }
 
@@ -146,7 +149,7 @@ public class TwitterSystem implements TwitterDataCenter {
    * @date 01.06.2014
    * @mail akarks@gmail.com
    */
-  public static class FailedToBuildException extends RuntimeException {
+  public static class BuildFailedException extends RuntimeException {
 
     /**
      * 
@@ -159,7 +162,7 @@ public class TwitterSystem implements TwitterDataCenter {
      * @param message
      * @param failingCauses
      */
-    public FailedToBuildException(final String message,
+    public BuildFailedException(final String message,
         final Map<Class<?>, Throwable> failingCauses) {
       this.failingCauses = failingCauses;
       this.message = message;

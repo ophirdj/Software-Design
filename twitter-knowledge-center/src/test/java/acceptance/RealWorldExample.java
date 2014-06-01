@@ -24,7 +24,7 @@ import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.TwitterQuerySerializer;
-import ac.il.technion.twc.api.core.TwitterSystemBuilder;
+import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 import ac.il.technion.twc.api.properties.OriginFinder;
 import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
 import ac.il.technion.twc.api.properties.TweetsRetriever;
@@ -83,7 +83,7 @@ public class RealWorldExample {
     // Add predefined properties, register query, and add a custom query
     // serializer
     final TwitterDataCenter dataCenter =
-        new TwitterSystemBuilder(dir.resolve("usingPredefined"))
+        new TwitterDataCenterBuilder(dir.resolve("usingPredefined"))
             .addProperty(TweetsRetriever.class).addProperty(OriginFinder.class)
             .registerQuery(RetweetCounter.class)
             .addSerializer(new RetweetCounterSerializer()).build();
@@ -100,7 +100,7 @@ public class RealWorldExample {
     // Prepare queries
     dataCenter.evaluateQueries();
     // Get our query
-    final RetweetCounter counter = dataCenter.getService(RetweetCounter.class);
+    final RetweetCounter counter = dataCenter.getQuery(RetweetCounter.class);
 
     // validate that, indeed, each base tweet has 110 retweets as predicted
     for (int baseTweet = 0; baseTweet < numBaseTweets; ++baseTweet)
@@ -113,7 +113,7 @@ public class RealWorldExample {
     dataCenter.evaluateQueries();
     // Get our query
     final RetweetCounter counterEmpty =
-        dataCenter.getService(RetweetCounter.class);
+        dataCenter.getQuery(RetweetCounter.class);
 
     // validate that, indeed, the base tweets are registered no more
     for (int baseTweet = 0; baseTweet < numBaseTweets; ++baseTweet)
@@ -130,7 +130,7 @@ public class RealWorldExample {
 
     // create another TwitterDataCenter to simulate shutdown and restore
     final TwitterDataCenter simulateShutdown =
-        new TwitterSystemBuilder(dir.resolve("usingPredefined"))
+        new TwitterDataCenterBuilder(dir.resolve("usingPredefined"))
             .addProperty(TweetsRetriever.class).addProperty(OriginFinder.class)
             .registerQuery(RetweetCounter.class)
             .addSerializer(new RetweetCounterSerializer()).build();
@@ -143,7 +143,7 @@ public class RealWorldExample {
 
     // Get our query
     final RetweetCounter afterShutdownCounter =
-        simulateShutdown.getService(RetweetCounter.class);
+        simulateShutdown.getQuery(RetweetCounter.class);
 
     // validate that, indeed, each base tweet has 110 retweets as predicted
     for (int baseTweet = 0; baseTweet < numBaseTweets; ++baseTweet)
