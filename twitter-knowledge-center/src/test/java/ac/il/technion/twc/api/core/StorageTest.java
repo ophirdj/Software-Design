@@ -217,7 +217,7 @@ public class StorageTest {
   public void clearShouldCallFileHandlerClearWithTestPath() throws IOException,
       InterruptedException, ExecutionException {
     $.clear();
-    verify(fileHandlingMock).clear(fullTestPath);
+    verify(fileHandlingMock).clear(testPath);
   }
 
   @SuppressWarnings("unused")
