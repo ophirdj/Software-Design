@@ -3,11 +3,12 @@ package ac.il.technion.twc.api;
 import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
 
 /**
- * A query for {@link TwitterDataCenterBuilder#registerQuery(Class)}.
- * 
- * 
- * {@link TwitterQuery} must have only one constructor or a constructor
- * annotated with {@link QuerySetup}.
+ * A query for {@link TwitterDataCenterBuilder#registerQuery(Class)}. <br>
+ * <b>Requirements:</b> <br>
+ * - {@link TwitterQuery} must have only one constructor or a constructor
+ * annotated with {@link QuerySetup}. <br>
+ * - Any implementation {@link TwitterQuery} must be static class (not nested or
+ * anonymous) and must be public<br>
  * 
  * <br>
  * In addition, any type the constructor required must be createable. That mean
@@ -19,10 +20,9 @@ import ac.il.technion.twc.api.core.TwitterDataCenterBuilder;
  * (1) be a concrete class <br>
  * (2) have either a single public constructor or one public constructor
  * annotated with {@link QuerySetup} <br>
- * (3) any type required by the constructor in (2) should also be createable
- * 
- * 
- * 
+ * (3) any type required by the constructor in (2) should also be createable<br>
+ * <br>
+ * It is suggested to use a constructor that only require properties. <br>
  * 
  * @author Ziv Ronen
  * @date 31.05.2014

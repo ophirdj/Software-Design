@@ -24,9 +24,6 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @date 07.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
- * 
  */
 public class OriginFinder implements Property {
 
@@ -73,14 +70,12 @@ public class OriginFinder implements Property {
   }
 
   /**
+   * An exception represent missing root in findRoot calling
+   * 
    * @author Ziv Ronen
    * @date 07.05.2014
    * @mail akarks@gmail.com
    * 
-   * @version 2.0
-   * @since 2.0
-   * 
-   *        An exception represent missing root in findRoot calling
    */
   public static class NotFoundException extends Exception {
 

@@ -8,6 +8,7 @@ package ac.il.technion.twc.api;
  * @mail akarks@gmail.com
  * 
  * @param <T>
+ *          The type of the serialized object
  */
 public interface TwitterQuerySerializer<T> {
 

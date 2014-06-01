@@ -13,14 +13,22 @@ import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
- * A mapping between dates of tweets and the day
+ * A mapping between dates of tweets and the amount of tweets in that date.<br>
+ * map both base tweets and retweet separately<br>
+ * <br>
+ * For example, say we have 3 base tweets: <code>A</code>, <code>B</code>, and
+ * <code>C</code> and one retweet <code>D</code>. <br>
+ * <code>A</code> was tweeted at 14/5/2010, 00:00:00, <code>B</code>,
+ * <code>C</code> were tweeted at 14/5/2010, 00:00:01, and D<br>
+ * Then {@link DayMapping#getAllDaysBase()} will return two entries:<br>
+ * <code>(&lt;utc time of(14/5/2010, 00:00:00)&gt;,1)</code> and
+ * <code>(&lt;utc time of(14/5/2010, 00:00:01)&gt;,2)</code>
+ * 
  * 
  * @author Ziv Ronen
  * @date 26.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class DayMapping implements Property {
 

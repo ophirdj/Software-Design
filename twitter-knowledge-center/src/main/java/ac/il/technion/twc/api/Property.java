@@ -18,6 +18,8 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * An object that was built using {@link PropertyFactory#get(List, List)}
  * method.
  * 
+ * Any implementation {@link Property} must be static class (not nested or
+ * anonymous) and must be public
  * 
  * @author Ziv Ronen
  * @date 31.05.2014

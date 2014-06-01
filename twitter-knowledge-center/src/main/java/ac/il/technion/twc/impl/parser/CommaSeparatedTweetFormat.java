@@ -12,12 +12,12 @@ import ac.il.technion.twc.api.tweet.Tweet;
 import ac.il.technion.twc.api.tweet.parser.TweetFormat;
 
 /**
+ * Represent the format: &lt;time (dd/MM/yyyy HH:mm:ss)&gt;,&lt;tweet
+ * id&gt;[,original tweet]
+ * 
  * @author Ziv Ronen
  * @date 29.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class CommaSeparatedTweetFormat implements TweetFormat {
 

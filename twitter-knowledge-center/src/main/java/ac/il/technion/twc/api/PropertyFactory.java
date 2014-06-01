@@ -10,9 +10,8 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @date 31.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  * @param <T>
+ *          The type of the created property
  */
 public interface PropertyFactory<T extends Property> {
 

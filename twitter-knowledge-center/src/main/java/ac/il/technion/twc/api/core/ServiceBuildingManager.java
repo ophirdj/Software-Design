@@ -31,7 +31,8 @@ import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 
 /**
- * Utils class for checking if a service can be build and for building it
+ * For checking and storing properties, checking if a query can be build and for
+ * providing property and queries building
  * 
  * @author Ziv Ronen
  * @date 30.05.2014

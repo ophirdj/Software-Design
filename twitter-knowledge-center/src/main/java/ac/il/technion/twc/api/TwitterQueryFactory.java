@@ -2,13 +2,17 @@ package ac.il.technion.twc.api;
 
 /**
  * 
- * A factory for a {@link TwitterQuery}. Must have a single method named get
- * with only properties.
+ * A factory for a {@link TwitterQuery}.<br>
+ * <b>Requirements:</b> <br>
+ * - Must have a single method named get with only properties. <br>
+ * - Any implementation {@link TwitterQueryFactory} must be static class (not
+ * nested or anonymous) and must be public<br>
  * 
  * @author Ziv Ronen
  * @date 31.05.2014
  * @mail akarks@gmail.com
  * @param <T>
+ *          The type of the created query
  * 
  */
 public interface TwitterQueryFactory<T extends TwitterQuery> {

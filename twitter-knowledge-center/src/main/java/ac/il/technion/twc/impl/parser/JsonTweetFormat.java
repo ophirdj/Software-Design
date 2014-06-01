@@ -23,7 +23,7 @@ import com.google.gson.JsonParseException;
 import com.twitter.Extractor;
 
 /**
- * Rule for parsing a tweet from json format
+ * Represent the json format for tweet
  * 
  * @author Ziv Ronen
  * @date 23.05.2014

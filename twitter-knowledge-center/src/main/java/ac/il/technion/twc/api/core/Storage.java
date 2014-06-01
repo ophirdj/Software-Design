@@ -13,14 +13,12 @@ import java.util.concurrent.Future;
 import com.google.gson.Gson;
 
 /**
- * Basic implementation for storing and retriving data
+ * An implementation for storing and retrieving data
  * 
  * @author Ziv Ronen
  * @date 23.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 class Storage {
 
