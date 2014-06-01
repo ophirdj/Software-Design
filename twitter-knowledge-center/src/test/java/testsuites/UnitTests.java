@@ -16,7 +16,7 @@ import ac.il.technion.twc.impl.parsers.jsonFormat.JsonFormatTest;
 import ac.il.technion.twc.impl.properties.daymapping.DayMappingTest;
 import ac.il.technion.twc.impl.properties.daymapping.DayOfWeekTest;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtagsTest;
-import ac.il.technion.twc.impl.properties.rootfinder.TransitiveRootFinderTest;
+import ac.il.technion.twc.impl.properties.rootfinder.OriginFinderTest;
 import ac.il.technion.twc.impl.properties.tweetsretriever.TweetsRetrieverTest;
 import ac.il.technion.twc.impl.services.histogram.DayHistogramTest;
 import ac.il.technion.twc.impl.services.histogram.TemporalHistogramTest;
@@ -34,7 +34,7 @@ import ac.il.technion.twc.system.SampleTest;
 		StorageTest.class, TweetsTest.class, TwitterDataCenterImplTest.class,
 		MultiFormatsParserTest.class, IDTest.class, CSFormatTest.class,
 		JsonFormatTest.class, DayMappingTest.class, DayOfWeekTest.class,
-		IdHashtagsTest.class, TransitiveRootFinderTest.class,
+		IdHashtagsTest.class, OriginFinderTest.class,
 		TweetsRetrieverTest.class, DayHistogramTest.class,
 		TemporalHistogramTest.class, TweetToLifeTimeTest.class,
 		TagToPopularityTest.class, PersistenceTest.class, SampleTest.class })
