@@ -77,7 +77,6 @@ public class TwitterDataCenterimpl implements TwitterDataCenter {
       } catch (final UserMethodInvokationException e) {
         failingCauses.put(service, e.getCause());
       }
-    // TODO test
     if (!failingCauses.isEmpty())
       throw new BuildFailedException("Storing the following queries failed:",
           failingCauses);
@@ -97,7 +96,6 @@ public class TwitterDataCenterimpl implements TwitterDataCenter {
         else
           servicesResult.put(service, loadedValue);
       }
-    // TODO test
     if (!failingCauses.isEmpty())
       throw new BuildFailedException(
           "Failed to load and couldn't build default", failingCauses);
@@ -107,7 +105,6 @@ public class TwitterDataCenterimpl implements TwitterDataCenter {
   public <T> T getQuery(final Class<T> type) throws IllegalArgumentException {
 
     if (!servicesResult.containsKey(type)) {
-      // TODO test
       if (!services.contains(type))
         throw new IllegalArgumentException("Service: " + type
             + " wanted but not registered.");

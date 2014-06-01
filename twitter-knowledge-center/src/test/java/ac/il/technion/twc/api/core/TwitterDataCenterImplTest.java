@@ -180,7 +180,8 @@ public class TwitterDataCenterImplTest {
         .thenThrow(userMethodInvokationException);
     when(storageMock.load(Tweets.class, new Tweets())).thenReturn(new Tweets());
     thrown.expect(BuildFailedException.class);
-    thrown.expectMessage(storingFailedMessages(ServiceOne.class, mockThrow));
+    thrown.expectMessage(storingPrefix());
+    thrown.expectMessage(buildingFailedMessages(ServiceOne.class, mockThrow));
     $.importData(Collections.<Tweet> emptyList());
   }
 
@@ -198,7 +199,6 @@ public class TwitterDataCenterImplTest {
 
     final Class<? extends TwitterQuery> c1 = ServiceOne.class;
     final Class<? extends TwitterQuery> c2 = ServiceTwo.class;
-
     final Throwable mockThrow = mock(Throwable.class);
     final Throwable mockThrow2 = mock(Throwable.class);
     when(services.iterator()).thenReturn(
@@ -213,19 +213,109 @@ public class TwitterDataCenterImplTest {
         userMethodInvokationException2);
     when(storageMock.load(Tweets.class, new Tweets())).thenReturn(new Tweets());
     thrown.expect(BuildFailedException.class);
-    thrown.expectMessage(storingFailedMessages(ServiceOne.class, mockThrow,
-        mockThrow2));
+    thrown.expectMessage(storingPrefix());
+    thrown.expectMessage(buildingFailedMessages(ServiceOne.class, mockThrow));
+    thrown.expectMessage(buildingFailedMessages(ServiceTwo.class, mockThrow2));
     $.importData(Collections.<Tweet> emptyList());
   }
 
-  private String storingFailedMessages(final Class<?> type,
-      final Throwable... causes) {
-    String prefix = "Storing the following queries failed:";
-    for (final Throwable throwable : causes)
-      prefix +=
-          "\n\t- class " + type.getSimpleName()
-              + " can't be build because building it cause " + throwable + "\n";
-    return prefix;
+  /**
+   * @throws InvocationTargetException
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   */
+  @Test
+  public final void
+      evaluateQueriesThatCauseExceptionShouldThrowFailedToBuildException()
+          throws InstantiationException, IllegalAccessException,
+          IllegalArgumentException, InvocationTargetException {
+
+    final Class<? extends TwitterQuery> c = ServiceOne.class;
+
+    final Throwable mockThrow = mock(Throwable.class);
+    final UserMethodInvokationException userMethodInvokationException =
+        new UserMethodInvokationException(mockThrow);
+    when(services.iterator()).thenReturn(
+        Arrays.<Class<? extends TwitterQuery>> asList(c).iterator());
+    when(serviceBuilder.getInstance(c))
+        .thenThrow(userMethodInvokationException);
+    thrown.expect(BuildFailedException.class);
+    thrown.expectMessage(loadingPrefix());
+    thrown.expectMessage(buildingFailedMessages(ServiceOne.class, mockThrow));
+    $.evaluateQueries();
+  }
+
+  /**
+   * @throws InvocationTargetException
+   * @throws IllegalArgumentException
+   * @throws IllegalAccessException
+   * @throws InstantiationException
+   */
+  @Test
+  public final void
+      evaluateQueriesThatCause2ExceptionsShouldThrowFailedToBuildException()
+          throws InstantiationException, IllegalAccessException,
+          IllegalArgumentException, InvocationTargetException {
+
+    final Class<? extends TwitterQuery> c1 = ServiceOne.class;
+    final Class<? extends TwitterQuery> c2 = ServiceTwo.class;
+    final Throwable mockThrow = mock(Throwable.class);
+    final Throwable mockThrow2 = mock(Throwable.class);
+    when(services.iterator()).thenReturn(
+        Arrays.<Class<? extends TwitterQuery>> asList(c1, c2).iterator());
+    final UserMethodInvokationException userMethodInvokationException1 =
+        new UserMethodInvokationException(mockThrow);
+    when(serviceBuilder.getInstance(c1)).thenThrow(
+        userMethodInvokationException1);
+    final UserMethodInvokationException userMethodInvokationException2 =
+        new UserMethodInvokationException(mockThrow2);
+    when(serviceBuilder.getInstance(c2)).thenThrow(
+        userMethodInvokationException2);
+    thrown.expect(BuildFailedException.class);
+    thrown.expectMessage(loadingPrefix());
+    thrown.expectMessage(buildingFailedMessages(ServiceOne.class, mockThrow));
+    thrown.expectMessage(buildingFailedMessages(ServiceTwo.class, mockThrow2));
+    $.evaluateQueries();
+  }
+
+  /**
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws IllegalArgumentException
+   * @throws InvocationTargetException
+   */
+  @Test
+  public final void
+      getQueryThatCauseExceptionsShouldThrowFailedToBuildException()
+          throws InstantiationException, IllegalAccessException,
+          IllegalArgumentException, InvocationTargetException {
+
+    final Class<? extends TwitterQuery> c1 = ServiceOne.class;
+    final Throwable mockThrow = mock(Throwable.class);
+    when(services.contains(c1)).thenReturn(true);
+    final UserMethodInvokationException userMethodInvokationException1 =
+        new UserMethodInvokationException(mockThrow);
+    when(serviceBuilder.getInstance(c1)).thenThrow(
+        userMethodInvokationException1);
+    thrown.expect(BuildFailedException.class);
+    thrown.expectMessage(loadingPrefix());
+    thrown.expectMessage(buildingFailedMessages(ServiceOne.class, mockThrow));
+    $.getQuery(c1);
+  }
+
+  private String buildingFailedMessages(final Class<?> type,
+      final Throwable cause) {
+    return "\t- class " + type.getSimpleName()
+        + " can't be build because building it cause " + cause + "\n";
+  }
+
+  private String storingPrefix() {
+    return "Storing the following queries failed:\n";
+  }
+
+  private String loadingPrefix() {
+    return "Failed to load and couldn't build default";
   }
 
   /**
