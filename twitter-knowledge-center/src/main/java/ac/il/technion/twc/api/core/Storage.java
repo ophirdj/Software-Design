@@ -27,6 +27,7 @@ class Storage {
   private final Map<Class<?>, Future<Object>> retriverByType;
   private final ExecutorService threadPool;
   private final Path storePath;
+  private final Path dirPath;
 
   /**
    * @param gson
@@ -43,6 +44,7 @@ class Storage {
     this.fileHandling = fileHandling;
     this.threadPool = threadPool;
     retriverByType = new HashMap<Class<?>, Future<Object>>();
+    dirPath = storageLocation;
     storePath = storageLocation.resolve(Paths.get(getClass().getSimpleName()));
   }
 
@@ -123,7 +125,7 @@ class Storage {
    * @throws IOException
    */
   public void clear() throws IOException {
-    fileHandling.clear(storePath);
+    fileHandling.clear(dirPath);
     retriverByType.clear();
   }
 

@@ -55,8 +55,6 @@ import com.google.gson.stream.JsonWriter;
  * @date 27.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 @RunWith(JUnitParamsRunner.class)
 public class StorageTest {
@@ -219,7 +217,7 @@ public class StorageTest {
   public void clearShouldCallFileHandlerClearWithTestPath() throws IOException,
       InterruptedException, ExecutionException {
     $.clear();
-    verify(fileHandlingMock).clear(fullTestPath);
+    verify(fileHandlingMock).clear(testPath);
   }
 
   @SuppressWarnings("unused")

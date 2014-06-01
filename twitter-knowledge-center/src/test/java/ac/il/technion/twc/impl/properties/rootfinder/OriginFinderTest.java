@@ -23,11 +23,8 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @author Ziv Ronen
  * @date 07.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
-public class TransitiveRootFinderTest {
+public class OriginFinderTest {
 
   private static final ArrayList<BaseTweet> EMPTY_BASES =
       new ArrayList<BaseTweet>();
@@ -67,8 +64,7 @@ public class TransitiveRootFinderTest {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
     final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id);
     assertSame(bt,
-        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt))
-            .origin(rt));
+        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt)).origin(rt));
   }
 
   /**
@@ -84,8 +80,7 @@ public class TransitiveRootFinderTest {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
     final Retweet rt = new Retweet(new Date(1L), new ID("retweetId"), bt.id);
     assertSame(bt,
-        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt))
-            .origin(rt));
+        new OriginFinder(Arrays.asList(bt), Arrays.asList(rt)).origin(rt));
   }
 
   /**
@@ -113,10 +108,8 @@ public class TransitiveRootFinderTest {
   public void findRootOnRetweetOfRetweetShouldReturnTheBaseTweet()
       throws Exception {
     final BaseTweet bt = new BaseTweet(new Date(1L), new ID("baseId"));
-    final Retweet rt1 =
-        new Retweet(new Date(1L), new ID("retweetId1"), bt.id);
-    final Retweet rt2 =
-        new Retweet(new Date(1L), new ID("retweetId2"), rt1.id);
+    final Retweet rt1 = new Retweet(new Date(1L), new ID("retweetId1"), bt.id);
+    final Retweet rt2 = new Retweet(new Date(1L), new ID("retweetId2"), rt1.id);
     assertSame(bt,
         new OriginFinder(Arrays.asList(bt), Arrays.asList(rt1, rt2))
             .origin(rt2));

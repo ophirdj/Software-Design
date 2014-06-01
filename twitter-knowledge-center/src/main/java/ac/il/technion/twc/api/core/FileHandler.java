@@ -51,7 +51,7 @@ class FileHandler {
    */
   public void clear(final Path storePath) throws IOException {
     if (Files.exists(storePath) && Files.isDirectory(storePath))
-      FileUtils.cleanDirectory(storePath.toFile());
+      FileUtils.deleteDirectory(storePath.toFile());
   }
 
 }

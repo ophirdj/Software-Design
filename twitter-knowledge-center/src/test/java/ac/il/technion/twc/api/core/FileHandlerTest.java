@@ -15,17 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ac.il.technion.twc.api.core.FileHandler;
-
 /**
  * Test for {@link FileHandler}
  * 
  * @author Ziv Ronen
  * @date 07.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class FileHandlerTest {
 
@@ -53,7 +48,8 @@ public class FileHandlerTest {
    */
   @BeforeClass
   public static void setUpClass() throws Exception {
-    Files.createDirectory(testDirectory);
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
@@ -63,7 +59,8 @@ public class FileHandlerTest {
    */
   @AfterClass
   public static void tearDownClass() throws Exception {
-    FileUtils.deleteDirectory(testDirectory.toFile());
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
@@ -72,7 +69,8 @@ public class FileHandlerTest {
    */
   @Before
   public void setup() throws Exception {
-    FileUtils.cleanDirectory(testDirectory.toFile());
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
