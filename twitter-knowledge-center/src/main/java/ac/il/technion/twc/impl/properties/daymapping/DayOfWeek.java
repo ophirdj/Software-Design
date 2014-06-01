@@ -5,14 +5,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
+ * enum for each day in a week
+ * 
  * @author Ziv Ronen
  * @date 07.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
- * 
- *        enum for each day in a week
  */
 public enum DayOfWeek {
 

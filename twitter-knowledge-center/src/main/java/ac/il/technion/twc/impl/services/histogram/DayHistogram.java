@@ -17,9 +17,6 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  * @author Ziv Ronen
  * @date 23.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class DayHistogram implements TwitterQuery {
 

@@ -18,11 +18,13 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * <br>
  * For example, say we have 3 base tweets: <code>A</code>, <code>B</code>, and
  * <code>C</code> and one retweet <code>D</code>. <br>
- * <code>A</code> was tweeted at 14/5/2010, 00:00:00, <code>B</code>,
- * <code>C</code> were tweeted at 14/5/2010, 00:00:01, and D<br>
- * Then {@link DayMapping#getAllDaysBase()} will return two entries:<br>
- * <code>(&lt;utc time of(14/5/2010, 00:00:00)&gt;,1)</code> and
- * <code>(&lt;utc time of(14/5/2010, 00:00:01)&gt;,2)</code>
+ * <code>A</code> was tweeted at T1, <br>
+ * <code>B</code> and <code>C</code> were tweeted at T2 and <br>
+ * D was tweeted at T3<br>
+ * Then {@link DayMapping#getAllDaysBase()} will return two entries:
+ * <code>(T1,1)</code> and <code>(T2,2)</code> <br>
+ * and {@link DayMapping#getAllDaysRe()} will return one entry,
+ * <code>(T3,1)</code>
  * 
  * 
  * @author Ziv Ronen

@@ -18,8 +18,6 @@ import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
  * Service that answer
  * {@link FuntionalityTester#getTemporalHistogram(String, String)} query.
  * 
- * 
- * 
  * @author Ziv Ronen
  * @date 26.05.2014
  * @mail akarks@gmail.com
