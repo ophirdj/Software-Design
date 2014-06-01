@@ -1,4 +1,4 @@
-package ac.il.technion.twc.system;
+package ac.il.technion.twc.time;
 
 import static org.junit.Assert.assertTrue;
 
