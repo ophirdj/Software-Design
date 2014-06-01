@@ -1,6 +1,7 @@
 package ac.il.technion.twc.impl.services.tagpopularity;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class TagToPopularity implements TwitterQuery {
         final List<String> tweetHashtags = base.hashtags;
         if (tweetHashtags == null)
           continue;
-        for (final String tag : tweetHashtags)
+        for (final String tag : new HashSet<>(tweetHashtags))
           popularityFromHashtag.put(tag, getPopularityByHashtag(tag) + 1);
       } catch (final NotFoundException e) {
         continue;

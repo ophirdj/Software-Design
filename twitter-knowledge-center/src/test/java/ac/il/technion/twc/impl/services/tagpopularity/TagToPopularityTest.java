@@ -130,7 +130,8 @@ public class TagToPopularityTest {
     final BaseTweet bt1 =
         new BaseTweet(new Date(123456789), new ID("base 1"), hashtags);
     final BaseTweet bt2 =
-        new BaseTweet(new Date(123456789), new ID("base 2"), hashtags);
+        new BaseTweet(new Date(123456789), new ID("base 2"), Arrays.asList(
+            "YOLO", "SWAG", "SWAG", "KILLYOURSELF"));
     final Retweet rt1 =
         new Retweet(new Date(987654321), new ID("retweet 1"), new ID("base 1"));
     final Retweet rt2 =

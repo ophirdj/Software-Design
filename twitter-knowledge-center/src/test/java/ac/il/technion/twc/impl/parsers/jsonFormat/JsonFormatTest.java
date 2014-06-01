@@ -58,7 +58,10 @@ public class JsonFormatTest {
             "334611146097188865"), new ID("593393706")), //$NON-NLS-1$ //$NON-NLS-2$
             TestDataReader.getString("Retweet1")), //$NON-NLS-1$
         $(new BaseTweet(buildDate(2014, 3, 6, 13, 0, 0), new ID("593393706"), //$NON-NLS-1$
-            hashtags), TestDataReader.getString("BaseTweet2"))); //$NON-NLS-1$
+            hashtags), TestDataReader.getString("BaseTweet2")), //$NON-NLS-1$
+        $(new BaseTweet(buildDate(2014, 3, 6, 13, 0, 0), new ID("593393706"), //$NON-NLS-1$
+            Arrays.asList("Avi", "Avi", "technion", "HARD")),
+            TestDataReader.getString("WeirdHashtags")));
   }
 
   /**
