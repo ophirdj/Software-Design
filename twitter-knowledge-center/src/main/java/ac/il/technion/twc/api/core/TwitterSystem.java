@@ -7,10 +7,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.TwitterQuery;
+import ac.il.technion.twc.api.core.ServiceBuildingManager.InvokingUserMethodFailedException;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.api.tweet.Tweet;
@@ -22,8 +24,6 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @date 22.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class TwitterSystem implements TwitterDataCenter {
 
@@ -70,15 +70,36 @@ public class TwitterSystem implements TwitterDataCenter {
 
   private void buildServices(final Tweets tweets) throws IOException {
     serviceBuilder.setProperties(tweets.getBaseTweets(), tweets.getRetweets());
+    final Map<Class<?>, Throwable> failingCauses = new HashMap<>();
     for (final Class<? extends TwitterQuery> service : services)
-      storage.store(service, serviceBuilder.getInstance(service));
+      try {
+        storage.store(service, serviceBuilder.getInstance(service));
+      } catch (final InvokingUserMethodFailedException e) {
+        failingCauses.put(service, e.getCause());
+      }
+    // TODO test
+    if (!failingCauses.isEmpty())
+      throw new FailedToBuildException("Storing the following queries failed:",
+          failingCauses);
   }
 
   @Override
   public void evaluateQueries() {
+    final Map<Class<?>, Throwable> failingCauses = new HashMap<>();
     for (final Class<?> service : services)
-      servicesResult.put(service,
-          storage.load(service, serviceBuilder.getInstance(service)));
+      try {
+        servicesResult.put(service,
+            storage.load(service, serviceBuilder.getInstance(service)));
+      } catch (final InvokingUserMethodFailedException e) {
+        final Object loadedValue = storage.load(service, null);
+        if (null == loadedValue)
+          failingCauses.put(service, e.getCause());
+        servicesResult.put(service, loadedValue);
+      }
+    // TODO test
+    if (!failingCauses.isEmpty())
+      throw new FailedToBuildException(
+          "Failed to load and couldn't build default", failingCauses);
   }
 
   @Override
@@ -91,6 +112,7 @@ public class TwitterSystem implements TwitterDataCenter {
       // storage.load(type, serviceBuilder.getInstance(type));
       // }
 
+      // TODO test
       final String evaluated =
           !services.contains(type) ? "Did you forgot to register the query?"
               : " Did you forgot to evaluate the queries?";
@@ -108,6 +130,48 @@ public class TwitterSystem implements TwitterDataCenter {
       storage.clear();
     } catch (final IOException e) {
       throw new SystemOperationFailedException(e);
+    }
+  }
+
+  /**
+   * Thrown when some queries can't be built
+   * 
+   * @author Ziv Ronen
+   * @date 01.06.2014
+   * @mail akarks@gmail.com
+   */
+  public static class FailedToBuildException extends RuntimeException {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4677937592391059926L;
+    private final Map<Class<?>, Throwable> failingCauses;
+    private final String message;
+
+    /**
+     * @param message
+     * @param failingCauses
+     */
+    public FailedToBuildException(final String message,
+        final Map<Class<?>, Throwable> failingCauses) {
+      this.failingCauses = failingCauses;
+      this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+      final StringBuilder builder = new StringBuilder(message).append("\n");
+      for (final Entry<Class<?>, Throwable> entry : failingCauses.entrySet())
+        builder.append("class ").append(entry.getKey().getSimpleName())
+            .append(" because building it cause ").append(entry.getValue())
+            .append("\n");
+      return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+      return super.toString() + " " + getMessage();
     }
   }
 

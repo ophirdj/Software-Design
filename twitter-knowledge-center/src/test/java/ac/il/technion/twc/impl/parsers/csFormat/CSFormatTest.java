@@ -4,7 +4,9 @@ import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -42,16 +44,24 @@ public class CSFormatTest {
   // used by JunitParams
       private
       Object[] correctTweets() {
+    final Calendar gc = new GregorianCalendar();
+    gc.setTimeZone(TimeZone.getTimeZone("UTC"));
+    gc.setTimeInMillis(0L);
+    gc.set(2013, 4, 15, 13, 8, 7);
+    final BaseTweet baseOne =
+        new BaseTweet(gc.getTime(), new ID("334611141902872576"));
+    gc.set(2013, 4, 15, 0, 0, 0);
+    final BaseTweet baseTwo =
+        new BaseTweet(gc.getTime(), new ID("33461114190"));
+    gc.set(2013, 4, 15, 5, 23, 7);
+    final Retweet retweet =
+        new Retweet(gc.getTime(), new ID("334611141890285568"), new ID(
+            "334611004342280192"));
     return $(
-        $(new BaseTweet(new GregorianCalendar(2013, 4, 15, 13, 8, 7).getTime(),
-            new ID("334611141902872576")),
-            "15/05/2013 13:08:07, 334611141902872576"),
-        $(new Retweet(new GregorianCalendar(2013, 4, 15, 5, 23, 7).getTime(),
-            new ID("334611141890285568"), new ID("334611004342280192")),
+        $(baseOne, "15/05/2013 13:08:07, 334611141902872576"),
+        $(retweet,
             "15/05/2013 05:23:07, 334611141890285568, 334611004342280192"),
-        $(new BaseTweet(new GregorianCalendar(2013, 4, 15, 0, 0, 0).getTime(),
-            new ID("334611141902872576")),
-            "15/05/2013 00:00:00, 334611141902872576"));
+        $(baseTwo, "15/05/2013 00:00:00, 33461114190"));
   }
 
   /**

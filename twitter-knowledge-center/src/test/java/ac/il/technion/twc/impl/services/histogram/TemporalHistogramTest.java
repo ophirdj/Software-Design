@@ -159,7 +159,12 @@ public class TemporalHistogramTest {
         $(new int[] { 1, 0, 0, 0, 0, 0, 0 }, new int[] { 3, 0, 0, 0, 0, 0, 0 },
             makeSet(new Date[] { dates[15] }, new int[] { 1 }),
             makeSet(new Date[] { dates[16] }, new int[] { 3 }), dates[15],
-            dates[17])
+            dates[17]),
+
+        $(new int[] { 0, 0, 0, 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0, 0, 0, 0 },
+            makeSet(new Date[] { dates[15] }, new int[] { 1 }),
+            makeSet(new Date[] { dates[16] }, new int[] { 3 }), dates[16],
+            dates[15])
 
     );
 

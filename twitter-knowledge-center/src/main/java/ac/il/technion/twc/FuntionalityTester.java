@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import ac.il.technion.twc.api.TwitterDataCenter;
 import ac.il.technion.twc.api.core.TwitterSystemBuilder;
@@ -41,6 +42,7 @@ public class FuntionalityTester {
 	 * 
 	 */
   public FuntionalityTester() {
+    temporalDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     serviceCenter =
         new TwitterSystemBuilder(Paths.get("system"))
             .addSerializer(new TweetToLifeTimeSerializer())

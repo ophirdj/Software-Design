@@ -77,7 +77,7 @@ class ServiceBuildingManager {
                 | IllegalArgumentException e) {
               throw new CreatingOperationFailedException(e, type);
             } catch (final InvocationTargetException e) {
-              throw new RuntimeException(e.getCause());
+              throw new InvokingUserMethodFailedException(e.getCause());
             }
           }
         });
@@ -226,7 +226,7 @@ class ServiceBuildingManager {
         } catch (InstantiationException | IllegalAccessException e) {
           throw new CreatingOperationFailedException(e, type);
         } catch (ExecutionException | InvocationTargetException e) {
-          throw new RuntimeException(e.getCause());
+          throw new InvokingUserMethodFailedException(e.getCause());
         }
       }
 
@@ -322,11 +322,11 @@ class ServiceBuildingManager {
    * @param type
    *          the requested service type
    * @return An instance of the given type
-   * 
-   * 
-   * 
+   * @throws InvokingUserMethodFailedException
+   *           if calling a method of user class have failed
    */
-  public Object getInstance(final Class<?> type) {
+  public Object getInstance(final Class<?> type)
+      throws InvokingUserMethodFailedException {
     if (supportedQueries.containsKey(type)) {
       final TwitterQueryFactory<?> factory = supportedQueries.get(type);
       for (final Method m : factory.getClass().getMethods())
@@ -336,7 +336,7 @@ class ServiceBuildingManager {
           } catch (final IllegalAccessException e) {
             throw new CreatingOperationFailedException(e, type);
           } catch (final InvocationTargetException e) {
-            throw new RuntimeException(e.getCause());
+            throw new InvokingUserMethodFailedException(e.getCause());
           }
     }
     throw new IllegalArgumentException("Service wanted but not registered.");
@@ -351,7 +351,7 @@ class ServiceBuildingManager {
       } catch (final InterruptedException e) {
         throw new RuntimeException("interrupted while instantiating class");
       } catch (final ExecutionException e) {
-        throw new RuntimeException(e);
+        throw new InvokingUserMethodFailedException(e);
       }
     return $;
   }
@@ -382,11 +382,31 @@ class ServiceBuildingManager {
           throw new CreatingOperationFailedException(e,
               innerCtor.getDeclaringClass());
         } catch (final InvocationTargetException e) {
-          throw new RuntimeException(e.getCause());
+          throw new InvokingUserMethodFailedException(e.getCause());
         }
       }
     }
     return values;
+  }
+
+  /**
+   * @author Ziv Ronen
+   * @date 01.06.2014
+   * @mail akarks@gmail.com
+   */
+  static class InvokingUserMethodFailedException extends RuntimeException {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4229020462704423841L;
+
+    /**
+     * @param e
+     *          the cause
+     */
+    public InvokingUserMethodFailedException(final Throwable e) {
+      super(e);
+    }
   }
 
 }

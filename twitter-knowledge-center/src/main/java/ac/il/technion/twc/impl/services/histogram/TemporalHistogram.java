@@ -236,6 +236,8 @@ public class TemporalHistogram implements TwitterQuery {
    * @return histogram of the tweets in the given time
    */
   public String[] get(final Date from, final Date to) {
+    if (from.after(to))
+      return format.formatHistogram(new int[7], new int[7]);
     return format.formatHistogram(baseHistogram.retrive(from, to),
         reHistogram.retrive(from, to));
   }
