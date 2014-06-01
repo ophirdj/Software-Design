@@ -10,8 +10,6 @@ import java.util.ResourceBundle;
  * @date 28.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class TestDataReader {
   private static final String BUNDLE_NAME = "ac.il.technion.twc.testdata"; //$NON-NLS-1$

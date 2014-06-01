@@ -15,8 +15,8 @@ import java.util.Set;
 import org.junit.Test;
 
 import ac.il.technion.twc.api.properties.OriginFinder;
-import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -28,202 +28,203 @@ import ac.il.technion.twc.impl.services.lifetime.TweetToLifeTime.UndefinedTimeEx
  * @author Ziv Ronen
  * @date 28.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class TweetToLifeTimeTest {
 
-	private final OriginFinder rootFinderMock;
-	private final TweetsRetriever tweetsMock;
+  private final OriginFinder rootFinderMock;
+  private final TweetsRetriever tweetsMock;
 
-	/**
-	 * C'tor.
-	 */
-	public TweetToLifeTimeTest() {
-		rootFinderMock = mock(OriginFinder.class);
-		tweetsMock = mock(TweetsRetriever.class);
-		when(tweetsMock.getBaseTweets()).thenReturn(new ArrayList<BaseTweet>());
-		when(tweetsMock.getRetweets()).thenReturn(new ArrayList<Retweet>());
-	}
+  /**
+   * C'tor.
+   */
+  public TweetToLifeTimeTest() {
+    rootFinderMock = mock(OriginFinder.class);
+    tweetsMock = mock(TweetsRetriever.class);
+    when(tweetsMock.getBaseTweets()).thenReturn(new ArrayList<BaseTweet>());
+    when(tweetsMock.getRetweets()).thenReturn(new ArrayList<Retweet>());
+  }
 
-	/**
-	 * Test method for {@link TweetToLifeTime#TweetToLifeTime()}
-	 * 
-	 * @throws UndefinedTimeException
-	 */
-	@Test(expected = UndefinedTimeException.class)
-	public void emptyLifeTimeShouldReturnAllZeros()
-			throws UndefinedTimeException {
-		new TweetToLifeTime().getLifeTimeById(new ID("a"));
-	}
+  /**
+   * Test method for {@link TweetToLifeTime#TweetToLifeTime()}
+   * 
+   * @throws UndefinedTimeException
+   */
+  @Test(expected = UndefinedTimeException.class)
+  public void emptyLifeTimeShouldReturnAllZeros() throws UndefinedTimeException {
+    new TweetToLifeTime().getLifeTimeById(new ID("a"));
+  }
 
-	/**
-	 * init {@literal rootFinderMock} and {@literal tweetsMock} in the following
-	 * way: <code>numBase</code> base tweets. Each tweet (base or retweet) has
-	 * <code>numRetweetsForEach</code> retweets, and each retweet has again
-	 * <code>numRetweetsForEach</code> retweets of its own, and so forth. There
-	 * are <code>numLevels</code> levels of retweets (i.e. retweet of retweet)
-	 * for each base tweet.
-	 * 
-	 * 
-	 * @param numBase
-	 *            Number of base tweets.
-	 * @param numRetweetsForEach
-	 *            Number of retweets each tweet has (if it has any retweets).
-	 * @param numLevels
-	 *            How many times a tweet can be recursively retweeted (i.e.
-	 *            retweet of retweet).
-	 * 
-	 * @throws NotFoundException
-	 *             Never.
-	 */
-	private void initiateState(final int numBase, final int numRetweetsForEach,
-			final int numLevels) throws NotFoundException {
-		final Set<BaseTweet> baseTweets = new HashSet<>();
-		final Set<Retweet> retweets = new HashSet<>();
+  /**
+   * init {@literal rootFinderMock} and {@literal tweetsMock} in the following
+   * way: <code>numBase</code> base tweets. Each tweet (base or retweet) has
+   * <code>numRetweetsForEach</code> retweets, and each retweet has again
+   * <code>numRetweetsForEach</code> retweets of its own, and so forth. There
+   * are <code>numLevels</code> levels of retweets (i.e. retweet of retweet) for
+   * each base tweet.
+   * 
+   * 
+   * @param numBase
+   *          Number of base tweets.
+   * @param numRetweetsForEach
+   *          Number of retweets each tweet has (if it has any retweets).
+   * @param numLevels
+   *          How many times a tweet can be recursively retweeted (i.e. retweet
+   *          of retweet).
+   * 
+   * @throws NotFoundException
+   *           Never.
+   */
+  private void initiateState(final int numBase, final int numRetweetsForEach,
+      final int numLevels) throws NotFoundException {
+    final Set<BaseTweet> baseTweets = new HashSet<>();
+    final Set<Retweet> retweets = new HashSet<>();
 
-		for (int baseTweetNum = 0; baseTweetNum < numBase; ++baseTweetNum) {
-			final ID baseId = new ID("base " + baseTweetNum);
-			final long baseDate = 123456789L + baseTweetNum;
-			final BaseTweet baseTweet = new BaseTweet(new Date(baseDate),
-					baseId);
-			baseTweets.add(baseTweet);
-			when(rootFinderMock.origin(baseTweet)).thenReturn(baseTweet);
-			for (int level = 0; level < numLevels; ++level)
-				for (int retweetNum = 0; retweetNum < numRetweetsForEach; ++retweetNum) {
-					final ID originId = level > 0 ? new ID("retweet of base "
-							+ baseTweetNum + " level " + (level - 1)) : baseId;
-					final Retweet retweet = new Retweet(new Date(baseDate + 24
-							* 60 * 60 * 1000 * level + 10 * 1000 * retweetNum),
-							new ID("retweet of base " + baseTweetNum
-									+ " level " + level), originId);
-					retweets.add(retweet);
-					when(rootFinderMock.origin(retweet))
-							.thenReturn(baseTweet);
-				}
-		}
-		when(tweetsMock.getBaseTweets())
-				.thenReturn(new ArrayList<>(baseTweets));
-		when(tweetsMock.getRetweets()).thenReturn(new ArrayList<>(retweets));
-	}
+    for (int baseTweetNum = 0; baseTweetNum < numBase; ++baseTweetNum) {
+      final ID baseId = new ID("base " + baseTweetNum);
+      final long baseDate = 123456789L + baseTweetNum;
+      final BaseTweet baseTweet = new BaseTweet(new Date(baseDate), baseId);
+      baseTweets.add(baseTweet);
+      when(rootFinderMock.origin(baseTweet)).thenReturn(baseTweet);
+      for (int level = 0; level < numLevels; ++level)
+        for (int retweetNum = 0; retweetNum < numRetweetsForEach; ++retweetNum) {
+          final ID originId =
+              level > 0 ? new ID("retweet of base " + baseTweetNum + " level "
+                  + (level - 1)) : baseId;
+          final Retweet retweet =
+              new Retweet(new Date(baseDate + 24 * 60 * 60 * 1000 * level + 10
+                  * 1000 * retweetNum), new ID("retweet of base "
+                  + baseTweetNum + " level " + level), originId);
+          retweets.add(retweet);
+          when(rootFinderMock.origin(retweet)).thenReturn(baseTweet);
+        }
+    }
+    when(tweetsMock.getBaseTweets()).thenReturn(new ArrayList<>(baseTweets));
+    when(tweetsMock.getRetweets()).thenReturn(new ArrayList<>(retweets));
+  }
 
-	/**
-	 * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
-	 * 
-	 * @throws NotFoundException
-	 *             Never.
-	 * @throws UndefinedTimeException
-	 *             Shouldn't happen.
-	 */
-	@Test
-	public final void retweetShouldExtendLifeTimeOfBaseTweet()
-			throws NotFoundException, UndefinedTimeException {
-		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
-				3, 00).getTime(), new ID("base"));
-		final Retweet re = new Retweet(
-				new GregorianCalendar(2014, 4, 1, 4, 30).getTime(), new ID(
-						"retweet"), base.id);
-		when(rootFinderMock.origin(re)).thenReturn(base);
-		addBaseTweets(base);
-		addRetweets(re);
-		assertLifeTime(90L * 60L * 1000L, base.id);
-	}
+  /**
+   * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
+   * 
+   * @throws NotFoundException
+   *           Never.
+   * @throws UndefinedTimeException
+   *           Shouldn't happen.
+   */
+  @Test
+  public final void retweetShouldExtendLifeTimeOfBaseTweet()
+      throws NotFoundException, UndefinedTimeException {
+    final BaseTweet base =
+        new BaseTweet(new GregorianCalendar(2014, 4, 1, 3, 00).getTime(),
+            new ID("base"));
+    final Retweet re =
+        new Retweet(new GregorianCalendar(2014, 4, 1, 4, 30).getTime(), new ID(
+            "retweet"), base.id);
+    when(rootFinderMock.origin(re)).thenReturn(base);
+    addBaseTweets(base);
+    addRetweets(re);
+    assertLifeTime(90L * 60L * 1000L, base.id);
+  }
 
-	/**
-	 * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
-	 * 
-	 * @throws NotFoundException
-	 *             Never.
-	 * @throws UndefinedTimeException
-	 *             Shouldn't happen.
-	 */
-	@Test
-	public final void notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours()
-			throws NotFoundException, UndefinedTimeException {
-		initiateState(3, 3, 3);
-		final ID reId = new ID("retweet");
-		final BaseTweet base = new BaseTweet(
-				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
-		final Retweet re = new Retweet(
-				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.id);
-		when(rootFinderMock.origin(re)).thenReturn(base);
-		final Retweet noRelated = new Retweet(
-				new GregorianCalendar(2014, 5, 2).getTime(), new ID(
-						"unrelated retweet"), new ID("not base"));
-		when(rootFinderMock.origin(noRelated)).thenThrow(
-				new NotFoundException());
-		addBaseTweets(base);
-		addRetweets(re, noRelated);
-		assertLifeTime(24L * 60L * 60L * 1000L, base.id);
-	}
+  /**
+   * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
+   * 
+   * @throws NotFoundException
+   *           Never.
+   * @throws UndefinedTimeException
+   *           Shouldn't happen.
+   */
+  @Test
+  public final
+      void
+      notRelatedRetweetsShouldntChangeLifeTimeOfBaseTweetLifeTimeShouldRemain24Hours()
+          throws NotFoundException, UndefinedTimeException {
+    initiateState(3, 3, 3);
+    final ID reId = new ID("retweet");
+    final BaseTweet base =
+        new BaseTweet(new GregorianCalendar(2014, 4, 1).getTime(), new ID(
+            "base"));
+    final Retweet re =
+        new Retweet(new GregorianCalendar(2014, 4, 2).getTime(), reId, base.id);
+    when(rootFinderMock.origin(re)).thenReturn(base);
+    final Retweet noRelated =
+        new Retweet(new GregorianCalendar(2014, 5, 2).getTime(), new ID(
+            "unrelated retweet"), new ID("not base"));
+    when(rootFinderMock.origin(noRelated)).thenThrow(new NotFoundException());
+    addBaseTweets(base);
+    addRetweets(re, noRelated);
+    assertLifeTime(24L * 60L * 60L * 1000L, base.id);
+  }
 
-	/**
-	 * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
-	 * 
-	 * @throws NotFoundException
-	 *             Never.
-	 * @throws UndefinedTimeException
-	 *             Shouldn't happen.
-	 */
-	@Test
-	public final void lifeTimeShouldBeAccurate() throws NotFoundException,
-			UndefinedTimeException {
-		final long baseTime = 123456789L;
-		final long interval = 111111111L;
-		final BaseTweet base = new BaseTweet(new Date(baseTime), new ID("base"));
-		final Retweet re = new Retweet(new Date(baseTime + interval), new ID(
-				"retweet 1"), base.id);
-		when(rootFinderMock.origin(re)).thenReturn(base);
-		addBaseTweets(base);
-		addRetweets(re);
-		assertLifeTime(interval, base.id);
-	}
+  /**
+   * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
+   * 
+   * @throws NotFoundException
+   *           Never.
+   * @throws UndefinedTimeException
+   *           Shouldn't happen.
+   */
+  @Test
+  public final void lifeTimeShouldBeAccurate() throws NotFoundException,
+      UndefinedTimeException {
+    final long baseTime = 123456789L;
+    final long interval = 111111111L;
+    final BaseTweet base = new BaseTweet(new Date(baseTime), new ID("base"));
+    final Retweet re =
+        new Retweet(new Date(baseTime + interval), new ID("retweet 1"), base.id);
+    when(rootFinderMock.origin(re)).thenReturn(base);
+    addBaseTweets(base);
+    addRetweets(re);
+    assertLifeTime(interval, base.id);
+  }
 
-	/**
-	 * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
-	 * 
-	 * @throws NotFoundException
-	 *             Never.
-	 * @throws UndefinedTimeException
-	 *             Shouldn't happen.
-	 */
-	@Test
-	public final void lifeTimeShouldBeDeterminedByTheChronologicallyLatestRetweet()
-			throws NotFoundException, UndefinedTimeException {
-		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
-				10, 00).getTime(), new ID("base"));
-		final Retweet re1 = new Retweet(new GregorianCalendar(2014, 4, 1, 10,
-				30).getTime(), new ID("retweet 1"), base.id);
-		final Retweet re2 = new Retweet(new GregorianCalendar(2014, 4, 1, 14,
-				00).getTime(), new ID("retweet 2"), base.id);
-		final Retweet re3 = new Retweet(new GregorianCalendar(2014, 4, 1, 12,
-				59).getTime(), new ID("retweet 3"), base.id);
-		when(rootFinderMock.origin(re1)).thenReturn(base);
-		when(rootFinderMock.origin(re2)).thenReturn(base);
-		when(rootFinderMock.origin(re3)).thenReturn(base);
-		addBaseTweets(base);
-		addRetweets(re1, re2, re3);
-		assertLifeTime(4L * 60L * 60L * 1000L, base.id);
-	}
+  /**
+   * Test method for {@link TweetToLifeTime#getLifeTimeById(ID)}
+   * 
+   * @throws NotFoundException
+   *           Never.
+   * @throws UndefinedTimeException
+   *           Shouldn't happen.
+   */
+  @Test
+  public final void
+      lifeTimeShouldBeDeterminedByTheChronologicallyLatestRetweet()
+          throws NotFoundException, UndefinedTimeException {
+    final BaseTweet base =
+        new BaseTweet(new GregorianCalendar(2014, 4, 1, 10, 00).getTime(),
+            new ID("base"));
+    final Retweet re1 =
+        new Retweet(new GregorianCalendar(2014, 4, 1, 10, 30).getTime(),
+            new ID("retweet 1"), base.id);
+    final Retweet re2 =
+        new Retweet(new GregorianCalendar(2014, 4, 1, 14, 00).getTime(),
+            new ID("retweet 2"), base.id);
+    final Retweet re3 =
+        new Retweet(new GregorianCalendar(2014, 4, 1, 12, 59).getTime(),
+            new ID("retweet 3"), base.id);
+    when(rootFinderMock.origin(re1)).thenReturn(base);
+    when(rootFinderMock.origin(re2)).thenReturn(base);
+    when(rootFinderMock.origin(re3)).thenReturn(base);
+    addBaseTweets(base);
+    addRetweets(re1, re2, re3);
+    assertLifeTime(4L * 60L * 60L * 1000L, base.id);
+  }
 
-	private void assertLifeTime(final long value, final ID id)
-			throws UndefinedTimeException {
-		assertEquals(value,
-				new TweetToLifeTime(rootFinderMock, tweetsMock)
-						.getLifeTimeById(id));
-	}
+  private void assertLifeTime(final long value, final ID id)
+      throws UndefinedTimeException {
+    assertEquals(value,
+        new TweetToLifeTime(rootFinderMock, tweetsMock).getLifeTimeById(id));
+  }
 
-	private void addBaseTweets(final BaseTweet... bases) {
-		final List<BaseTweet> newTweets = new ArrayList<>(Arrays.asList(bases));
-		newTweets.addAll(tweetsMock.getBaseTweets());
-		when(tweetsMock.getBaseTweets()).thenReturn(newTweets);
-	}
+  private void addBaseTweets(final BaseTweet... bases) {
+    final List<BaseTweet> newTweets = new ArrayList<>(Arrays.asList(bases));
+    newTweets.addAll(tweetsMock.getBaseTweets());
+    when(tweetsMock.getBaseTweets()).thenReturn(newTweets);
+  }
 
-	private void addRetweets(final Retweet... res) {
-		final List<Retweet> newTweets = new ArrayList<>(Arrays.asList(res));
-		newTweets.addAll(tweetsMock.getRetweets());
-		when(tweetsMock.getRetweets()).thenReturn(newTweets);
-	}
+  private void addRetweets(final Retweet... res) {
+    final List<Retweet> newTweets = new ArrayList<>(Arrays.asList(res));
+    newTweets.addAll(tweetsMock.getRetweets());
+    when(tweetsMock.getRetweets()).thenReturn(newTweets);
+  }
 
 }

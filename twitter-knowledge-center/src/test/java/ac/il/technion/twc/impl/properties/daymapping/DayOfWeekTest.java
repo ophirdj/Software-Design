@@ -12,13 +12,10 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import ac.il.technion.twc.impl.properties.daymapping.DayOfWeek;
-
 /**
  * Tests for {@link DayOfWeek}
  * 
  * @author Ophir De Jager
- * 
  */
 @RunWith(JUnitParamsRunner.class)
 public class DayOfWeekTest {

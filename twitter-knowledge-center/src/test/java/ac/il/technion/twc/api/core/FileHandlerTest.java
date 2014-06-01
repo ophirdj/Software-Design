@@ -15,17 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import ac.il.technion.twc.api.core.FileHandler;
-
 /**
  * Test for {@link FileHandler}
  * 
  * @author Ziv Ronen
  * @date 07.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class FileHandlerTest {
 

@@ -20,7 +20,6 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @author Ziv Ronen
  * @date 28.05.2014
  * @mail akarks@gmail.com
- * 
  */
 public class IdHashtagsTest {
 

@@ -26,97 +26,96 @@ import ac.il.technion.twc.api.tweet.parser.TweetParser;
  * @date 28.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class MultiFormatsParserTest {
 
-	/**
+  /**
 	 * 
 	 */
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
-	private final TweetFormat format1 = mock(TweetFormat.class);
-	private final TweetFormat format2 = mock(TweetFormat.class);
-	private final TweetParser $;
+  private final TweetFormat format1 = mock(TweetFormat.class);
+  private final TweetFormat format2 = mock(TweetFormat.class);
+  private final TweetParser $;
 
-	/**
+  /**
    * 
    */
-	public MultiFormatsParserTest() {
-		$ = new TweetParser(format1, format2);
-	}
+  public MultiFormatsParserTest() {
+    $ = new TweetParser(format1, format2);
+  }
 
-	/**
-	 * Test method for: <br>
-	 * - {@link TweetParser#TweetParser(TweetFormat...)}
-	 */
-	@Test
-	public final void parserBuildSucceeded() {
-		assertNotNull($);
-	}
+  /**
+   * Test method for: <br>
+   * - {@link TweetParser#TweetParser(TweetFormat...)}
+   */
+  @Test
+  public final void parserBuildSucceeded() {
+    assertNotNull($);
+  }
 
-	/**
-	 * Test method for: <br>
-	 * - {@link TweetParser#parse(String...)}
-	 * 
-	 * @throws ParseException
-	 */
-	@Test
-	public final void oneValidParserShouldReturnParsedTweet()
-			throws ParseException {
-		final String tweetString = "this is my tweet!";
-		final Tweet tweet = mock(Tweet.class);
-		when(format1.parse(tweetString)).thenReturn(tweet);
-		when(format2.parse(tweetString)).thenThrow(new ParseException("", 0));
-		final List<Tweet> tweets = $.parse(tweetString);
-		verify(format1).parse(tweetString);
-		assertEquals(1, tweets.size());
-		assertSame(tweet, tweets.get(0));
-	}
+  /**
+   * Test method for: <br>
+   * - {@link TweetParser#parse(String...)}
+   * 
+   * @throws ParseException
+   */
+  @Test
+  public final void oneValidParserShouldReturnParsedTweet()
+      throws ParseException {
+    final String tweetString = "this is my tweet!";
+    final Tweet tweet = mock(Tweet.class);
+    when(format1.parse(tweetString)).thenReturn(tweet);
+    when(format2.parse(tweetString)).thenThrow(new ParseException("", 0));
+    final List<Tweet> tweets = $.parse(tweetString);
+    verify(format1).parse(tweetString);
+    assertEquals(1, tweets.size());
+    assertSame(tweet, tweets.get(0));
+  }
 
-	/**
-	 * Test method for: <br>
-	 * - {@link TweetParser#parse(String...)}
-	 * 
-	 * @throws ParseException
-	 */
-	@Test
-	public final void noValidParserShouldThrowException() throws ParseException {
-		when(format1.parse(anyString())).thenThrow(new ParseException("", 0));
-		when(format2.parse(anyString())).thenThrow(new ParseException("", 0));
-		thrown.expect(ParseException.class);
-		thrown.expectMessage("No matching parser");
-		$.parse("tweet in wrong format");
-	}
+  /**
+   * Test method for: <br>
+   * - {@link TweetParser#parse(String...)}
+   * 
+   * @throws ParseException
+   */
+  @Test
+  public final void noValidParserShouldThrowException() throws ParseException {
+    when(format1.parse(anyString())).thenThrow(new ParseException("", 0));
+    when(format2.parse(anyString())).thenThrow(new ParseException("", 0));
+    thrown.expect(ParseException.class);
+    thrown.expectMessage("No matching parser");
+    $.parse("tweet in wrong format");
+  }
 
-	/**
-	 * Test method for: <br>
-	 * - {@link TweetParser#parse(String...)}
-	 * 
-	 * @throws ParseException
-	 */
-	@Test
-	public final void tooManyValidParsersAfterParsingEndsShouldThrowAmbiguityException()
-			throws ParseException {
-		when(format1.parse(anyString())).thenReturn(mock(Tweet.class));
-		when(format2.parse(anyString())).thenReturn(mock(Tweet.class));
-		thrown.expect(ParseException.class);
-		thrown.expectMessage("Parsing ambiguity");
-		$.parse("tweet in right format for both parsers");
-	}
+  /**
+   * Test method for: <br>
+   * - {@link TweetParser#parse(String...)}
+   * 
+   * @throws ParseException
+   */
+  @Test
+  public final void
+      tooManyValidParsersAfterParsingEndsShouldThrowAmbiguityException()
+          throws ParseException {
+    when(format1.parse(anyString())).thenReturn(mock(Tweet.class));
+    when(format2.parse(anyString())).thenReturn(mock(Tweet.class));
+    thrown.expect(ParseException.class);
+    thrown.expectMessage("Parsing ambiguity");
+    $.parse("tweet in right format for both parsers");
+  }
 
-	/**
-	 * Test method for: <br>
-	 * - {@link TweetParser#parse(String...)}
-	 * 
-	 * @throws ParseException
-	 */
-	@Test
-	public final void parsingNoTweetsShouldReturnAnEmptyList()
-			throws ParseException {
-		assertEquals(0, $.parse().size());
-	}
+  /**
+   * Test method for: <br>
+   * - {@link TweetParser#parse(String...)}
+   * 
+   * @throws ParseException
+   */
+  @Test
+  public final void parsingNoTweetsShouldReturnAnEmptyList()
+      throws ParseException {
+    assertEquals(0, $.parse().size());
+  }
 
 }
