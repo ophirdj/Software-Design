@@ -29,8 +29,6 @@ import com.twitter.Extractor;
  * @date 23.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class JsonTweetFormat implements TweetFormat {
 
@@ -68,20 +66,15 @@ public class JsonTweetFormat implements TweetFormat {
                 .parse(object.get("created_at").getAsString());
 
         ID originId = null;
-        List<String> originHashtags = null;
         final JsonElement oldTweet = object.get("retweeted_status");
         if (oldTweet != null && !oldTweet.isJsonNull()) {
           final JsonObject oldTweetObject = oldTweet.getAsJsonObject();
           originId = new ID(oldTweetObject.get("id_str").getAsString());
-          originHashtags =
-              readHashtags(oldTweetObject.get("text").getAsString());
         }
         if (prevId != null)
-          return new Retweet(date, id, prevId, hashtags, originId,
-              originHashtags);
+          return new Retweet(date, id, prevId, hashtags, originId);
         return originId == null ? new BaseTweet(date, id, hashtags)
-            : new Retweet(date, id, originId, hashtags, originId,
-                originHashtags);
+            : new Retweet(date, id, originId, hashtags, originId);
       } catch (final ParseException | NullPointerException e) {
         throw new JsonParseException(e);
       }

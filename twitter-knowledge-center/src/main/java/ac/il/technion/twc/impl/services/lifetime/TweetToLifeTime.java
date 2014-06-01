@@ -7,8 +7,8 @@ import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.properties.OriginFinder;
-import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.ID;
 import ac.il.technion.twc.api.tweet.Retweet;
@@ -20,9 +20,6 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @author Ziv Ronen
  * @date 26.05.2014
  * @mail akarks@gmail.com
- * 
- * @version 2.0
- * @since 2.0
  */
 public class TweetToLifeTime implements TwitterQuery {
 
@@ -58,10 +55,9 @@ public class TweetToLifeTime implements TwitterQuery {
     for (final Retweet retweet : tweets.getRetweets())
       try {
         final BaseTweet base = baseTweetFinder.origin(retweet);
-        lifeTimeFromId.put(base.id, Math.max(
-            retweet.date().getTime() - base.date().getTime(),
-            !lifeTimeFromId.containsKey(base.id) ? 0L : lifeTimeFromId
-                .get(base.id)));
+        lifeTimeFromId.put(base.id, Math.max(retweet.date().getTime()
+            - base.date().getTime(), !lifeTimeFromId.containsKey(base.id) ? 0L
+            : lifeTimeFromId.get(base.id)));
       } catch (final NotFoundException e) {
         continue;
       }

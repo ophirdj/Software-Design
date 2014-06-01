@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +21,6 @@ import ac.il.technion.twc.api.tweet.Retweet;
  * @date 28.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class IdHashtagsTest {
 
@@ -78,37 +75,6 @@ public class IdHashtagsTest {
     final IdHashtags ih = new IdHashtags(bts, EMPTY_RES);
     assertEquals(hashtags, ih.getHashtags(id));
     assertEquals(otherHashtags, ih.getHashtags(otherId));
-  }
-
-  /**
-   * Test method for {@link IdHashtags#getHashtags(ID)}
-   */
-  @Test
-  public final void
-      BaseTweetWithNullHashtagsShouldReturnRetweetOriginalHashtags() {
-    final ID id = new ID("base tweet ID");
-    final ID otherId = new ID("other tweet ID");
-    final List<String> originHashtags = Arrays.asList("OMFG", "FUCKDAPOLICE");
-    final IdHashtags ih =
-        new IdHashtags(Arrays.asList(new BaseTweet(new Date(123456789), id,
-            null)), Arrays.asList(new Retweet(new Date(124553), otherId, id,
-            null, id, originHashtags)));
-    assertEquals(originHashtags, ih.getHashtags(id));
-  }
-
-  /**
-   * Test method for {@link IdHashtags#getHashtags(ID)}
-   */
-  @Test
-  public final void BaseTweetWithEmptyHashtagsShouldReturnEmptyHashtags() {
-    final ID id = new ID("base tweet ID");
-    final List<String> hashtags = Collections.emptyList();
-    final ID otherId = new ID("other tweet ID");
-    final IdHashtags ih =
-        new IdHashtags(Arrays.asList(new BaseTweet(new Date(123456789), id,
-            hashtags)), Arrays.asList(new Retweet(new Date(124553), otherId,
-            id, null, id, Arrays.asList("OMFG", "FUCKDAPOLICE"))));
-    assertEquals(hashtags, ih.getHashtags(id));
   }
 
 }

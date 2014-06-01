@@ -27,9 +27,6 @@ public class IdHashtags implements Property {
    */
   public IdHashtags(final List<BaseTweet> bases, final List<Retweet> res) {
     final Map<ID, List<String>> tagsById = new HashMap<ID, List<String>>();
-    for (final Retweet retweet : res)
-      if (retweet.originId != null && retweet.originHashtags != null)
-        tagsById.put(retweet.originId, retweet.originHashtags);
     for (final BaseTweet tweet : bases)
       if (tweet.hashtags != null)
         tagsById.put(tweet.id, tweet.hashtags);
