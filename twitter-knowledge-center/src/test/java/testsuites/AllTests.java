@@ -9,8 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * 
  */
 @RunWith(Suite.class)
-@SuiteClasses({ AcceptanceTests.class, SystemTests.class,
-		TimeConstraintsTests.class, UnitTests.class })
+@SuiteClasses({ AllButTimeConstraintsTests.class, TimeConstraintsTests.class })
 public class AllTests {
 
 }
