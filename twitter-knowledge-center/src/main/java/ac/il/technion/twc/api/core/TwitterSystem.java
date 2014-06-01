@@ -56,9 +56,7 @@ public class TwitterSystem implements TwitterDataCenter {
     tweets.addAll(storedTweets.getRetweets());
     final Tweets newTweets = new Tweets(tweets);
 
-    // XXX clear servicesResult since it is not valid any more?
-
-    // servicesResult.clear();
+    servicesResult.clear();
 
     try {
       storage.store(Tweets.class, newTweets);
@@ -94,7 +92,8 @@ public class TwitterSystem implements TwitterDataCenter {
         final Object loadedValue = storage.load(service, null);
         if (null == loadedValue)
           failingCauses.put(service, e.getCause());
-        servicesResult.put(service, loadedValue);
+        else
+          servicesResult.put(service, loadedValue);
       }
     // TODO test
     if (!failingCauses.isEmpty())
@@ -106,18 +105,25 @@ public class TwitterSystem implements TwitterDataCenter {
   public <T> T getService(final Class<T> type) throws IllegalArgumentException {
 
     if (!servicesResult.containsKey(type)) {
-      // XXX load when services.contains(type)?
-
-      // if (services.contains(type)) {
-      // storage.load(type, serviceBuilder.getInstance(type));
-      // }
-
       // TODO test
-      final String evaluated =
-          !services.contains(type) ? "Did you forgot to register the query?"
-              : " Did you forgot to evaluate the queries?";
-      throw new IllegalArgumentException("Service: " + type
-          + " wanted but not registered." + evaluated);
+      if (!services.contains(type))
+        throw new IllegalArgumentException("Service: " + type
+            + " wanted but not registered.");
+      try {
+        storage.load(type, serviceBuilder.getInstance(type));
+      } catch (final InvokingUserMethodFailedException e) {
+
+        final Object loadedValue = storage.load(type, null);
+        if (null != loadedValue)
+          servicesResult.put(type, loadedValue);
+        else {
+          final Map<Class<?>, Throwable> failingCauses = new HashMap<>();
+          failingCauses.put(type, e.getCause());
+          throw new FailedToBuildException(
+              "Failed to load and couldn't build default", failingCauses);
+        }
+
+      }
     }
     return type.cast(servicesResult.get(type));
   }
@@ -163,16 +169,12 @@ public class TwitterSystem implements TwitterDataCenter {
     public String getMessage() {
       final StringBuilder builder = new StringBuilder(message).append("\n");
       for (final Entry<Class<?>, Throwable> entry : failingCauses.entrySet())
-        builder.append("class ").append(entry.getKey().getSimpleName())
-            .append(" because building it cause ").append(entry.getValue())
-            .append("\n");
+        builder.append("\t- class ").append(entry.getKey().getSimpleName())
+            .append(" can't be build because building it cause ")
+            .append(entry.getValue()).append("\n");
       return builder.toString();
     }
 
-    @Override
-    public String toString() {
-      return super.toString() + " " + getMessage();
-    }
   }
 
   /**

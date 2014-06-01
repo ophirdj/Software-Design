@@ -58,10 +58,10 @@ public class TweetToLifeTime implements TwitterQuery {
     for (final Retweet retweet : tweets.getRetweets())
       try {
         final BaseTweet base = baseTweetFinder.origin(retweet);
-        lifeTimeFromId.put(base.id(), Math.max(
+        lifeTimeFromId.put(base.id, Math.max(
             retweet.date().getTime() - base.date().getTime(),
-            !lifeTimeFromId.containsKey(base.id()) ? 0L : lifeTimeFromId
-                .get(base.id())));
+            !lifeTimeFromId.containsKey(base.id) ? 0L : lifeTimeFromId
+                .get(base.id)));
       } catch (final NotFoundException e) {
         continue;
       }

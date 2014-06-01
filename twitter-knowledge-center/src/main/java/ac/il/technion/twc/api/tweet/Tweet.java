@@ -1,6 +1,5 @@
 package ac.il.technion.twc.api.tweet;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,8 +11,14 @@ import java.util.List;
 public abstract class Tweet {
 
   private final Long date;
-  private final ID id;
-  private final List<String> hashtags;
+  /**
+   * Message's ID.
+   */
+  public final ID id;
+  /**
+   * The hastags in the tweet text
+   */
+  public final List<String> hashtags;
 
   /**
    * @param date
@@ -22,9 +27,7 @@ public abstract class Tweet {
    *          Unique ID for this tweet.
    */
   public Tweet(final Date date, final ID id) {
-    this.date = date.getTime();
-    this.id = id;
-    hashtags = new ArrayList<>();
+    this(date, id, null);
   }
 
   /**
@@ -51,24 +54,10 @@ public abstract class Tweet {
   public abstract <T> T accept(TweetVisitor<T> visitor);
 
   /**
-   * @return Message's ID.
-   */
-  public ID id() {
-    return id;
-  }
-
-  /**
    * @return Time when tweet was published.
    */
   public Date date() {
     return new Date(date);
-  }
-
-  /**
-   * @return Time when tweet was published.
-   */
-  public List<String> hashtags() {
-    return hashtags;
   }
 
   @Override

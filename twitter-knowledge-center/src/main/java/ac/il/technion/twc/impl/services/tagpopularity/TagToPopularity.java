@@ -1,14 +1,15 @@
 package ac.il.technion.twc.impl.services.tagpopularity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ac.il.technion.twc.FuntionalityTester;
 import ac.il.technion.twc.api.QuerySetup;
 import ac.il.technion.twc.api.TwitterQuery;
 import ac.il.technion.twc.api.properties.OriginFinder;
-import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.properties.OriginFinder.NotFoundException;
+import ac.il.technion.twc.api.properties.TweetsRetriever;
 import ac.il.technion.twc.api.tweet.BaseTweet;
 import ac.il.technion.twc.api.tweet.Retweet;
 import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
@@ -21,8 +22,6 @@ import ac.il.technion.twc.impl.properties.hashtags.IdHashtags;
  * @date 26.05.2014
  * @mail akarks@gmail.com
  * 
- * @version 2.0
- * @since 2.0
  */
 public class TagToPopularity implements TwitterQuery {
 
@@ -47,7 +46,10 @@ public class TagToPopularity implements TwitterQuery {
     for (final Retweet retweet : tweets.getRetweets())
       try {
         final BaseTweet base = baseTweetFinder.origin(retweet);
-        for (final String tag : base.hashtags())
+        final List<String> tweetHashtags = base.hashtags;
+        if (tweetHashtags == null)
+          continue;
+        for (final String tag : tweetHashtags)
           popularityFromHashtag.put(tag, getPopularityByHashtag(tag) + 1);
       } catch (final NotFoundException e) {
         continue;

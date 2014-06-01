@@ -132,10 +132,6 @@ public class TwitterSystemBuilder {
    * @return A {@link TwitterDataCenter}.
    */
   public TwitterSystem build() {
-    // XXX force the user to register at least one query?
-
-    // if (services.isEmpty())
-    // throw new NoRegisterQueryException();
     return new TwitterSystem(services, serviceBuilder,
         storageBuilder.buildStorage());
   }

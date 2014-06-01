@@ -173,10 +173,10 @@ public class RealWorldExample {
         final OriginFinder finder) {
       followersFromID = new HashMap<ID, Integer>();
       for (final BaseTweet base : retriever.getBaseTweets())
-        followersFromID.put(base.id(), 0);
+        followersFromID.put(base.id, 0);
       for (final Retweet retweet : retriever.getRetweets())
         try {
-          final ID origin = finder.origin(retweet).id();
+          final ID origin = finder.origin(retweet).id;
           followersFromID.put(origin, followersFromID.get(origin) + 1);
         } catch (final NotFoundException e) {
           continue;

@@ -43,9 +43,9 @@ public class OriginFinder implements Property {
     final Map<ID, BaseTweet> buildingBaseTweetMap =
         new HashMap<ID, BaseTweet>();
     for (final BaseTweet baseTweet : baseTweets)
-      buildingBaseTweetMap.put(baseTweet.id(), baseTweet);
+      buildingBaseTweetMap.put(baseTweet.id, baseTweet);
     for (final Retweet retweet : retweets)
-      relation.put(retweet.id(), retweet.originId);
+      relation.put(retweet.id, retweet.prevId);
     this.baseTweets = Collections.unmodifiableMap(buildingBaseTweetMap);
     ;
   }
@@ -58,7 +58,7 @@ public class OriginFinder implements Property {
    *           If no ancestor tweet that isn't a retweet exists.
    */
   public BaseTweet origin(final Tweet tweet) throws NotFoundException {
-    final ID rootId = findRootAux(tweet.id());
+    final ID rootId = findRootAux(tweet.id);
     if (!baseTweets.containsKey(rootId))
       throw new NotFoundException();
     return baseTweets.get(rootId);

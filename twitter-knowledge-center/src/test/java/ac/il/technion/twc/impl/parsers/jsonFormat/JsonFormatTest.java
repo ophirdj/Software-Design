@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -50,7 +51,8 @@ public class JsonFormatTest {
       Object[] correctTweets() {
     final List<String> hashtags = Arrays.asList("Avi", "technion", "HARD"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     return $(
-        $(new BaseTweet(buildDate(2014, 3, 6, 13, 0, 0), new ID("593393706")), //$NON-NLS-1$
+        $(new BaseTweet(buildDate(2014, 3, 6, 13, 0, 0),
+            new ID("593393706"), Collections.<String> emptyList()), //$NON-NLS-1$
             TestDataReader.getString("BaseTweet1")), //$NON-NLS-1$
         $(new Retweet(buildDate(2014, 4, 11, 10, 8, 8), new ID(
             "334611146097188865"), new ID("593393706")), //$NON-NLS-1$ //$NON-NLS-2$

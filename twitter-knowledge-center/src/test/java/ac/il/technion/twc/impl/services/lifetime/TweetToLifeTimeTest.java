@@ -123,11 +123,11 @@ public class TweetToLifeTimeTest {
 				3, 00).getTime(), new ID("base"));
 		final Retweet re = new Retweet(
 				new GregorianCalendar(2014, 4, 1, 4, 30).getTime(), new ID(
-						"retweet"), base.id());
+						"retweet"), base.id);
 		when(rootFinderMock.origin(re)).thenReturn(base);
 		addBaseTweets(base);
 		addRetweets(re);
-		assertLifeTime(90L * 60L * 1000L, base.id());
+		assertLifeTime(90L * 60L * 1000L, base.id);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public class TweetToLifeTimeTest {
 		final BaseTweet base = new BaseTweet(
 				new GregorianCalendar(2014, 4, 1).getTime(), new ID("base"));
 		final Retweet re = new Retweet(
-				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.id());
+				new GregorianCalendar(2014, 4, 2).getTime(), reId, base.id);
 		when(rootFinderMock.origin(re)).thenReturn(base);
 		final Retweet noRelated = new Retweet(
 				new GregorianCalendar(2014, 5, 2).getTime(), new ID(
@@ -155,7 +155,7 @@ public class TweetToLifeTimeTest {
 				new NotFoundException());
 		addBaseTweets(base);
 		addRetweets(re, noRelated);
-		assertLifeTime(24L * 60L * 60L * 1000L, base.id());
+		assertLifeTime(24L * 60L * 60L * 1000L, base.id);
 	}
 
 	/**
@@ -173,11 +173,11 @@ public class TweetToLifeTimeTest {
 		final long interval = 111111111L;
 		final BaseTweet base = new BaseTweet(new Date(baseTime), new ID("base"));
 		final Retweet re = new Retweet(new Date(baseTime + interval), new ID(
-				"retweet 1"), base.id());
+				"retweet 1"), base.id);
 		when(rootFinderMock.origin(re)).thenReturn(base);
 		addBaseTweets(base);
 		addRetweets(re);
-		assertLifeTime(interval, base.id());
+		assertLifeTime(interval, base.id);
 	}
 
 	/**
@@ -194,17 +194,17 @@ public class TweetToLifeTimeTest {
 		final BaseTweet base = new BaseTweet(new GregorianCalendar(2014, 4, 1,
 				10, 00).getTime(), new ID("base"));
 		final Retweet re1 = new Retweet(new GregorianCalendar(2014, 4, 1, 10,
-				30).getTime(), new ID("retweet 1"), base.id());
+				30).getTime(), new ID("retweet 1"), base.id);
 		final Retweet re2 = new Retweet(new GregorianCalendar(2014, 4, 1, 14,
-				00).getTime(), new ID("retweet 2"), base.id());
+				00).getTime(), new ID("retweet 2"), base.id);
 		final Retweet re3 = new Retweet(new GregorianCalendar(2014, 4, 1, 12,
-				59).getTime(), new ID("retweet 3"), base.id());
+				59).getTime(), new ID("retweet 3"), base.id);
 		when(rootFinderMock.origin(re1)).thenReturn(base);
 		when(rootFinderMock.origin(re2)).thenReturn(base);
 		when(rootFinderMock.origin(re3)).thenReturn(base);
 		addBaseTweets(base);
 		addRetweets(re1, re2, re3);
-		assertLifeTime(4L * 60L * 60L * 1000L, base.id());
+		assertLifeTime(4L * 60L * 60L * 1000L, base.id);
 	}
 
 	private void assertLifeTime(final long value, final ID id)
