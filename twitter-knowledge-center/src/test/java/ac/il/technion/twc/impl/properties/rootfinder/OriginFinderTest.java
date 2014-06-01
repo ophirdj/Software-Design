@@ -24,7 +24,7 @@ import ac.il.technion.twc.api.tweet.Tweet;
  * @date 07.05.2014
  * @mail akarks@gmail.com
  */
-public class TransitiveRootFinderTest {
+public class OriginFinderTest {
 
   private static final ArrayList<BaseTweet> EMPTY_BASES =
       new ArrayList<BaseTweet>();
