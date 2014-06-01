@@ -42,9 +42,11 @@ public class OriginFinder implements Property {
     for (final BaseTweet baseTweet : baseTweets)
       buildingBaseTweetMap.put(baseTweet.id, baseTweet);
     for (final Retweet retweet : retweets)
-      relation.put(retweet.id, retweet.prevId);
+      if (retweet.originId == null)
+        relation.put(retweet.id, retweet.prevId);
+      else
+        relation.put(retweet.id, retweet.originId);
     this.baseTweets = Collections.unmodifiableMap(buildingBaseTweetMap);
-    ;
   }
 
   /**

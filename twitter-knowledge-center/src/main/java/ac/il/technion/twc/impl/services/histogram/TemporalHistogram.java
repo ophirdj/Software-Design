@@ -182,7 +182,7 @@ public class TemporalHistogram implements TwitterQuery {
    * 
    * Help to reduce time for setup.
    */
-  private static final int datesPerHistogram = 10;
+  private static final int datesPerHistogram = 20;
 
   /**
    * Create an empty histogram
