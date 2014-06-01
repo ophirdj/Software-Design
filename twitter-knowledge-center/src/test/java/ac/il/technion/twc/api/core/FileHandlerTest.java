@@ -48,7 +48,8 @@ public class FileHandlerTest {
    */
   @BeforeClass
   public static void setUpClass() throws Exception {
-    Files.createDirectory(testDirectory);
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
@@ -58,7 +59,8 @@ public class FileHandlerTest {
    */
   @AfterClass
   public static void tearDownClass() throws Exception {
-    FileUtils.deleteDirectory(testDirectory.toFile());
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
@@ -67,7 +69,8 @@ public class FileHandlerTest {
    */
   @Before
   public void setup() throws Exception {
-    FileUtils.cleanDirectory(testDirectory.toFile());
+    if (Files.exists(testDirectory) && Files.isDirectory(testDirectory))
+      FileUtils.deleteDirectory(testDirectory.toFile());
   }
 
   /**
