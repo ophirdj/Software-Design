@@ -1,8 +1,9 @@
 package ac.il.technion.twc.impl.properties.daymapping;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 /**
  * enum for each day in a week
@@ -56,9 +57,7 @@ public enum DayOfWeek {
    * @return A day in the week corresponding to this date
    */
   public static DayOfWeek fromDate(final Date date) {
-    final Calendar c = new GregorianCalendar();
-    c.setTime(date);
-    return DayOfWeek.values()[c.get(Calendar.DAY_OF_WEEK) - 1];
+    return DayOfWeek.values()[new DateTime(date.getTime(), DateTimeZone.UTC).getDayOfWeek() % 7];
   }
 
 }
