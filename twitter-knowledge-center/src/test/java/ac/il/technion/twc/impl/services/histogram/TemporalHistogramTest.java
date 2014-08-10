@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +16,8 @@ import java.util.TreeMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,28 +52,29 @@ public class TemporalHistogramTest {
 		histogramFormatMock = mock(HistogramFormat.class);
 
 		dates = new Date[19];
-		dates[0] = new GregorianCalendar(2014, 3, 1, 2, 5, 3).getTime();
-		dates[1] = new GregorianCalendar(2014, 3, 1, 2, 5, 4).getTime();
-		dates[2] = new GregorianCalendar(2014, 3, 1, 2, 5, 5).getTime();
-		dates[3] = new GregorianCalendar(2014, 3, 10, 2, 5).getTime();
-		dates[4] = new GregorianCalendar(2014, 3, 10, 2, 8).getTime();
-		dates[5] = new GregorianCalendar(2014, 3, 12, 7, 5).getTime();
-		dates[6] = new GregorianCalendar(2014, 3, 13, 7, 5).getTime();
-		dates[7] = new GregorianCalendar(2014, 5, 16, 8, 5).getTime();
-		dates[8] = new GregorianCalendar(2014, 5, 20, 8, 5).getTime();
-		dates[9] = new GregorianCalendar(2014, 6, 1, 2, 5).getTime();
-		dates[10] = new GregorianCalendar(2014, 6, 1, 2, 5, 1).getTime();
-		dates[11] = new GregorianCalendar(2014, 6, 3, 2, 5).getTime();
-		dates[12] = new GregorianCalendar(2014, 6, 5, 2, 5, 1).getTime();
-		dates[13] = new GregorianCalendar(2014, 7, 3, 2, 5).getTime();
-		dates[14] = new GregorianCalendar(2014, 7, 3, 3, 5).getTime();
-		dates[15] = new GregorianCalendar(2014, 7, 3, 4, 5).getTime();
-		dates[16] = new GregorianCalendar(2014, 7, 3, 6, 5).getTime();
-		dates[17] = new GregorianCalendar(2014, 7, 3, 7, 5).getTime();
-		dates[18] = new GregorianCalendar(2014, 7, 8, 4, 5).getTime();
-
-		place = new int[] { 2, 2, 2, 4, 4, 6, 0, 1, 5, 2, 2, 4, 6, 0, 0, 0, 0,
-				0, 5 };
+		dates[0] = new DateTime(2014, 3, 1, 2, 5, 3, DateTimeZone.UTC).toDate();//SATURDAY
+		dates[1] = new DateTime(2014, 3, 1, 2, 5, 4, DateTimeZone.UTC).toDate();//SATURDAY
+		dates[2] = new DateTime(2014, 3, 1, 2, 5, 5, DateTimeZone.UTC).toDate();//SATURDAY
+		dates[3] = new DateTime(2014, 3, 10, 2, 5, DateTimeZone.UTC).toDate();//MONDAY
+		dates[4] = new DateTime(2014, 3, 10, 2, 8, DateTimeZone.UTC).toDate();//MONDAY
+		dates[5] = new DateTime(2014, 3, 12, 7, 5, DateTimeZone.UTC).toDate();//WEDNESDAY
+		dates[6] = new DateTime(2014, 3, 13, 7, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[7] = new DateTime(2014, 5, 16, 8, 5, DateTimeZone.UTC).toDate();//FRIDAY
+		dates[8] = new DateTime(2014, 5, 20, 8, 5, DateTimeZone.UTC).toDate();//TUESDAY
+		dates[9] = new DateTime(2014, 6, 1, 2, 5, DateTimeZone.UTC).toDate();//SUNDAY
+		dates[10] = new DateTime(2014, 6, 1, 2, 5, 1, DateTimeZone.UTC).toDate();//SUNDAY
+		dates[11] = new DateTime(2014, 6, 3, 2, 5, DateTimeZone.UTC).toDate();//TUESDAY
+		dates[12] = new DateTime(2014, 6, 5, 2, 5, 1, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[13] = new DateTime(2014, 7, 3, 2, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[14] = new DateTime(2014, 7, 3, 3, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[15] = new DateTime(2014, 7, 3, 4, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[16] = new DateTime(2014, 7, 3, 6, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[17] = new DateTime(2014, 7, 3, 7, 5, DateTimeZone.UTC).toDate();//THURSDAY
+		dates[18] = new DateTime(2014, 7, 8, 4, 5, DateTimeZone.UTC).toDate();//TUESDAY
+		
+//		place = new int[] { 2, 2, 2, 4, 4, 6, 0, 1, 5, 2, 2, 4, 6, 0, 0, 0, 0,
+//				0, 5 };
+		place = new int[] { 6, 6, 6, 1, 1, 3, 4, 5, 2, 0, 2, 4, 4, 4, 4, 4, 4, 4, 2 };
 
 	}
 
@@ -123,17 +125,17 @@ public class TemporalHistogramTest {
 						makeSet(new Date[] { dates[1] }, new int[] { 1 }),
 						new HashSet<>(), dates[2], dates[3]),
 
-				$(new int[] { 0, 1, 0, 0, 0, 0, 0 }, new int[] { 0, 0, 0, 0, 0,
+				$(new int[] { 0, 0, 0, 0, 0, 0, 1 }, new int[] { 0, 0, 0, 0, 0,
 						0, 0 },
 						makeSet(new Date[] { dates[1] }, new int[] { 1 }),
 						new HashSet<>(), dates[1], dates[1]),
 
-				$(new int[] { 0, 1, 0, 0, 0, 3, 0 },
+				$(new int[] { 0, 0, 3, 0, 0, 1, 0 },
 						new int[] { 0, 0, 0, 0, 0, 0, 0 },
 						makeSet(new Date[] { dates[7], dates[8] }, new int[] {
 								1, 3 }), new HashSet<>(), dates[7], dates[8]),
 
-				$(new int[] { 4, 0, 0, 0, 0, 0, 0 },
+				$(new int[] { 0, 0, 0, 0, 4, 0, 0 },
 						new int[] { 0, 0, 0, 0, 0, 0, 0 },
 						makeSet(new Date[] { dates[15], dates[16] }, new int[] {
 								1, 3 }), new HashSet<>(), dates[15], dates[17]),
@@ -145,7 +147,7 @@ public class TemporalHistogramTest {
 						new Date(dates[15].getTime() + 1L),
 						new Date(dates[16].getTime() - 1L)),
 
-				$(new int[] { 1, 0, 0, 0, 0, 0, 0 },
+				$(new int[] { 0, 0, 0, 0, 1, 0, 0 },
 						new int[] { 0, 0, 0, 0, 0, 0, 0 },
 						makeSet(new Date[] { dates[15], dates[16] }, new int[] {
 								1, 3 }), new HashSet<>(),
@@ -153,20 +155,20 @@ public class TemporalHistogramTest {
 						new Date(dates[16].getTime() - 1L)),
 
 				$(new int[] { 0, 0, 0, 0, 0, 0, 0 },
-						new int[] { 3, 0, 0, 0, 0, 0, 0 },
+						new int[] { 0, 0, 0, 0, 3, 0, 0 },
 						makeSet(new Date[] {}, new int[] {}),
 						makeSet(new Date[] { dates[15], dates[16] }, new int[] {
 								1, 3 }), new Date(dates[15].getTime() + 1L),
 						new Date(dates[16].getTime())),
 
 				$(new int[] { 0, 0, 0, 0, 0, 0, 0 },
-						new int[] { 4, 0, 0, 0, 0, 0, 0 },
+						new int[] { 0, 0, 0, 0, 4, 0, 0 },
 						makeSet(new Date[] {}, new int[] {}),
 						makeSet(new Date[] { dates[15], dates[16] }, new int[] {
 								1, 3 }), new Date(dates[15].getTime()),
 						new Date(dates[16].getTime())),
 
-				$(new int[] { 1, 0, 0, 0, 0, 0, 0 }, new int[] { 3, 0, 0, 0, 0,
+				$(new int[] { 0, 0, 0, 0, 1, 0, 0 }, new int[] { 0, 0, 0, 0, 3,
 						0, 0 },
 						makeSet(new Date[] { dates[15] }, new int[] { 1 }),
 						makeSet(new Date[] { dates[16] }, new int[] { 3 }),
